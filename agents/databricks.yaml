@@ -1,0 +1,63 @@
+# Safe Databricks route template.  The profile is resolved from the user's
+# Databricks CLI/Omnigent configuration; no token, workspace URL, or secret is
+# stored here.  Generate a local untracked copy with check_omnigent_config.py.
+name: nova-mat-databricks
+description: NOVA-MAT controlled orchestration routed through Databricks
+prompt: |
+  Coordinate the bounded NOVA-MAT discovery run. Freeze the hypothesis first;
+  expose two Planner proposals; let the PI choose a registered experiment;
+  let Runner call only its experiment_id; then let Skeptic submit a concern
+  and a changed follow-up template. Preserve live, fixture, or replay labels.
+  Never treat execution errors as scientific findings.
+executor:
+  harness: claude-sdk
+  model: databricks-claude-sonnet-4-6
+  auth:
+    type: databricks
+    profile: oss
+async: false
+cancellable: true
+tools:
+  planner:
+    type: agent
+    description: Return two bounded, feasible proposals; do not execute.
+    prompt: |
+      Return at least two complete bounded proposals with estimated seconds,
+      a heuristic learning score from 1 to 5, and a concise selection reason.
+      Do not execute experiments or invent registered IDs.
+    pass_history: true
+    max_sessions: 1
+  runner:
+    type: agent
+    description: Execute one pre-registered experiment ID.
+    prompt: |
+      Call only execute_registered_experiment with the experiment_id approved
+      by the PI. Never pass code, paths, datasets, credentials, or a new spec.
+      Preserve provenance and structured output exactly.
+    pass_history: true
+    max_sessions: 1
+    tools:
+      execute_registered_experiment:
+        type: function
+        callable: nova.tools.execute_registered_experiment
+        parameters:
+          type: object
+          properties:
+            experiment_id:
+              type: string
+          required: [experiment_id]
+          additionalProperties: false
+  skeptic:
+    type: agent
+    description: Review results and submit a read-only concern.
+    prompt: |
+      Cite the result_id and exact fields behind one falsifiable concern, then
+      recommend a different allowed template. Do not execute or alter results.
+    pass_history: true
+    max_sessions: 1
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params:
+      limit: 16

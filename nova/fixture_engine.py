@@ -62,6 +62,7 @@ def _one(spec: Any, gap_window: Tuple[float, float], ehull_max: float) -> dict[s
         passing = [r for r in observed if gap_window[0] <= r["gap"] <= gap_window[1] and r["ehull"] <= ehull_max]
         total, n_observed, n_pass = len(rows), len(observed), len(passing)
         groups[family] = {
+            "group": family,
             "n_total": total, "n_observed": n_observed, "n_pass": n_pass,
             "coverage": n_observed / total, "observed_rate": n_pass / n_observed,
             "missing_lower": n_pass / total, "missing_upper": (n_pass + total - n_observed) / total,
