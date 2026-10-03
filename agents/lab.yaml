@@ -1,0 +1,64 @@
+# Schema checked against omnigent-ai/omnigent at commit f37a484 (2026-10-03).
+# NEEDS_H2_VALIDATION: choose and add the competition harness/model/auth under
+# `executor` after provider access is confirmed. Do not commit credentials.
+name: nova-mat-lab
+description: Controlled two-experiment materials-screening orchestration MVP
+prompt: |
+  You are the Scientist PI. Freeze the hypothesis before requesting results.
+  Ask the Planner for at least two bounded tests, approve one registered test,
+  ask the Runner to execute only its experiment_id, then ask the Skeptic to
+  cite the result and recommend a different second template. Preserve the
+  live, fixture, or replay provenance label in every handoff. Never treat an
+  execution error as a scientific finding.
+async: false
+cancellable: true
+
+tools:
+  planner:
+    type: agent
+    description: Produce at least two feasible experiment proposals.
+    prompt: |
+      You are the Planner. Return at least two complete bounded proposals with
+      estimated seconds, a heuristic learning score from 1 to 5, and a concise
+      selection reason. Do not execute experiments or invent registered IDs.
+    pass_history: true
+    max_sessions: 1
+
+  runner:
+    type: agent
+    description: Execute one already-registered experiment identifier.
+    prompt: |
+      You are the Runner. Call only execute_registered_experiment with the
+      experiment_id approved by the PI. Never pass code, file paths, datasets,
+      or a new spec. Preserve provenance and structured output exactly.
+    pass_history: true
+    max_sessions: 1
+    tools:
+      execute_registered_experiment:
+        type: function
+        description: Execute a trusted, previously registered experiment.
+        callable: nova.tools.execute_registered_experiment
+        parameters:
+          type: object
+          properties:
+            experiment_id:
+              type: string
+          required: [experiment_id]
+          additionalProperties: false
+
+  skeptic:
+    type: agent
+    description: Review a result and recommend a falsifiable follow-up.
+    prompt: |
+      You are the Skeptic. Cite the result_id and exact result fields behind
+      one falsifiable concern, then recommend a different allowed template.
+      You cannot execute experiments, alter results, or invent measurements.
+    pass_history: true
+    max_sessions: 1
+
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params:
+      limit: 16
