@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-dcf6120d1cd719f679be21cba1c700b5033ba90d4f41273a5a2ca69897ded947"
+    ],
+    "concerns": [
+      {
+        "concern_type": "scientific",
+        "evidence_refs": [
+          "nova-result-dcf6120d1cd719f679be21cba1c700b5033ba90d4f41273a5a2ca69897ded947"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "live-64ccc87d7e06-family-screen",
+    "reason": "HUMAN_SCRIPTED follow-up based on live Result nova-result-dcf6120d1cd719f679be21cba1c700b5033ba90d4f41273a5a2ca69897ded947: scientific_status=supported_in_snapshot; oxide observed passes=3/7657 (total=7657); chalcogenide observed passes=6/3158 (total=3158); delta=0.00150814; 95% resampling interval=[0.000110914, 0.00322202]. Run the frozen threshold_sensitivity grid, report every point, and retain 0.05 as the primary endpoint.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-dcf6120d1cd719f679be21cba1c700b5033ba90d4f41273a5a2ca69897ded947"
+  }
+]

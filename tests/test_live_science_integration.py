@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+from pathlib import Path
+import re
 
 from nova import evidence
 from nova.contracts import ExperimentSpec, Result
@@ -65,6 +68,14 @@ def _science_result(minimal: dict) -> dict:
         "artifact_ids": [f"nova-manifest:{DATASET_SHA}"],
         "error": None,
     }
+
+
+def _load_live_script():
+    script_path = Path(__file__).resolve().parents[1] / "scripts" / "run_live_science.py"
+    module_spec = importlib.util.spec_from_file_location("run_live_science_integration", script_path)
+    module = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
+    return module
 
 
 def test_live_workflow_saves_registered_result_events_and_science_artifact(monkeypatch, tmp_path):
@@ -141,3 +152,104 @@ def test_live_workflow_saves_registered_result_events_and_science_artifact(monke
         }
     ]
     assert (export_dir / exported_artifact_manifest["artifacts"][0]["exported_path"]).is_file()
+
+
+def test_human_scripted_two_rounds_links_actual_result_and_exports_both_payloads(
+    monkeypatch,
+    tmp_path,
+    capsys,
+):
+    from nova.experiments import threshold_sensitivity
+
+    runner = _load_live_script()
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(executor, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(
+        executor,
+        "_load_frozen_manifest",
+        lambda: {"dataset": "dft_3d", "original_download_zip_sha256": DATASET_SHA},
+    )
+    monkeypatch.setattr(
+        executor.family_screen,
+        "run_experiment",
+        lambda minimal: _science_result(minimal),
+    )
+
+    def threshold_result(minimal):
+        result = _science_result(minimal)
+        result["spec_sha256"] = executor._computation_spec_sha256(minimal)
+        result["main_point"] = {
+            "delta": result["delta"],
+            "scientific_status": result["scientific_status"],
+        }
+        result["primary_point_index"] = 1
+        result["points"] = [
+            {"threshold_ev_atom": 0.025, "delta": 0.0},
+            {"threshold_ev_atom": 0.05, "delta": 0.1},
+            {"threshold_ev_atom": 0.1, "delta": 0.2},
+        ]
+        result["artifact_ids"].append(
+            "nova-threshold-protocol:" + threshold_sensitivity.THRESHOLD_PROTOCOL_SHA256
+        )
+        return result
+
+    monkeypatch.setattr(threshold_sensitivity, "run_experiment", threshold_result)
+
+    assert runner.main(["--two-rounds"]) == 0
+    output = capsys.readouterr().out
+    run_id = re.search(r"^run_id=(\S+)$", output, re.MULTILINE).group(1)
+    assert "integration_mode=HUMAN_SCRIPTED_LIVE_SCIENCE" in output
+    assert "followup_mode=HUMAN_SCRIPTED" in output
+
+    runs = tmp_path / "runs"
+    store = Storage(runs / "live-science.sqlite")
+    results = {result.experiment_id: result for result in store.list_results()}
+    first_id = f"{run_id}-family-screen"
+    second_id = f"{run_id}-threshold-sensitivity"
+    first = next(result for result in results.values() if result.experiment_id == first_id)
+    second = next(result for result in results.values() if result.experiment_id == second_id)
+    second_spec = store.read_spec(second_id)
+    review = store.get_review(first.result_id)
+
+    assert second_spec.parent_result_id == first.result_id
+    assert second_spec.review_id == first.result_id
+    assert review.result_id == first.result_id
+    assert f"scientific_status={first.scientific_status}" in review.reason
+    assert f"oxide observed passes=0/1 (total=2)" in review.reason
+    assert f"chalcogenide observed passes=1/2 (total=2)" in review.reason
+    assert "95% resampling interval=unavailable" in review.reason
+
+    events = store.list_events(run_id)
+    linked = next(event for event in events if event.event_type == "followup_spec_linked")
+    second_selection = next(event for event in events if event.event_type == "second_selection")
+    assert linked.payload_ref == first.result_id
+    assert linked.seq < second_selection.seq
+
+    export_dir = runs / f"live-evidence-{run_id}"
+    exported_results = json.loads((export_dir / "results.json").read_text(encoding="utf-8"))
+    assert {item["result_id"] for item in exported_results} == {first.result_id, second.result_id}
+    artifact_manifest = json.loads(
+        (export_dir / "science-artifacts.json").read_text(encoding="utf-8")
+    )
+    assert {item["result_id"] for item in artifact_manifest["results"]} == {
+        first.result_id,
+        second.result_id,
+    }
+    assert len(artifact_manifest["artifacts"]) == 2
+    threshold_artifact = next(
+        entry
+        for entry in artifact_manifest["artifacts"]
+        if second.result_id in {
+            item["result_id"]
+            for item in artifact_manifest["results"]
+            if entry["artifact_id"] in item["artifact_ids"]
+        }
+    )
+    threshold_payload = json.loads(
+        (export_dir / threshold_artifact["exported_path"]).read_text(encoding="utf-8")
+    )
+    assert [point["threshold_ev_atom"] for point in threshold_payload["science_result"]["points"]] == [
+        0.025,
+        0.05,
+        0.1,
+    ]

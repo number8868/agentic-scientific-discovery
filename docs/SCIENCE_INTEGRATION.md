@@ -33,10 +33,28 @@ With the same prepared frozen dataset and project environment:
 .\.venv\Scripts\python.exe -m pytest --basetemp=.verification-repro/pytest-integration-check
 ```
 
-The default launcher runs one real family-screen computation through `PersistentWorkflow`, SQLite storage and B's registered-ID tool entry. It creates the parent of its default database and chooses unique run/experiment IDs. It registers two initial proposals but selects family_screen explicitly as a human-scripted integration choice. Threshold sensitivity is implemented but its actual source-data execution is the next verification step in this commit.
+The default launcher runs one real family-screen computation through `PersistentWorkflow`, SQLite storage and B's registered-ID tool entry. It creates the parent of its default database and chooses unique run/experiment IDs. It registers two initial proposals but selects family_screen explicitly as a human-scripted integration choice.
 
 The portable evidence directory contains B's `events.jsonl`, `specs.json`, `results.json`, `reviews.json`, and checksum manifest, plus `science-artifacts.json` and all referenced rich numerical payloads in `science-artifacts/`. The executor's content-addressed artifacts exclude elapsed time and timestamps for stable scientific contents; shared Result still records real execution times. Cumulative artifact manifests keep multiple results distinct and preserve every grid point.
 
 Recorded run `live-aa50364f44b0` is in `docs/results/registered_family_run`. Independent validation matched registered spec SHA, checked every exported file/payload digest, and matched the original family-screen numerical summaries. All 89 combined tests passed. A fresh working-directory data reproduction was already checked in milestone 1; a fresh dependency installation has not been separately verified.
 
 The CLI's optional database path belongs to the trusted host, not an agent tool. The executor itself accepts only a full scientific specification and host mode metadata. B owns run authorization and may bind it behind the narrow registered-ID callable. Existing `nova.omnigent_bridge` is fixture-only and remains unchanged.
+
+## Verified two-round run
+
+```powershell
+.\.venv\Scripts\python.exe scripts/run_live_science.py --two-rounds
+```
+
+After the first actual Result, the launcher writes a review containing its ID, scientific state, counts, delta and interval. The review recommends the previously frozen threshold grid. The host adds `parent_result_id` and `review_id` to the existing threshold draft before `run_second` registers its immutable canonical spec. In the current B schema a review is keyed by its first Result ID, so both linkage fields use that ID. This is an explicit host integration choice, not a model-generated critique or independent scientific selection.
+
+Run `live-64ccc87d7e06` contains two completed real Results, one review and 11 live events. Its portable evidence is in `docs/results/two_round_live_science`; `docs/results/two_round_verification.json` records independent hash, linkage, event-order and discovery-count checks. All 90 combined tests passed. The 0.05 primary point matches the original scientific result exactly; all three points have positive differences and positive lower interval limits under the frozen rules. The small number of positives and correlated grid limit interpretation. See `docs/TEAM_STATUS.md` for every point, including counts and intervals.
+
+Generate the chart from the exported threshold payload, rather than recomputing or editing numbers:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/plot_threshold_result.py <exported-threshold-science-payload.json> --output docs/results/threshold_sensitivity.png
+```
+
+The chart uses observed pass rates in percent and differences in percentage points. It retains the primary point and the intervals stored in the immutable science payload. Both payloads have separate content-addressed files and the cumulative artifact manifest retains both Results. Git attributes preserve all portable evidence bytes so checkout line-ending conversion cannot invalidate the checksums.
