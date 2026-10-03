@@ -34,3 +34,9 @@ python3 scripts/run_fixture_demo.py
 
 See `docs/DEMO.md` and `docs/B_SECURITY_REVIEW.md` after the first integration
 pass.
+
+## Team A: first real-data milestone
+
+The standalone JARVIS discovery `family_screen` is now implemented and verified. See [science-engine setup and results](docs/A_SCIENCE_ENGINE.md), [team status and handoff](docs/TEAM_STATUS.md), and the recorded evidence in [docs/results](docs/results).
+
+These are real scientific-computation records. They have not yet been connected to the registry-bound Omnigent workflow described above; the bundled fixture remains explicitly non-scientific.

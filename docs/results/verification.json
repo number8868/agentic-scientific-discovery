@@ -1,0 +1,14 @@
+{
+  "standalone_science_executions": 3,
+  "numeric_results_equal": true,
+  "fresh_working_directory_from_cached_snapshot": true,
+  "reproduced_frozen_hashes": true,
+  "discovery_endpoints_independently_matched_to_original_by_jid": true,
+  "holdout_outcomes_evaluated": false,
+  "omnigent_integration_tested": false,
+  "environment": "same verified project .venv; fresh dependency install not separately tested",
+  "initial_prepare_failure": "Raw dataset elastic_tensor contained NaN; initial canonical JSON serialization rejected before protocol write or scientific results. Fixed derived serialization to null while preserving original bytes.",
+  "science_tests_passed": 20,
+  "combined_a_b_tests_passed": 37,
+  "pytest_temp_directory": "new workspace-local directory (system pytest temporary root denied access)"
+}
