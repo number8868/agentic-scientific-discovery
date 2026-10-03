@@ -22,6 +22,6 @@ For a presentation, use the portable checked evidence under `docs/results/window
 
 ## Model-driven demonstration gate
 
-The verified model-driven selection is `luna-pilot-06` under [the portable evidence package](results/omnigent_luna_run). Its audit records nine model turns, six successful registered-function calls and three clean no-tool repairs. The actual stored Skeptic review correctly cites 3/7,657 and 6/3,158 passes and the interval width; the follow-up spec links that first Result/review. See [the pilot runbook](OMNIGENT_LIVE_PILOT.md) and [independent verification](results/omnigent_luna_verification.json).
+The partial model-driven selection is `luna-pilot-06` under [the portable evidence package](results/omnigent_luna_run). Its audit records nine model turns, six successful registered-function calls and three clean no-tool repairs. The actual stored Skeptic review correctly cites 3/7,657 and 6/3,158 passes and the interval width; the follow-up spec links that first Result/review. The export has no second review or final protocol freeze, so it is not complete live-protocol evidence. See [the pilot runbook](OMNIGENT_LIVE_PILOT.md) and [independent verification](results/omnigent_luna_verification.json).
 
 For this presentation, describe the bounded Omnigent SDK host with fixed protocols and role order. The YAML multi-agent server and Databricks competition runtime have separate verification gates. Windows installation alone is not model-run evidence; this recorded pilot ran on Ubuntu WSL.
