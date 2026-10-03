@@ -9,6 +9,7 @@ import hashlib
 import json
 import sqlite3
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
@@ -116,6 +117,37 @@ def submit_live_review(result_id: str, concern: str, recommended_template: str) 
     return review.to_dict()
 
 
+def submit_final_review(result_id: str, concern: str) -> Dict[str, Any]:
+    """Persist the required second-round Skeptic review without opening choices."""
+    path, run_id, store = _ctx()
+    if not isinstance(result_id, str) or not result_id or "/" in result_id or "\\" in result_id:
+        _fail(run_id, store, "invalid final review reference")
+    if not isinstance(concern, str) or not concern.strip() or len(concern) > 500:
+        _fail(run_id, store, "invalid final review concern")
+    result = store.get_result(result_id)
+    if result is None or result.execution_status != "completed" or result.error is not None:
+        _fail(run_id, store, "final review requires a successful stored result")
+    spec = store.get_spec(result.experiment_id)
+    if spec is None or spec.split is not Split.DISCOVERY:
+        _fail(run_id, store, "final review requires a discovery result")
+    # A final review is specifically for the second registered experiment.
+    if not spec.parent_result_id or spec.review_id != spec.parent_result_id:
+        _fail(run_id, store, "final review requires a follow-up result")
+    events = store.list_events(run_id)
+    if not any(e.actor == "pi" and e.event_type == "second_selection" and
+               e.payload_ref == spec.experiment_id for e in events):
+        _fail(run_id, store, "final review experiment belongs to another run")
+    if not any(e.actor == "runner" and e.event_type == "result" and
+               e.payload_ref == result_id for e in events):
+        _fail(run_id, store, "final review result belongs to another run")
+    review = ReviewPacket(spec.experiment_id, result_id,
+                          (Concern("final_protocol", "medium", (result_id,)),),
+                          None, concern.strip(), (result_id,))
+    store.save_review(review)
+    store.append_event(run_id, "second_review", actor="skeptic", mode=Mode.LIVE, payload_ref=result_id)
+    return review.to_dict()
+
+
 def commit_next_spec(result_id: str, recommended_template: str) -> str:
     path, run_id, store = _ctx()
     packet = _packet(path)
@@ -133,6 +165,79 @@ def commit_next_spec(result_id: str, recommended_template: str) -> str:
     store.register_spec(spec)
     store.append_event(run_id, "second_selection", actor="pi", mode=Mode.LIVE, payload_ref=experiment_id)
     return experiment_id
+
+
+def freeze_final(main_result_id: str, followup_result_id: str, explanation: str = "") -> Dict[str, Any]:
+    """Freeze the discovery protocol and derive the sole authorized holdout Spec.
+
+    All protocol parameters are copied from registered Specs.  The caller can only
+    identify existing results and provide a short explanation; it cannot supply a
+    holdout window, dataset, experiment ID, or protocol hash.
+    """
+    path, run_id, store = _ctx()
+    if not all(isinstance(x, str) and x and "/" not in x and "\\" not in x
+               for x in (main_result_id, followup_result_id)):
+        _fail(run_id, store, "invalid final protocol references")
+    if not isinstance(explanation, str) or len(explanation) > 500 or any(ord(c) < 32 and c not in "\t" for c in explanation):
+        _fail(run_id, store, "final explanation is invalid")
+    if store.get_final_protocol(run_id) is not None:
+        _fail(run_id, store, "final protocol already frozen")
+
+    main = store.get_result(main_result_id)
+    followup = store.get_result(followup_result_id)
+    if main is None or followup is None or main_result_id == followup_result_id:
+        _fail(run_id, store, "final protocol requires two existing results")
+    main_spec = store.get_spec(main.experiment_id)
+    followup_spec = store.get_spec(followup.experiment_id)
+    # Result references must be native to this run, not merely present in a shared DB.
+    def owned(spec, result_id):
+        return spec is not None and any(e.actor == "pi" and e.payload_ref == spec.experiment_id and
+                                        e.event_type in {"selection", "second_selection"}
+                                        for e in store.list_events(run_id)) and any(
+                                            e.event_type == "result" and e.payload_ref == result_id
+                                            for e in store.list_events(run_id))
+    if not owned(main_spec, main_result_id) or not owned(followup_spec, followup_result_id):
+        _fail(run_id, store, "result belongs to another run")
+    if (main.execution_status != "completed" or main.error is not None or
+            followup.execution_status != "completed" or followup.error is not None):
+        _fail(run_id, store, "final protocol requires successful results")
+    if followup_spec.parent_result_id != main_result_id or followup_spec.review_id != main_result_id:
+        _fail(run_id, store, "follow-up is not linked to the primary result")
+    review = store.get_review(followup_result_id)
+    if review is None or review.result_id != followup_result_id:
+        _fail(run_id, store, "second review is required before final freeze")
+    if not any(e.event_type == "second_review" and e.actor == "skeptic" and e.payload_ref == followup_result_id
+               for e in store.list_events(run_id)):
+        _fail(run_id, store, "second review event is required before final freeze")
+
+    protocol = {
+        "schema_version": 1,
+        "hypothesis_id": main_spec.hypothesis_id,
+        "dataset_sha256": main_spec.dataset_sha256,
+        "main_result_id": main_result_id,
+        "followup_result_id": followup_result_id,
+        "main_spec": main_spec.to_dict(),
+        "followup_spec": followup_spec.to_dict(),
+        "review_refs": [main_result_id, followup_result_id],
+        "explanation": explanation.strip(),
+        "holdout_split": Split.HOLDOUT.value,
+        "holdout_template": Template.HOLDOUT_VALIDATION.value,
+    }
+    canonical = json.dumps(protocol, sort_keys=True, separators=(",", ":"))
+    protocol_sha256 = hashlib.sha256(canonical.encode()).hexdigest()
+    frozen_id = "NOVA-FINAL-" + protocol_sha256[:16]
+    holdout_id = "NOVA-HOLDOUT-" + hashlib.sha256((run_id + ":" + frozen_id).encode()).hexdigest()[:16]
+    holdout_spec = ExperimentSpec(
+        1, holdout_id, main_spec.hypothesis_id, main_spec.dataset_sha256,
+        Split.HOLDOUT, Template.HOLDOUT_VALIDATION, main_spec.groups,
+        main_spec.bandgap_method, main_spec.gap_window_ev, main_spec.ehull_max_ev_atom,
+        main_spec.bootstrap_repeats, main_spec.seed, main_spec.timeout_seconds,
+        followup_result_id, followup_result_id, frozen_id)
+    event = Event(run_id, 1, str(uuid.uuid4()), "final_protocol_frozen", "host",
+                  datetime.now(timezone.utc).isoformat(), 0, Mode.LIVE, frozen_id)
+    store.save_final_protocol(run_id, frozen_id, protocol_sha256, protocol, holdout_spec, event)
+    return {"frozen_protocol_id": frozen_id, "protocol_sha256": protocol_sha256,
+            "holdout_experiment_id": holdout_id, "protocol": protocol}
 
 
 def _active_dataset_sha256() -> str:
