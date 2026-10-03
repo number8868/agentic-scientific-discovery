@@ -34,8 +34,7 @@ The snapshot reference is `docs/results/first_manifest.json`; the threshold exte
 
 ```bash
 .venv-omnigent/bin/python scripts/prepare_live_run.py --db /tmp/nova-live-unique.sqlite --run-id live-unique
-.venv-omnigent/bin/python scripts/check_live_config.py
-PATH=.venv-tmux/bin:$PATH .venv-omnigent/bin/omnigent run agents/opensource-live.yaml
+.venv-omnigent/bin/python scripts/run_open_source_live.py
 ```
 
 Choose a new database/run ID. These are B's controlled orchestration entrypoints, not A's earlier human-scripted launcher. The canonical Results, model/tool audit and stored review must all belong to this new run before claiming success. Copying a prior Result is not a substitute for a tool invocation.

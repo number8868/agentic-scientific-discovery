@@ -1,5 +1,11 @@
 name: nova-mat-opensource-live
 description: NOVA-MAT live orchestration with host-owned dataset and SQLite context
+# The SDK Codex harness is intentional: codex-native is an interactive terminal
+# wrapper and exposes the native shell/file tools even when this YAML declares
+# only function tools.  The launcher must also set the installed 0.16 Codex
+# harness controls: HARNESS_CODEX_DISABLE_NATIVE_TOOLS=1 and
+# HARNESS_CODEX_ENABLE_WEB_SEARCH=0.  These are environment controls in the
+# open-source 0.16 harness, not YAML executor fields.
 prompt: |
   You are the Scientist PI for one bounded live run. Preserve mode=live and
   never treat execution errors as findings. Dispatch Planner first. It must
@@ -13,7 +19,7 @@ prompt: |
   do not execute the holdout because no controlled holdout Runner interface is
   available yet.
 executor:
-  harness: codex-native
+  harness: codex
   model: gpt-5.6-luna
 cancellable: true
 async: false
@@ -30,7 +36,7 @@ tools:
   planner:
     type: agent
     pass_history: true
-    executor: {harness: codex-native, model: gpt-5.6-luna}
+    executor: {harness: codex, model: gpt-5.6-luna}
     prompt: Register both bounded proposals and choose family_screen as the frozen primary protocol using register_initial_plan.
     tools:
       register_initial_plan:
@@ -39,7 +45,7 @@ tools:
   runner:
     type: agent
     pass_history: true
-    executor: {harness: codex-native, model: gpt-5.6-luna}
+    executor: {harness: codex, model: gpt-5.6-luna}
     prompt: Execute only the host-registered discovery experiment_id. Never execute a holdout.
     tools:
       execute_live_registered_experiment:
@@ -49,7 +55,7 @@ tools:
   skeptic:
     type: agent
     pass_history: true
-    executor: {harness: codex-native, model: gpt-5.6-luna}
+    executor: {harness: codex, model: gpt-5.6-luna}
     prompt: Review the first result and submit one live concern. After the second discovery result, call submit_final_review; do not execute or authorize a holdout.
     tools:
       submit_live_review:
