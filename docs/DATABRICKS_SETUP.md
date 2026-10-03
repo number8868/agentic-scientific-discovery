@@ -1,6 +1,7 @@
 # Databricks route setup
 
-`agents/databricks.yaml` is a tracked, credential-free Omnigent agent spec. It
+`agents/databricks.yaml` is a tracked, credential-free, **fixture-only H2**
+Omnigent agent spec. It
 uses the official `executor.auth.type: databricks` route and a named profile.
 The profile is resolved by the user's Omnigent/Databricks configuration; the
 repository does not contain a token, workspace URL, or profile secret.
@@ -36,14 +37,14 @@ The repository has not run Databricks or claimed a successful provider call.
 After access is available, run the actual Omnigent CLI with the generated file,
 capture the CLI version, exit code, selected profile (name only), model route,
 and the tool-call record showing Runner called
-`nova.tools.execute_registered_experiment` with only a registered ID. Confirm
+`nova.omnigent_bridge.execute_fixture_registered_experiment` with only a registered ID. Confirm
 that Planner exposes two proposals, Skeptic has no execution tool, and fixture
 and live provenance remain distinct.
 
 For the managed route, create a Sandbox session in the Databricks Omnigent UI,
 attach or upload this repository using the supported workspace mechanism, and
 first invoke a harmless registered fixture ID. If the managed environment
-cannot import `nova.tools`, stop and fix packaging/import availability; do not
+cannot import `nova.omnigent_bridge`, stop and fix packaging/import availability; do not
 replace the tool call with a natural-language claim. Confirm whether custom
 YAML policies are supported by that workspace before relying on the checked-in
 policy as enforcement.

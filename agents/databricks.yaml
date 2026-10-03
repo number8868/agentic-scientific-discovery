@@ -1,8 +1,8 @@
 # Safe Databricks route template.  The profile is resolved from the user's
 # Databricks CLI/Omnigent configuration; no token, workspace URL, or secret is
 # stored here.  Generate a local untracked copy with check_omnigent_config.py.
-name: nova-mat-databricks
-description: NOVA-MAT controlled orchestration routed through Databricks
+name: nova-mat-databricks-h2-fixture
+description: NOVA-MAT fixture-only H2 orchestration routed through Databricks
 prompt: |
   Coordinate the bounded NOVA-MAT discovery run. Freeze the hypothesis first;
   expose two Planner proposals; let the PI choose a registered experiment;
@@ -39,7 +39,8 @@ tools:
     tools:
       execute_registered_experiment:
         type: function
-        callable: nova.tools.execute_registered_experiment
+        description: Execute one fixture experiment selected in the host-owned SQLite run.
+        callable: nova.omnigent_bridge.execute_fixture_registered_experiment
         parameters:
           type: object
           properties:

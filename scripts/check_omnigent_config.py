@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "agents" / "databricks.yaml"
-CALLABLE = "nova.tools.execute_registered_experiment"
+CALLABLE = "nova.omnigent_bridge.execute_fixture_registered_experiment"
 
 
 def _section(text, name):
