@@ -5,7 +5,10 @@ import json
 from pathlib import Path
 import re
 
+import pytest
+
 from nova import evidence
+from nova import science_adapter
 from nova.contracts import ExperimentSpec, Result
 from nova.experiments import executor
 from nova.storage import Storage
@@ -253,3 +256,67 @@ def test_human_scripted_two_rounds_links_actual_result_and_exports_both_payloads
         0.05,
         0.1,
     ]
+
+
+@pytest.mark.parametrize(
+    ("arguments", "expected_route"),
+    [
+        ([], "direct"),
+        (["--science-adapter"], "adapter"),
+    ],
+)
+def test_live_script_selects_the_configured_science_adapter_route(
+    monkeypatch,
+    tmp_path,
+    capsys,
+    arguments,
+    expected_route,
+):
+    runner = _load_live_script()
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(executor, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(
+        executor,
+        "_load_frozen_manifest",
+        lambda: {"dataset": "dft_3d", "original_download_zip_sha256": DATASET_SHA},
+    )
+    monkeypatch.setattr(
+        executor.family_screen,
+        "run_experiment",
+        lambda minimal: _science_result(minimal),
+    )
+
+    direct_calls = []
+    adapter_calls = []
+    direct_executor = runner.execute
+
+    def mocked_direct_executor(payload):
+        direct_calls.append(dict(payload))
+        return direct_executor(payload)
+
+    def mocked_science_backend(payload):
+        adapter_calls.append(dict(payload))
+        return direct_executor(payload)
+
+    monkeypatch.setattr(runner, "execute", mocked_direct_executor)
+    monkeypatch.setattr(science_adapter.science_executor, "execute", mocked_science_backend)
+
+    assert runner.main(arguments) == 0
+    output = capsys.readouterr().out
+
+    expected_adapter = expected_route == "adapter"
+    assert f"science_adapter={'enabled' if expected_adapter else 'disabled'}" in output
+    assert len(adapter_calls) == int(expected_adapter)
+    assert len(direct_calls) == int(not expected_adapter)
+    selected_payload = adapter_calls[0] if expected_adapter else direct_calls[0]
+    assert selected_payload["mode"] == "live"
+    assert selected_payload["experiment_id"].endswith("-family-screen")
+    run_id = re.search(r"^run_id=(\S+)$", output, re.MULTILINE).group(1)
+    store = Storage(tmp_path / "runs" / "live-science.sqlite")
+    result = store.read_result(next(
+        event.payload_ref
+        for event in store.list_events(run_id)
+        if event.event_type == "result"
+    ))
+    assert result.execution_status == "completed"
+    assert result.spec_sha256 == store.read_spec(result.experiment_id).sha256

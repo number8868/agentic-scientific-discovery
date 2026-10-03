@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "live-d3e2875275af",
+  "integration_mode": "HUMAN_SCRIPTED_LIVE_SCIENCE",
+  "python": "3.12.15",
+  "omnigent": "0.16.0",
+  "adapter": "nova.science_adapter.execute_science_experiment",
+  "real_science_results": 2,
+  "live_events": 11,
+  "reviews": 1,
+  "focused_tests_passed": 23,
+  "original_environment_full_suite": {"passed": 94, "failed": 4, "failure_scope": "B POSIX fixture permissions and privileged symlink tests on Windows"},
+  "independent_checks": ["exported file SHA256", "science payload SHA256 and byte sizes", "canonical ExperimentSpec hashes", "review and parent linkage", "live mode and event order", "all threshold discovery counts from frozen CSV", "primary scientific fields match original baseline"],
+  "holdout_outcomes_examined": false,
+  "live_omnigent_tool_calls_verified_at_this_milestone": false,
+  "hard_worker_timeout_verified": false
+}

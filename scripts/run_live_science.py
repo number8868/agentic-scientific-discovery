@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 
 from nova.evidence import export_run  # noqa: E402
 from nova.experiments.executor import active_dataset_sha256, execute, export_science_artifacts  # noqa: E402
+from nova.science_adapter import execute_science_experiment  # noqa: E402
 from nova.storage import Storage  # noqa: E402
 from nova.workflow import PersistentWorkflow  # noqa: E402
 
@@ -93,6 +94,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="run a HUMAN_SCRIPTED threshold follow-up after inspecting the first live Result",
     )
+    parser.add_argument(
+        "--science-adapter",
+        action="store_true",
+        help="route registered science calls through B's strict science adapter",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -102,12 +108,15 @@ def main(argv: list[str] | None = None) -> int:
         threshold_id = f"{run_id}-threshold-sensitivity"
         args.database.parent.mkdir(parents=True, exist_ok=True)
         storage = Storage(args.database)
+        experiment_executor = (
+            execute_science_experiment if args.science_adapter else execute
+        )
         workflow = PersistentWorkflow(
             storage,
             objective="Compare frozen discovery pass rates for oxide and chalcogenide compositions.",
             mode="live",
             run_id=run_id,
-            experiment_executor=execute,
+            experiment_executor=experiment_executor,
         )
         workflow.freeze_hypothesis(
             "H1: chalcogenide discovery compositions have a higher observed screening pass rate than oxides."
@@ -160,6 +169,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"run_id={run_id}")
     print("integration_mode=HUMAN_SCRIPTED_LIVE_SCIENCE")
     print("selection=family_screen (explicit scripted choice)")
+    print(f"science_adapter={'enabled' if args.science_adapter else 'disabled'}")
     print(f"result_id={result.result_id}")
     print(f"scientific_status={result.scientific_status}")
     if len(results) == 2:

@@ -1,0 +1,24 @@
+{
+  "exported_at": "2026-10-03T20:35:38.257266+00:00",
+  "files": {
+    "events.jsonl": {
+      "count": 11,
+      "sha256": "99b128eb62b2c73d5a64d12eebf113054ad0fe25744e40eaa86d7f338f09430e"
+    },
+    "results.json": {
+      "count": 2,
+      "sha256": "1939d188e2eecbdd22efc321ea816d22bbbbf061230ef24e3aff981c23941f81"
+    },
+    "reviews.json": {
+      "count": 1,
+      "sha256": "fdbb15680d7d1396c342cba3214695207925bd4835dcf32eb05080e6e560df40"
+    },
+    "specs.json": {
+      "count": 2,
+      "sha256": "7516d048859c592ba699853a465e9fb8dfe034db82c0863de062f8778a567e16"
+    }
+  },
+  "mode": "live",
+  "run_id": "live-d3e2875275af",
+  "schema_version": 1
+}

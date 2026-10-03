@@ -1,5 +1,13 @@
 # Team status and handoff
 
+## Team A milestone 4 — Windows installation and B adapter verified, 2026-10-03
+
+Synced main `b05f395`: B has verified Linux Omnigent/Codex fixture orchestration and added `nova.science_adapter`. Installed Omnigent 0.16.0 in an isolated local Python 3.12.15 environment. Version/help pass directly. With `--science-adapter --two-rounds`, both real discovery templates completed in this new environment; all numerical results and portable evidence hashes/lineage matched the earlier evidence. See [Windows setup](OMNIGENT_WINDOWS.md), [adapter evidence](results/windows_adapter_run), and [verification](results/windows_adapter_verification.json).
+
+The focused adapter/executor/integration selection passed 23 tests on Python 3.12. The new full suite on Windows is 94 passed / 4 failed, due to B's POSIX fixture permission and privileged symlink checks; these were reported on PR #3. The fixture bridge still fails closed. Neither this installation nor these human-scripted runs prove real model-driven scientific orchestration. A separate Windows-compatible controlled SDK pilot is the next stage. Holdout remains closed; B-owned files were preserved.
+
+---
+
 ## Team A milestone 3 — two real rounds verified, 2026-10-03
 
 Synced B's merge of milestone 2 at `615de5f`. Recorded discovery-only run `live-64ccc87d7e06` executes `family_screen`, records a review citing its actual Result, links the threshold draft to that Result/review, and executes `threshold_sensitivity` through B's registered-ID workflow. Both shared Results, 11 live events, one review, canonical specs and two rich scientific payloads are preserved in [the portable evidence package](results/two_round_live_science). This remains human-scripted control flow; no live Omnigent call is claimed.
