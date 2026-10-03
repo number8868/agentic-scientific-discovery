@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 from .contracts import Result, Template
 from .storage import Storage
+from .process_control import ProcessController, WorkerTimeoutError
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LIVE_CONTEXT_PATH = REPO_ROOT / ".nova" / "live_context.json"
@@ -29,6 +30,24 @@ def _read_context():
 
 _context = _read_context
 
+MAX_WORKER_SECONDS = 120
+
+
+def _science_host_wrapper(payload: dict[str, Any]) -> Result:
+    """The sole callable exposed to the trusted worker registry."""
+    from .science_adapter import execute_science_experiment
+
+    return execute_science_experiment(payload)
+
+
+def _default_controller_factory(registered: dict[str, Any]) -> ProcessController:
+    return ProcessController(registered)
+
+
+# Private seam for tests and for a host embedding that supplies its own
+# lifecycle implementation.  The public bridge remains experiment-id only.
+_controller_factory = _default_controller_factory
+
 def execute_live_registered_experiment(experiment_id: str) -> Result:
     if not isinstance(experiment_id, str) or not experiment_id or os.path.sep in experiment_id:
         raise ValueError("invalid experiment id")
@@ -46,14 +65,22 @@ def execute_live_registered_experiment(experiment_id: str) -> Result:
     existing = next((result for result in store.list_results() if result.experiment_id == experiment_id), None)
     if existing is not None: return existing
     try:
-        from .science_adapter import execute_science_experiment
         payload = spec.to_dict(); payload.update(mode="live", run_id=run_id)
         store.append_event(run_id, "running", actor="runner", mode="live", payload_ref=experiment_id)
-        result = execute_science_experiment(payload)
+        deadline = min(spec.timeout_seconds, MAX_WORKER_SECONDS)
+        controller = _controller_factory({"execute_science_experiment": _science_host_wrapper})
+        execution = controller.run(
+            "execute_science_experiment", (payload,), deadline_seconds=deadline
+        )
+        result = execution.value
         if not isinstance(result, Result): raise TypeError("science adapter returned non-canonical result")
         store.save_result(result)
         store.append_event(run_id, "result", actor="runner", mode="live", payload_ref=result.result_id)
         return result
+    except WorkerTimeoutError:
+        try: store.append_event(run_id, "tool_failed", actor="host", mode="live", payload_ref=experiment_id)
+        except Exception: pass
+        raise ValueError("live execution timed out") from None
     except Exception:
         try: store.append_event(run_id, "tool_failed", actor="host", mode="live", payload_ref=experiment_id)
         except Exception: pass

@@ -3,6 +3,13 @@ import pytest
 from nova import live_bridge
 from nova.contracts import ExperimentSpec, Result, Split, Template
 from nova.storage import Storage
+from nova.process_control import WorkerTimeoutError, WorkerResult
+
+
+class InlineController:
+    def __init__(self, registered): self.registered = registered
+    def run(self, name, args=(), kwargs=None, *, deadline_seconds):
+        return WorkerResult(self.registered[name](*args, **(kwargs or {})), 1)
 
 def setup(tmp_path, mode="live"):
     db=tmp_path/"live.sqlite"; st=Storage(db).initialize(); db.chmod(0o600)
@@ -15,6 +22,7 @@ def test_live_bridge_authorization_idempotency(monkeypatch,tmp_path):
     st,c,s=setup(tmp_path); monkeypatch.setattr(live_bridge,"LIVE_CONTEXT_PATH",c)
     r=Result("R","E1",s.sha256,s.dataset_sha256,"completed","inconclusive","s","f",0)
     monkeypatch.setattr("nova.science_adapter.execute_science_experiment",lambda payload:r)
+    monkeypatch.setattr(live_bridge, "_controller_factory", InlineController)
     assert live_bridge.execute_live_registered_experiment("E1") == r
     assert live_bridge.execute_live_registered_experiment("E1") == r
     assert len(st.list_results()) == 1
@@ -26,5 +34,23 @@ def test_live_bridge_rejects_cross_mode_and_env(monkeypatch,tmp_path):
 def test_live_bridge_failure_event(monkeypatch,tmp_path):
     st,c,s=setup(tmp_path); monkeypatch.setattr(live_bridge,"LIVE_CONTEXT_PATH",c)
     monkeypatch.setattr("nova.science_adapter.execute_science_experiment",lambda payload: (_ for _ in ()).throw(ValueError("bad")))
+    monkeypatch.setattr(live_bridge, "_controller_factory", InlineController)
     with pytest.raises(ValueError): live_bridge.execute_live_registered_experiment("E1")
+    assert st.list_events("run")[-1].event_type == "tool_failed"
+
+
+class TimeoutController:
+    def __init__(self, registered): pass
+    def run(self, name, args=(), kwargs=None, *, deadline_seconds):
+        assert deadline_seconds == 120
+        raise WorkerTimeoutError("deadline")
+
+
+def test_live_bridge_timeout_saves_no_result(monkeypatch, tmp_path):
+    st, c, _ = setup(tmp_path)
+    monkeypatch.setattr(live_bridge, "LIVE_CONTEXT_PATH", c)
+    monkeypatch.setattr(live_bridge, "_controller_factory", TimeoutController)
+    with pytest.raises(ValueError, match="timed out"):
+        live_bridge.execute_live_registered_experiment("E1")
+    assert st.list_results() == []
     assert st.list_events("run")[-1].event_type == "tool_failed"

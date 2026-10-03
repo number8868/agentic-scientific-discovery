@@ -1,6 +1,6 @@
 """Small transactional SQLite store for the NOVA prototype."""
 from __future__ import annotations
-import json, sqlite3, uuid
+import hashlib, json, sqlite3, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Union
@@ -15,7 +15,12 @@ class Storage:
             db.executescript("""CREATE TABLE IF NOT EXISTS specs (experiment_id TEXT PRIMARY KEY, spec_json TEXT NOT NULL, spec_sha256 TEXT NOT NULL UNIQUE);
             CREATE TABLE IF NOT EXISTS events (run_id TEXT NOT NULL, seq INTEGER NOT NULL, event_json TEXT NOT NULL, PRIMARY KEY(run_id,seq));
             CREATE TABLE IF NOT EXISTS results (result_id TEXT PRIMARY KEY, experiment_id TEXT NOT NULL UNIQUE, result_json TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS reviews (result_id TEXT PRIMARY KEY, review_json TEXT NOT NULL);""")
+            CREATE TABLE IF NOT EXISTS reviews (result_id TEXT PRIMARY KEY, review_json TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS final_protocols (
+                run_id TEXT PRIMARY KEY, frozen_protocol_id TEXT NOT NULL UNIQUE,
+                protocol_sha256 TEXT NOT NULL UNIQUE, protocol_json TEXT NOT NULL,
+                holdout_experiment_id TEXT NOT NULL UNIQUE
+            );""")
         return self
     def register_spec(self,spec: ExperimentSpec):
         if not isinstance(spec,ExperimentSpec): raise TypeError("spec must be ExperimentSpec")
@@ -81,5 +86,42 @@ class Storage:
     def list_results(self):
         with self._db() as db: rows=db.execute("SELECT result_json FROM results ORDER BY result_id").fetchall()
         return [Result.from_dict(json.loads(r[0])) for r in rows]
+
+    def get_final_protocol(self, run_id):
+        with self._db() as db:
+            r = db.execute("SELECT protocol_json FROM final_protocols WHERE run_id=?", (run_id,)).fetchone()
+        return json.loads(r[0]) if r else None
+
+    def save_final_protocol(self, run_id, frozen_protocol_id, protocol_sha256,
+                            protocol, holdout_spec, event):
+        """Atomically persist an immutable protocol, holdout Spec, and ledger event."""
+        if not isinstance(holdout_spec, ExperimentSpec) or holdout_spec.split.value != "holdout":
+            raise ValueError("final protocol requires a holdout spec")
+        raw_protocol = json.dumps(protocol, sort_keys=True, separators=(",", ":"))
+        if hashlib.sha256(raw_protocol.encode()).hexdigest() != protocol_sha256:
+            raise ValueError("final protocol hash mismatch")
+        if (event.event_type != "final_protocol_frozen" or event.actor != "host" or
+                event.run_id != run_id or event.mode is not Mode.LIVE or
+                event.payload_ref != frozen_protocol_id or not event.timestamp_utc):
+            raise ValueError("invalid final protocol event")
+        if (holdout_spec.frozen_protocol_id != frozen_protocol_id or
+                holdout_spec.dataset_sha256 != protocol.get("dataset_sha256")):
+            raise ValueError("holdout spec does not match final protocol")
+        with self._db() as db:
+            old = db.execute("SELECT frozen_protocol_id, protocol_sha256, protocol_json, holdout_experiment_id FROM final_protocols WHERE run_id=?", (run_id,)).fetchone()
+            if old:
+                if tuple(old) != (frozen_protocol_id, protocol_sha256, raw_protocol, holdout_spec.experiment_id):
+                    raise ValueError("final protocol already frozen differently")
+                return holdout_spec
+            if db.execute("SELECT 1 FROM specs WHERE experiment_id=?", (holdout_spec.experiment_id,)).fetchone():
+                raise ValueError("holdout experiment id already registered")
+            db.execute("INSERT INTO specs VALUES (?,?,?)", (holdout_spec.experiment_id, holdout_spec.to_json(), holdout_spec.sha256))
+            seq = db.execute("SELECT COALESCE(MAX(seq),0)+1 FROM events WHERE run_id=?", (run_id,)).fetchone()[0]
+            if event.seq != seq:
+                # Event sequence is host-owned; rebuild it while retaining the fixed actor/type.
+                event = Event(run_id, seq, event.event_id, event.event_type, "host", event.timestamp_utc, event.attempt, event.mode, event.payload_ref)
+            db.execute("INSERT INTO events VALUES (?,?,?)", (run_id, seq, event.to_json()))
+            db.execute("INSERT INTO final_protocols VALUES (?,?,?,?,?)", (run_id, frozen_protocol_id, protocol_sha256, raw_protocol, holdout_spec.experiment_id))
+        return holdout_spec
 
 def initialize(path): return Storage(path).initialize()
