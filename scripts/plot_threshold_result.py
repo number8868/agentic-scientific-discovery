@@ -81,7 +81,7 @@ def _point_values(point: dict[str, Any], index: int) -> dict[str, Any]:
         if observed > 0 and (rate is None or not math.isclose(rate, passed / observed, rel_tol=0.0, abs_tol=1e-12)):
             raise ValueError(f"point {index} {family} rate does not match its stored pass and observed counts")
         parsed["rates"][family] = rate
-        parsed["counts"][family] = (observed, total)
+        parsed["counts"][family] = {"passed": passed, "observed": observed, "total": total}
 
     delta = _number(point.get("delta"), f"point {index} delta", optional=True)
     interval_value = point.get("resampling_interval")
@@ -121,6 +121,7 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         from matplotlib.lines import Line2D
+        from matplotlib.ticker import FormatStrFormatter
     except ImportError as error:
         raise RuntimeError("Matplotlib is required to render the threshold sensitivity PNG") from error
 
@@ -135,6 +136,17 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
     )
     x_values = list(THRESHOLDS)
     primary_x = THRESHOLDS[1]
+    rate_values_percent = [
+        value["rates"][family] * 100.0
+        for value in values
+        for family in ("oxide", "chalcogenide")
+        if value["rates"][family] is not None
+    ]
+    largest_rate_percent = max(rate_values_percent, default=0.0)
+    rate_y_max = max(largest_rate_percent * 1.4, largest_rate_percent + 0.05, 0.05)
+    rate_axis.set_ylim(0.0, rate_y_max)
+    rate_axis.set_yticks([rate_y_max * index / 4 for index in range(5)])
+    rate_axis.yaxis.set_major_formatter(FormatStrFormatter("%.2f"))
 
     for axis in (rate_axis, delta_axis):
         axis.axvspan(primary_x - 0.0035, primary_x + 0.0035, color="#d9a441", alpha=0.13, zorder=0)
@@ -148,16 +160,17 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
         ]
         for index, y in enumerate(y_values):
             if y is None:
-                observed, total = values[index]["counts"][family]
+                counts = values[index]["counts"][family]
                 rate_axis.annotate(
-                    f"n={observed}/{total}; rate n/a",
+                    f"rate n/a; pass={counts['passed']}; n={counts['observed']}/{counts['total']}",
                     (x_values[index], 0),
-                    xytext=(0, 5 if family == "oxide" else 19),
+                    xytext=(0, 8 if family == "oxide" else 25),
                     textcoords="offset points",
                     ha="center",
                     va="bottom",
-                    fontsize=7,
+                    fontsize=8,
                     color=colors[family],
+                    bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.85, "pad": 1.2},
                     annotation_clip=False,
                 )
                 continue
@@ -168,16 +181,17 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
                 s=44,
                 zorder=3,
             )
-            observed, total = values[index]["counts"][family]
+            counts = values[index]["counts"][family]
             rate_axis.annotate(
-                f"n={observed}/{total}",
+                f"pass={counts['passed']}; n={counts['observed']}/{counts['total']}",
                 (x_values[index], y),
-                xytext=(0, 8 if family == "oxide" else -15),
+                xytext=(0, 8 if family == "oxide" else 24),
                 textcoords="offset points",
                 ha="center",
-                va="bottom" if family == "oxide" else "top",
-                fontsize=7,
+                va="bottom",
+                fontsize=8,
                 color=colors[family],
+                bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.85, "pad": 1.2},
                 annotation_clip=False,
             )
             if index == 1:
@@ -244,8 +258,6 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
             )
 
     rate_axis.set_ylabel("Observed pass rate (%)")
-    rate_axis.set_ylim(-5, 108)
-    rate_axis.set_yticks([0, 25, 50, 75, 100])
     rate_axis.set_title("Observed family pass rates")
     rate_axis.legend(
         handles=[
@@ -274,7 +286,7 @@ def plot_result(input_path: Path, output_path: Path) -> Path:
         fontsize=8,
         color="#4c535c",
     )
-    fig.tight_layout(rect=(0, 0.045, 1, 0.91))
+    fig.tight_layout(rect=(0, 0.045, 1, 0.94), pad=0.8)
 
     if output_path.suffix.lower() != ".png":
         raise ValueError("Output path must end in .png")

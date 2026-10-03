@@ -39,6 +39,8 @@ pass.
 
 The standalone JARVIS discovery `family_screen` is now implemented and verified. See [science-engine setup and results](docs/A_SCIENCE_ENGINE.md), [team status and handoff](docs/TEAM_STATUS.md), and the recorded evidence in [docs/results](docs/results).
 
-These are real scientific-computation records. They have not yet been connected to the registry-bound Omnigent workflow described above; the bundled fixture remains explicitly non-scientific.
+These are real scientific-computation records. They now run through the registered experiment workflow with human-scripted selection and review; live Omnigent orchestration remains unverified. The bundled fixture remains explicitly non-scientific.
 
 The real science executor now also supports the shared Result mapping and portable evidence packaging. See [registered science integration](docs/SCIENCE_INTEGRATION.md). Its validated control plane is currently human scripted; actual Omnigent model/tool connectivity remains a separate check.
+
+The two-round real-data check is complete: the first family result informs a recorded threshold follow-up, and all three frozen thresholds retain the same observed direction. See the [threshold chart](docs/results/threshold_sensitivity.png) and [two-round evidence](docs/results/two_round_live_science). All 90 combined tests pass; holdout outcomes remain unexamined.

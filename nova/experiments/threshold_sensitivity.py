@@ -351,6 +351,6 @@ def run_experiment(spec: dict[str, Any]) -> dict[str, Any]:
             "nova-parent-result:" + extension_protocol["parent_result_sha256"],
         ],
         "interpretation_scope": "discovery split; observed representative compositions in the frozen JARVIS snapshot; missingness bounds accompany complete-case rates",
-        "contract_status": "provisional plain-dictionary adapter; pending shared B-owned contract integration",
+        "contract_status": "low-level plain-dictionary computation; shared registered Result is provided by nova.experiments.executor",
     }
     return result

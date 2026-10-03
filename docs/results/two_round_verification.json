@@ -1,0 +1,72 @@
+{
+  "all_checks_passed": true,
+  "combined_tests_passed": 90,
+  "elapsed_seconds": {
+    "family_screen": 0.5689266000008502,
+    "threshold_sensitivity": 0.7771203000011155
+  },
+  "events": 11,
+  "fresh_dependency_installation_verified": false,
+  "hard_worker_timeout_verified": false,
+  "holdout_outcomes_examined": false,
+  "independent_checks": [
+    "B export manifest: every file SHA256 matches",
+    "Both Result spec hashes match canonical ExperimentSpec hashes",
+    "Threshold parent_result_id and review_id cite this run first Result",
+    "Review result reference and event ordering match the two-round flow",
+    "All exported events have live mode",
+    "Two separate rich payloads match SHA256 and byte sizes",
+    "0.05 primary scientific fields exactly match the first recorded discovery result",
+    "All three discovery group totals, evaluable counts and pass counts independently recomputed from frozen CSV"
+  ],
+  "integration_mode": "HUMAN_SCRIPTED_LIVE_SCIENCE",
+  "interpretation": "All three fixed correlated grid points have the same positive observed direction, with only 7 to 11 positives per point. Snapshot-only evidence; no independent replication or material performance claim.",
+  "live_omnigent_verified": false,
+  "plot": {
+    "delta_interval_units": "percentage_points",
+    "file": "docs/results/threshold_sensitivity.png",
+    "rate_units": "percent",
+    "sha256": "e3a023746bef95170884afc8f822be5886cdb92cc69060cccd22d285bc89c756",
+    "visually_verified": true
+  },
+  "points": [
+    {
+      "chalcogenide_pass": 5,
+      "delta_percentage_points": 0.13220816543501487,
+      "interval_percentage_points": [
+        0.005545720849834367,
+        0.2905362211664905
+      ],
+      "oxide_pass": 2,
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.025
+    },
+    {
+      "chalcogenide_pass": 6,
+      "delta_percentage_points": 0.1508138314330796,
+      "interval_percentage_points": [
+        0.011091441699668733,
+        0.3222018323127856
+      ],
+      "oxide_pass": 3,
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.05
+    },
+    {
+      "chalcogenide_pass": 8,
+      "delta_percentage_points": 0.2141450537256699,
+      "interval_percentage_points": [
+        0.04830277369579823,
+        0.3985929997536062
+      ],
+      "oxide_pass": 3,
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.1
+    }
+  ],
+  "real_source_data": true,
+  "run_command": ".venv/Scripts/python.exe scripts/run_live_science.py --two-rounds",
+  "run_id": "live-64ccc87d7e06",
+  "schema_version": 1,
+  "test_command": ".venv/Scripts/python.exe -m pytest --basetemp=.verification-repro/pytest-two-round-final"
+}

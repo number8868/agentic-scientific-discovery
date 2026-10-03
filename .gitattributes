@@ -4,3 +4,4 @@ requirements-science*.txt -text whitespace=cr-at-eol
 docs/FIRST_EXPERIMENT_PROTOCOL.md -text whitespace=cr-at-eol
 docs/results/*.json -text whitespace=cr-at-eol
 docs/THRESHOLD_PROTOCOL.json text eol=lf
+docs/results/** -text whitespace=cr-at-eol

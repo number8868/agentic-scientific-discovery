@@ -1,5 +1,23 @@
 # Team status and handoff
 
+## Team A milestone 3 — two real rounds verified, 2026-10-03
+
+Synced B's merge of milestone 2 at `615de5f`. Recorded discovery-only run `live-64ccc87d7e06` executes `family_screen`, records a review citing its actual Result, links the threshold draft to that Result/review, and executes `threshold_sensitivity` through B's registered-ID workflow. Both shared Results, 11 live events, one review, canonical specs and two rich scientific payloads are preserved in [the portable evidence package](results/two_round_live_science). This remains human-scripted control flow; no live Omnigent call is claimed.
+
+| Inclusive ehull maximum (eV/atom) | Oxide passes / 7,657 | Chalcogenide passes / 3,158 | Difference (percentage points) | 95% resampling interval (percentage points) |
+|---|---:|---:|---:|---|
+| 0.025 | 2 | 5 | 0.13221 | [0.00555, 0.29054] |
+| **0.050 (primary)** | **3** | **6** | **0.15081** | **[0.01109, 0.32220]** |
+| 0.100 | 3 | 8 | 0.21415 | [0.04830, 0.39859] |
+
+All points classify as `supported_in_snapshot` under the frozen rules, and the primary point exactly reproduces milestone 1. The observed direction survives this fixed threshold grid. Only 7–11 compositions pass at each point; these correlated analyses are not independent confirmation, and no material performance or broader population claim follows. Coverage is 100% in both discovery groups at every point. Holdout outcomes remain unexamined.
+
+All 90 combined tests passed. Independent verification checked exported file/payload hashes, registered contract hashes, review/parent links, event order, and actual discovery counts from the frozen representative CSV. Measured computation times in this environment were 0.569 s for family_screen and 0.777 s for threshold_sensitivity; these are not a cold-start or deployment benchmark. Evidence bytes are preserved across Git checkouts. See [the chart](results/threshold_sensitivity.png) and [verification record](results/two_round_verification.json).
+
+Next handoff: B can bind `nova.experiments.executor.execute` to a separately validated live Omnigent registered-ID bridge. B still owns hard worker timeout/cancellation and run authorization. A can support method sensitivity after its follow-up protocol is agreed and frozen; holdout stays closed until the final validation protocol is frozen. No B-owned implementation files changed in this milestone.
+
+---
+
 ## Team A milestone 2 — registered real executor completed, 2026-10-03
 
 Synced main `e8b40a4`, including B's H2 fixture bridge. Added `nova.experiments.executor.execute(spec) -> nova.contracts.Result` and a human-scripted launcher `scripts/run_live_science.py`. B-owned runtime, storage, contracts, workflow, evidence exporter and Omnigent bridge were preserved.
