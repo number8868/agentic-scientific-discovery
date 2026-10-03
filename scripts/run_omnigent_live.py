@@ -772,6 +772,15 @@ def _inside(path: Path, parent: Path) -> bool:
         return False
 
 
+def _check_live_platform() -> None:
+    """Require a POSIX runtime for the SDK process/session boundary."""
+    if os.name != "posix":
+        raise RuntimeError(
+            "The live Codex pilot requires a POSIX runtime (Linux/WSL or macOS); "
+            "Windows native CODEX_HOME permission checks are unsupported."
+        )
+
+
 def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, Any]],
             audit_path: Path, error: str | None, model: str = MODEL) -> Path | None:
     import hashlib
@@ -870,7 +879,7 @@ async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
                 )
                 turns.append(observed)
             if host.phase != MAX_ROLE_TURNS or host.tool_calls != MAX_TOOL_CALLS:
-                raise RuntimeError("pilot did not complete its exact six-turn protocol")
+                raise RuntimeError("pilot did not complete its exact eight-turn protocol")
         finally:
             await executor.close()
     return host, turns
@@ -878,8 +887,7 @@ async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
 
 def run_pilot(database: Path, run_id: str | None = None, timeout: int = TURN_TIMEOUT_SECONDS,
               model: str = MODEL) -> Path:
-    if not sys.platform.startswith("linux"):
-        raise RuntimeError("The live Codex pilot must run in Linux/WSL; Windows CODEX_HOME permission checks are unsupported.")
+    _check_live_platform()
     if timeout < 1 or timeout > TURN_TIMEOUT_SECONDS:
         raise ValueError("turn timeout must be between 1 and 120 seconds")
     database = database if database.is_absolute() else ROOT / database
