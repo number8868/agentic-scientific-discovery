@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "protocol_id": "paired_method_audit_v1",
+  "template": "method_sensitivity",
+  "created_at_utc": "2026-10-03T23:45:44Z",
+  "registration_context": "Exploratory extension registered after the original OPT discovery and threshold results, before any paired OPT/MBJ outcome calculations in this work. The user selected method comparison and a candidate evidence list; no autonomous selection is claimed.",
+  "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+  "parent_protocol_sha256": "9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+  "representative_compositions_csv_sha256": "d7184816ea97e4daa860b1a93a387b56a82280d3758eb2f658fbfa7ab021fb50",
+  "split_assignment_sha256": "96c9c210f77698d47bfdb68f9b3ad65673766a879785a6c7d983d7ee3777a58c",
+  "split": "discovery",
+  "holdout_execution_allowed": false,
+  "groups": ["oxide", "chalcogenide"],
+  "methods": ["opt", "mbj"],
+  "gap_window_ev": [1.1, 1.8],
+  "ehull_max_ev_atom": 0.05,
+  "bootstrap_repeats": 2000,
+  "seed": 1729,
+  "representatives": "Use the already frozen representative/JID for each reduced composition; never choose a different structure by method or gap. Filter eligible nonexcluded discovery representatives before inspecting property values. Reject duplicate JIDs or family/formula keys.",
+  "pairing": "A pair is the same representative row/JID with finite OPT, finite MBJ and valid finite ehull. Never pair by formula across structures, coalesce OPT/MBJ, or impute a missing MBJ.",
+  "arms": ["opt_all", "opt_paired", "mbj_paired"],
+  "contrasts": {
+    "family_delta": "chalcogenide observed screening pass rate minus oxide rate, separately for every arm",
+    "subset_shift": "opt_paired rate minus opt_all rate within each family, descriptive selection difference without a causal interpretation or independence claim",
+    "paired_method_change": "Within each family, mean(MBJ pass minus OPT pass) over identical JIDs; also report the chalcogenide-minus-oxide difference of these paired changes. Resample rows jointly for both methods within family, preserving pairing."
+  },
+  "quality": {
+    "opt_all_min_observed_per_family": 40,
+    "paired_min_observed_per_family": 20,
+    "opt_all_min_coverage": 0.8,
+    "family_status": "data_limited if sample/coverage gates fail; inconclusive if either endpoint is degenerate or the interval contains zero; supported_in_snapshot if lower bound > 0; reversed_in_snapshot if upper bound < 0",
+    "paired_scope": "Conditional on the paired subset. Report paired coverage of all eligible representatives; low paired coverage prevents generalization to all compositions, not descriptive paired-subset calculation.",
+    "paired_change_status": "data_limited if either paired family has fewer than 20 rows; inconclusive if either family's paired differences are constant or the interval includes zero; otherwise direction_positive or direction_negative. These describe method sensitivity, not hypothesis replication."
+  },
+  "candidate_labels": ["passes_both_methods", "opt_only", "mbj_only", "opt_pass_mbj_unknown", "mbj_pass_opt_unknown", "neither_passes", "no_current_pass_incomplete_evidence", "insufficient_evidence"],
+  "candidate_rules": "Each method has a pass/fail/unknown screening value. Unknown means its gap or valid ehull is unavailable, never an automatic failure. The shortlist is the union of rows passing either observed method. Report both-method passes, disagreements and missing comparator evidence separately, sorted by family then JID without a performance score. Keep all eligible rows in a local audit CSV.",
+  "next_validation_rules": "Both-method passes: validate structure/stability and the intended physical target independently. Disagreements: targeted method/convergence and structural-input check on the same JID. Missing comparator: obtain that calculation for the same representative before a cross-method claim. No observed pass: no current shortlist priority; unknown evidence remains unknown.",
+  "interpretation": "Computational screening audit of observed JARVIS representatives only. MBJ is a different computational method, not ground truth. A matching screen is not synthesizability, toxicity, photovoltaic performance or a new-material discovery. Report every arm, no engineered reversal or post-outcome window/threshold changes.",
+  "measurement": "Record actual host scientific validation/computation time and output hashes. This standalone analysis uses no new model calls; do not claim autonomous adaptation or acceleration. Manual/model decision baselines and run-all comparisons remain later work.",
+  "sources": ["https://www.nature.com/articles/sdata201882", "https://pubs.rsc.org/en/content/articlelanding/2020/sc/d0sc01101k", "https://arxiv.org/abs/2506.05616"]
+}
