@@ -10,7 +10,7 @@ def check(path="agents/opensource-live.yaml"):
     # apply to actual YAML values, not prose such as "shell" or "codex-native".
     source="\n".join(line.split("#", 1)[0] for line in t.splitlines()).lower()
     bad=[x for x in ("os_env:","shell","terminal:","fixture","gpt-reserve","api_key:","auth:") if x in source]
-    req=["harness: codex","async: false","nova.decision_tools.commit_initial_spec","nova.decision_tools.commit_next_spec","nova.decision_tools.register_initial_plan","nova.live_bridge.execute_live_registered_experiment","nova.decision_tools.submit_live_review","nova.decision_tools.submit_final_review","nova.decision_tools.freeze_final","holdout_experiment_id","Never execute a holdout","limit: 16"]
+    req=["harness: codex","async: false","nova.decision_tools.commit_initial_spec","nova.decision_tools.commit_next_spec","nova.decision_tools.register_initial_plan","nova.live_bridge.execute_live_registered_experiment","nova.decision_tools.submit_live_review","nova.decision_tools.submit_final_review","nova.decision_tools.freeze_final","holdout_experiment_id","Never execute a holdout","limit: 48","actual first Result's result_id","never a placeholder"]
     miss=[x for x in req if x not in t]
     if "codex-native" in source: miss.append("SDK codex harness (native terminal forbidden)")
     models = re.findall(r"\bmodel:[ \t]*([^,\s}#]+)", source)

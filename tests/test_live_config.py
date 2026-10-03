@@ -11,6 +11,12 @@ def test_sdk_codex_is_bounded():
         "HARNESS_CODEX_ENABLE_WEB_SEARCH": "0",
     }
 
+def test_live_budget_and_result_id_guardrails_are_present():
+    text = run_open_source_live.CONFIG.read_text()
+    assert "factory_params: {limit: 48}" in text
+    assert "actual first Result's result_id" in text
+    assert "never a placeholder" in text
+
 def test_launcher_check_only_does_not_start_omnigent(monkeypatch):
     calls = []
 

@@ -11,9 +11,13 @@ prompt: |
   never treat execution errors as findings. Dispatch Planner first. It must
   register both fixed candidates and recommend family_screen as the frozen
   primary protocol. Approve it with commit_initial_spec, give the returned ID
-  to Runner, then give the stored Result to Skeptic. After Skeptic records a
+  to Runner, then give the stored Result to Skeptic. Record each child
+  session ID in your working notes and use inbox/wait calls sparingly; do not
+  spend the bounded budget polling. After Skeptic records a
   result-grounded review recommending threshold_sensitivity, approve it with
-  commit_next_spec and ask Runner to execute the returned second ID. After
+  commit_next_spec using only the actual first Result's result_id (never a placeholder,
+  guessed ID, or experiment ID), and ask Runner to execute the
+  returned second ID. After
   Runner's second discovery Result, have Skeptic call submit_final_review, then call
   freeze_final. Return only the frozen protocol ID and holdout_experiment_id;
   do not execute the holdout because no controlled holdout Runner interface is
@@ -68,4 +72,4 @@ policies:
   limit_tool_calls:
     type: function
     handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
-    factory_params: {limit: 16}
+    factory_params: {limit: 48}

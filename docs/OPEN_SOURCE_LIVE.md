@@ -1,6 +1,8 @@
 # Open-source live preparation
 
-This path uses the open-source SDK `codex` harness + `gpt-5.6-luna` for root and all three sub-agents. `codex-native` is forbidden here because its terminal wrapper can expose shell/file tools outside the function-tool allowlist. Omnigent 0.16's Codex SDK controls are environment settings, so native tools and web search must be disabled at launch. It requires A's prepared `data/manifest.json`; no fixture hash or documentation result is accepted.
+This path uses the open-source SDK `codex` harness. The checked-in pilot currently pins `gpt-5.6-luna` for root and all three sub-agents; later runs may assign different explicitly named models per role. `codex-native` is forbidden here because its terminal wrapper can expose shell/file tools outside the function-tool allowlist. Omnigent 0.16's Codex SDK controls are environment settings, so native tools and web search must be disabled at launch. It requires A's prepared `data/manifest.json`; no fixture hash or documentation result is accepted.
+
+The live session has a bounded 48-call budget. This accommodates two discovery rounds plus reviews while remaining finite. The PI must record child session IDs, avoid wasteful inbox polling, and pass only the actual first `Result.result_id` to `commit_next_spec`; placeholders or guessed IDs are invalid.
 
 ```bash
 python scripts/prepare_live_run.py --db /tmp/nova-live.sqlite --run-id live-demo
