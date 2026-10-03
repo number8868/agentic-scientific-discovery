@@ -8,6 +8,8 @@ The separately shipped Codex code-mode host was installed and its executable pat
 
 Fixed pipe backpressure in B's process controller by draining the result concurrently under a bounded deadline. The 8 MiB round-trip and worker timeout/reap checks passed; the complete Linux suite passed **145 tests**, including twelve controlled-host checks. The frozen prepared-data readiness check still passes. The data release is available and PR #5 was merged. Holdout outcomes remain closed.
 
+After recording the model run, synced B's newest main `f366048`, which bounds the YAML SDK launcher and prevents stale session/model reuse. Its launcher expects `.venv-omnigent`; the Linux checkout now links that path to the installed real Linux environment. The merged full suite passes **154 tests**. This compatibility check does not claim a new live YAML run.
+
 ---
 
 ## Team A milestone 5 — exact data transfer and Linux readiness, 2026-10-03

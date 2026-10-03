@@ -23,5 +23,10 @@
     "input_tokens": 124927,
     "output_tokens": 918,
     "total_tokens": 231061
+  },
+  "post_sync_compatibility": {
+    "merged_main_commit": "f366048ccb98af01537b5628693cf0a334dc141f",
+    "checked_commit": "896b30192b8214779fc6352914887f69b8258be9",
+    "full_linux_tests_passed": 154
   }
 }
