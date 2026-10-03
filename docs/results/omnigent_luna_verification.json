@@ -1,0 +1,27 @@
+{
+  "run_id": "luna-pilot-06",
+  "completed": true,
+  "model": "gpt-6-luna",
+  "observed_model_turns": 9,
+  "successful_function_calls": 6,
+  "clean_no_tool_repairs": 3,
+  "results": 2,
+  "reviews": 1,
+  "events": 11,
+  "result_ids": [
+    "nova-result-53c888f04846943ee5407bf3113864014327539d9e7ab14653c32ca95409dcc9",
+    "nova-result-a74722c1ced7c5b69641dcc49f56890f9651cb0f852e2712d0742989bd3b4a8b"
+  ],
+  "export_and_payload_hashes_verified": true,
+  "registered_spec_and_review_links_verified": true,
+  "primary_and_threshold_counts_verified": true,
+  "discovery_only": true,
+  "holdout_outcomes_analyzed": false,
+  "full_linux_tests_passed": 145,
+  "review_human_checked": true,
+  "usage_backend_reported": {
+    "input_tokens": 124927,
+    "output_tokens": 918,
+    "total_tokens": 231061
+  }
+}

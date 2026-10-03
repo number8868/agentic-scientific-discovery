@@ -12,8 +12,8 @@ The immediate milestone is deliberately small:
 5. The first result changes the second registered experiment.
 
 The bundled fixture is for integration testing and demonstrations only. Its
-numbers are not scientific evidence. A real JARVIS-backed executor supplied by
-the science-engine owner must replace it for a live submission run.
+numbers are not scientific evidence. A real JARVIS-backed discovery executor
+and a verified bounded Luna SDK pilot are now available; see the evidence below.
 
 ## Local verification
 
@@ -39,9 +39,9 @@ pass.
 
 The standalone JARVIS discovery `family_screen` is now implemented and verified. See [science-engine setup and results](docs/A_SCIENCE_ENGINE.md), [team status and handoff](docs/TEAM_STATUS.md), and the recorded evidence in [docs/results](docs/results).
 
-These are real scientific-computation records. They now run through the registered experiment workflow with human-scripted selection and review; live Omnigent orchestration remains unverified. The bundled fixture remains explicitly non-scientific.
+These are real scientific-computation records. The early runs used human-scripted selection and review. The latest `luna-pilot-06` completed six actual registered-function calls through Omnigent with `gpt-6-luna`, including a model-authored review and the linked second experiment. See [the runbook](docs/OMNIGENT_LIVE_PILOT.md), [model/tool evidence](docs/results/omnigent_luna_run), and [independent verification](docs/results/omnigent_luna_verification.json). This is a bounded SDK host with fixed protocols; the YAML server and competition deployment remain separate checks.
 
-The real science executor now also supports the shared Result mapping and portable evidence packaging. See [registered science integration](docs/SCIENCE_INTEGRATION.md). Its validated control plane is currently human scripted; actual Omnigent model/tool connectivity remains a separate check.
+The real science executor supports the shared Result mapping and portable evidence packaging. See [registered science integration](docs/SCIENCE_INTEGRATION.md). The latest full Linux suite passes 145 tests. The exact prepared dataset is available to collaborators through the [private release handoff](docs/A_DATA_HANDOFF.md).
 
 The two-round real-data check is complete: the first family result informs a recorded threshold follow-up, and all three frozen thresholds retain the same observed direction. See the [threshold chart](docs/results/threshold_sensitivity.png) and [two-round evidence](docs/results/two_round_live_science). All 90 combined tests pass; holdout outcomes remain unexamined.
 
