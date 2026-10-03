@@ -1,5 +1,17 @@
 # Team status and handoff
 
+## Team A milestone 2 — registered real executor completed, 2026-10-03
+
+Synced main `e8b40a4`, including B's H2 fixture bridge. Added `nova.experiments.executor.execute(spec) -> nova.contracts.Result` and a human-scripted launcher `scripts/run_live_science.py`. B-owned runtime, storage, contracts, workflow, evidence exporter and Omnigent bridge were preserved.
+
+Real family-screen execution now passes through B's registered-ID tool entry, persists the canonical registered spec and Result, and exports events plus a portable, checksummed science payload. Recorded run: `live-aa50364f44b0`, under `docs/results/registered_family_run`; all scientific summaries match milestone 1 exactly. The executor maps raw `success` to shared `completed`, preserves group names/intervals, and retains structured quality flags and the effective computation SHA in its immutable payload. The shared Result's spec SHA is the actual registered contract SHA.
+
+All 89 combined tests passed, including the new threshold template's 15 focused tests. Threshold source is implemented and strictly tied to the independently frozen extension protocol; actual three-point execution and two-round human-scripted integration are the next verification step. No holdout outcomes or Omnigent model/tool call are claimed here. Budget enforcement remains a host responsibility; current B estimated-cost accounting is not hard wall-clock cancellation.
+
+See `docs/SCIENCE_INTEGRATION.md` for the current integration boundary and reproduction commands. The older raw dictionary adapter remains usable as a low-level computation function; B should now bind the shared-contract `execute` adapter rather than implement the mapping again.
+
+---
+
 ## Team A milestone 1 — completed, 2026-10-03
 
 One real JARVIS discovery-only `family_screen` now runs end to end. The work is on `science-engine`, based on B's `eb936f8` bootstrap commit. B's agents, shared contracts, storage, runtime, tools, fixture engine, and existing tests are preserved.

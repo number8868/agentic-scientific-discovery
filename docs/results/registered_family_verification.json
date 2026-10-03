@@ -1,0 +1,15 @@
+{
+  "run_id": "live-aa50364f44b0",
+  "control_plane": "human_scripted",
+  "data_mode": "live",
+  "registered_execution_persisted": true,
+  "registered_spec_sha256": "5c7712dc3293f02048ad0feb9b09cd84462c30cb76b4e34f2add0506a8203234",
+  "numerics_match_original_first_run": true,
+  "portable_export_hashes_validated": true,
+  "science_payload_included": true,
+  "tests_passed": 89,
+  "includes_pending_threshold_template_tests": true,
+  "omnigent_model_tool_call_verified": false,
+  "holdout_outcomes_evaluated": false,
+  "worker_timeout_enforced": false
+}

@@ -1,0 +1,38 @@
+{
+  "bandgap_method": "opt",
+  "bootstrap_repeats": 2000,
+  "created_at_utc": "2026-10-03T19:46:16.549301+00:00",
+  "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+  "ehull_grid_ev_atom": [
+    0.025,
+    0.05,
+    0.1
+  ],
+  "gap_window_ev": [
+    1.1,
+    1.8
+  ],
+  "groups": [
+    "oxide",
+    "chalcogenide"
+  ],
+  "holdout_execution_allowed": false,
+  "limits": "This checks a computational screening threshold, not material/device performance, safety or synthesizability. Actual Omnigent choice, timeout enforcement and frozen holdout validation remain separate.",
+  "parent_protocol_sha256": "9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+  "parent_result_file": "docs/results/first_family_screen.json",
+  "parent_result_sha256": "b8d3fd9336d76d3f9e4e6e1468b76396952308b89964c42e6be733ca75fe45ec",
+  "primary_ehull_max_ev_atom": 0.05,
+  "protocol_id": "threshold_sensitivity_v1",
+  "registration_context": "Follow-up sensitivity analysis specified in the agreed technical plan; this execution protocol is frozen after viewing the first discovery result and before computing any threshold-sensitivity outcomes.",
+  "reporting": "Report all three grid points; 0.05 remains the main endpoint. Never select the most significant grid point to replace the main endpoint. Discovery sensitivity points are correlated, not independent replication.",
+  "representative_compositions_csv_sha256": "d7184816ea97e4daa860b1a93a387b56a82280d3758eb2f658fbfa7ab021fb50",
+  "representative_rule": "Reuse the frozen representative composition table; no reselection by threshold or gap.",
+  "schema_version": 1,
+  "scientific_status_rules": "Reuse original sample/coverage/degeneracy/interval rules independently for each grid point; missing bounds remain required.",
+  "seed": 1729,
+  "selection_mode": "human-approved scientific engineering integration; no autonomous Omnigent selection claimed",
+  "selection_reason": "The first discovery screen has only nine passing compositions. Test whether the observed family ordering changes across the predeclared energy-above-hull thresholds.",
+  "split": "discovery",
+  "split_assignment_sha256": "96c9c210f77698d47bfdb68f9b3ad65673766a879785a6c7d983d7ee3777a58c",
+  "template": "threshold_sensitivity"
+}

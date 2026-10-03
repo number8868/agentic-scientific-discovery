@@ -65,3 +65,7 @@ The example hash identifies the tested source ZIP. Check the generated manifest 
 This adapter does not perform authorization, shared contract validation, registry transitions, cross-run reference checks, process cancellation, or persisted execution budgets. Optional experiment/run/hypothesis IDs are untrusted integration metadata; they do not prove registry ownership. B must bind this function behind the authorized `execute_registered_experiment(experiment_id)` wrapper and map its scientific payload into the agreed contract. Do not expose private preparation loaders, generic Python execution, or raw holdout files as agent tools.
 
 The complete combined A/B suite passed 37 tests after adopting the B bootstrap. Windows default temporary-directory access failed in this host; checks passed using a new workspace-local pytest base directory. Use a fresh directory name for subsequent validation when preserving previous test artifacts matters.
+
+## Registered executor milestone
+
+The mapping into B's shared Result is now implemented by `nova.experiments.executor.execute`. Use this adapter for the registered workflow; keep `run_experiment` as the low-level numerical API. See [real science integration](SCIENCE_INTEGRATION.md) for verified evidence and control boundaries. The threshold template is implemented and unit-tested; source-data grid execution is verified in a later stage record.
