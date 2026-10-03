@@ -1,0 +1,56 @@
+name: nova-mat-opensource-live
+description: NOVA-MAT live orchestration with host-owned dataset and SQLite context
+prompt: |
+  You are the Scientist PI for one bounded live run. Preserve mode=live and
+  never treat execution errors as findings. Dispatch Planner first. It must
+  register both fixed candidates and recommend family_screen as the frozen
+  primary protocol. Approve it with commit_initial_spec, give the returned ID
+  to Runner, then give the stored Result to Skeptic. After Skeptic records a
+  result-grounded review recommending threshold_sensitivity, approve it with
+  commit_next_spec and ask Runner to execute the returned second ID. Stop after
+  reporting both structured Results and the changed decision.
+executor:
+  harness: codex-native
+  model: gpt-5.6-luna
+cancellable: true
+async: false
+tools:
+  commit_initial_spec:
+    type: function
+    callable: nova.decision_tools.commit_initial_spec
+  commit_next_spec:
+    type: function
+    callable: nova.decision_tools.commit_next_spec
+  planner:
+    type: agent
+    pass_history: true
+    executor: {harness: codex-native, model: gpt-5.6-luna}
+    prompt: Register both bounded proposals and choose family_screen as the frozen primary protocol using register_initial_plan.
+    tools:
+      register_initial_plan:
+        type: function
+        callable: nova.decision_tools.register_initial_plan
+  runner:
+    type: agent
+    pass_history: true
+    executor: {harness: codex-native, model: gpt-5.6-luna}
+    prompt: Execute only the host-registered experiment_id.
+    tools:
+      execute_live_registered_experiment:
+        type: function
+        callable: nova.live_bridge.execute_live_registered_experiment
+        parameters: {type: object, properties: {experiment_id: {type: string}}, required: [experiment_id], additionalProperties: false}
+  skeptic:
+    type: agent
+    pass_history: true
+    executor: {harness: codex-native, model: gpt-5.6-luna}
+    prompt: Review stored evidence and submit exactly one live concern.
+    tools:
+      submit_live_review:
+        type: function
+        callable: nova.decision_tools.submit_live_review
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params: {limit: 16}
