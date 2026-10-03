@@ -3,18 +3,49 @@ from __future__ import annotations
 
 import os
 import stat
+import json
+from pathlib import Path
 from typing import Any, Mapping
 
 from .contracts import GroupSummary, Result
 from .fixture_engine import execute as execute_fixture
 from .storage import Storage
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CONTEXT_PATH = REPO_ROOT / ".nova" / "context.json"
 
-def _env(name: str) -> str:
-    value = os.environ.get(name)
-    if not value:
-        raise ValueError("fixture bridge environment is incomplete")
-    return value
+
+def _secure_file(path: Path) -> None:
+    try:
+        info = path.lstat()
+    except OSError:
+        raise ValueError("fixture context is unavailable") from None
+    if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077:
+        raise ValueError("fixture context is unavailable")
+
+
+def _read_context():
+    path = Path(CONTEXT_PATH)
+    _secure_file(path)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        raise ValueError("fixture context is invalid") from None
+    if not isinstance(data, dict) or set(data) != {"schema_version", "mode", "db", "run_id"}:
+        raise ValueError("fixture context is invalid")
+    if data.get("schema_version") != 1 or data.get("mode") != "fixture":
+        raise ValueError("fixture context is invalid")
+    db = data.get("db"); run_id = data.get("run_id")
+    if not isinstance(db, str) or not os.path.isabs(db) or not isinstance(run_id, str) or not run_id:
+        raise ValueError("fixture context is invalid")
+    db_path = Path(db)
+    try:
+        info = db_path.lstat()
+    except OSError:
+        raise ValueError("fixture database is unavailable") from None
+    if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077:
+        raise ValueError("fixture database is unavailable")
+    return db_path, run_id
 
 
 def _canonical(value: Any, spec) -> Result:
@@ -47,20 +78,13 @@ def _canonical(value: Any, spec) -> Result:
 def execute_fixture_registered_experiment(experiment_id: str) -> Result:
     """Execute one host-authorized fixture experiment from a fresh process.
 
-    The only caller-controlled value is the registered experiment id.  Database
-    path and run id are host-injected environment values and are never echoed in
-    errors.
+    The only caller-controlled value is the registered experiment id. Database
+    path and run id come from the fixed, host-owned context file and are never
+    echoed in errors.
     """
     if not isinstance(experiment_id, str) or not experiment_id or os.path.sep in experiment_id:
         raise ValueError("invalid experiment id")
-    db_path = _env("NOVA_RUN_DB")
-    run_id = _env("NOVA_RUN_ID")
-    try:
-        mode = os.lstat(db_path).st_mode
-    except (OSError, ValueError):
-        raise ValueError("fixture database is unavailable") from None
-    if not stat.S_ISREG(mode):
-        raise ValueError("fixture database is unavailable")
+    db_path, run_id = _read_context()
     try:
         store = Storage(db_path).initialize()
         events = store.list_events(run_id)

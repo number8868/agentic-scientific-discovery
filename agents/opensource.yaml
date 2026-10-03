@@ -1,0 +1,60 @@
+# Open-source H2 route: fixture only. Requires a locally authenticated Codex
+# harness; no provider account or credential is embedded in this file.
+name: nova-mat-opensource-h2-fixture
+description: NOVA-MAT offline fixture H2 orchestration (not a scientific run)
+prompt: |
+  Run the NOVA-MAT H2 fixture only. Preserve mode=fixture in every handoff.
+  Freeze the hypothesis, ask Planner for two bounded proposals, have PI select
+  a registered experiment, ask Runner to call only its experiment_id, then ask
+  Skeptic to review the stored result. Never claim fixture numbers as science.
+executor:
+  harness: codex-native
+  model: gpt-5.6-luna
+async: false
+cancellable: true
+tools:
+  planner:
+    type: agent
+    description: Propose two bounded fixture experiments without executing.
+    prompt: Return two complete bounded proposals; do not execute tools.
+    executor:
+      harness: codex-native
+      model: gpt-5.6-luna
+    pass_history: true
+    max_sessions: 1
+  runner:
+    type: agent
+    description: Execute one host-registered fixture experiment.
+    prompt: Call only the function tool with the PI-approved experiment_id.
+    executor:
+      harness: codex-native
+      model: gpt-5.6-luna
+    pass_history: true
+    max_sessions: 1
+    tools:
+      execute_fixture_registered_experiment:
+        type: function
+        description: Execute the host-authorized fixture experiment by ID.
+        callable: nova.omnigent_bridge.execute_fixture_registered_experiment
+        parameters:
+          type: object
+          properties:
+            experiment_id:
+              type: string
+          required: [experiment_id]
+          additionalProperties: false
+  skeptic:
+    type: agent
+    description: Review the fixture Result and recommend a bounded follow-up.
+    prompt: Cite stored fields and preserve fixture provenance; do not execute.
+    executor:
+      harness: codex-native
+      model: gpt-5.6-luna
+    pass_history: true
+    max_sessions: 1
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params:
+      limit: 16

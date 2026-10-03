@@ -2,6 +2,8 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+.venv-*/
+.nova/
 *.sqlite3
 runs/
 data/raw/
