@@ -781,6 +781,57 @@ def _check_live_platform() -> None:
         )
 
 
+def _export_frozen_protocol(exported: Path, database: Path, run_id: str) -> dict[str, Any] | None:
+    """Add the immutable final protocol and its closed holdout Spec to an export.
+
+    ``nova.evidence.export_run`` intentionally exports entities reachable from
+    event payloads.  The holdout Spec is deliberately not referenced by a
+    result/event payload, so the final-protocol table is the authoritative
+    second root for this portable export.
+    """
+    import hashlib
+    import sqlite3
+
+    with sqlite3.connect(database) as db:
+        try:
+            protocol_row = db.execute(
+                "SELECT frozen_protocol_id, protocol_sha256, protocol_json, holdout_experiment_id "
+                "FROM final_protocols WHERE run_id=?", (run_id,)
+            ).fetchone()
+            if protocol_row is None:
+                return None
+            holdout_row = db.execute(
+                "SELECT spec_json FROM specs WHERE experiment_id=?", (protocol_row[3],)
+            ).fetchone()
+        except sqlite3.OperationalError:
+            return None
+    if holdout_row is None:
+        raise RuntimeError("final protocol references a missing holdout Spec")
+
+    holdout_spec = json.loads(holdout_row[0])
+    specs_path = exported / "specs.json"
+    specs = json.loads(specs_path.read_text(encoding="utf-8"))
+    if not any(item.get("experiment_id") == holdout_spec.get("experiment_id") for item in specs):
+        specs.append(holdout_spec)
+    specs_bytes = (json.dumps(specs, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    specs_path.write_bytes(specs_bytes)
+
+    manifest_path = exported / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"]["specs.json"] = {
+        "sha256": hashlib.sha256(specs_bytes).hexdigest(),
+        "count": len(specs),
+    }
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    return {
+        "frozen_protocol_id": protocol_row[0],
+        "protocol_sha256": protocol_row[1],
+        "protocol": json.loads(protocol_row[2]),
+        "holdout_experiment_id": protocol_row[3],
+        "holdout_spec": holdout_spec,
+    }
+
+
 def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, Any]],
             audit_path: Path, error: str | None, model: str = MODEL) -> Path | None:
     import hashlib
@@ -797,6 +848,7 @@ def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, An
     results = store.list_results()
     for result in results:
         export_science_artifacts(result, exported)
+    final_protocol = _export_frozen_protocol(exported, database, run_id)
     with sqlite3.connect(database) as db:
         try:
             row = db.execute(
@@ -808,6 +860,7 @@ def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, An
         "run_id": run_id,
         "plan": json.loads(row[0]) if row and row[0] else None,
         "review": json.loads(row[1]) if row and row[1] else None,
+        "final_protocol": final_protocol,
     }
     decisions_path = exported / "decisions.json"
     decisions_bytes = (_compact(decisions) + "\n").encode("utf-8")
