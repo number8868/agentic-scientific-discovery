@@ -1,5 +1,17 @@
 # Team status and handoff
 
+## Team A milestone 5 — exact data transfer and Linux readiness, 2026-10-03
+
+Synced B's real orchestration implementation at main `b24b080`. The prepared-data environment prerequisite is satisfied locally: all original/raw, protocol, audit, pipeline and dependency-file digests match the frozen reference. Added a standard-library, metadata-only readiness check with missing-file, tamper, path and symlink rejection tests. Linux passes all seven readiness tests; Windows passes six and skips the privileged symlink case.
+
+At the user's explicit request, uploaded the exact prepared dataset as a [private GitHub release asset](https://github.com/number8868/agentic-scientific-discovery/releases/tag/data-prepared-20261003-v1), with SHA256 sidecar, attribution and extraction instructions. The archive is about 128 MiB; its remote digest matches the locally verified `25fc3e46efff1b6a6e1f60f8453f40b92a3a81f23a630cb80fde0ecebdf48773`. Data and runtime-private files remain outside Git commits. See [Team B handoff steps](A_DATA_HANDOFF.md).
+
+Omnigent 0.16.0 plus scientific dependencies are also installed in the existing Ubuntu WSL environment (Python 3.12.13). The official Linux Codex CLI 0.160.0 archive was checked against GitHub's release SHA256. All 108 pre-handoff A/B tests pass on Linux. Original Windows-only POSIX failures were not bypassed. A real `gpt-6-luna` controlled ping function call passed through Omnigent's Codex SDK. A separately bounded six-role real-data pilot is still being verified; its initial attempt reached first result, actual model review and second approval, but the last model turn made no tool call, so it is not a complete two-round success.
+
+The basic real-data [two-minute demonstration](LIVE_DEMO.md) preserves snapshot and sparse-endpoint limits. Its model-driven presentation gate requires the final verified audit, not a model's textual claim.
+
+---
+
 ## Team A milestone 4 — Windows installation and B adapter verified, 2026-10-03
 
 Synced main `b05f395`: B has verified Linux Omnigent/Codex fixture orchestration and added `nova.science_adapter`. Installed Omnigent 0.16.0 in an isolated local Python 3.12.15 environment. Version/help pass directly. With `--science-adapter --two-rounds`, both real discovery templates completed in this new environment; all numerical results and portable evidence hashes/lineage matched the earlier evidence. See [Windows setup](OMNIGENT_WINDOWS.md), [adapter evidence](results/windows_adapter_run), and [verification](results/windows_adapter_verification.json).
