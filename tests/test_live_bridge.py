@@ -11,12 +11,25 @@ class InlineController:
     def run(self, name, args=(), kwargs=None, *, deadline_seconds):
         return WorkerResult(self.registered[name](*args, **(kwargs or {})), 1)
 
-def setup(tmp_path, mode="live"):
+def setup(tmp_path, mode="live", *, split=Split.DISCOVERY, template=Template.FAMILY_SCREEN):
     db=tmp_path/"live.sqlite"; st=Storage(db).initialize(); db.chmod(0o600)
-    spec=ExperimentSpec(1,"E1","H1","d"*64,Split.DISCOVERY,Template.FAMILY_SCREEN,("oxide","chalcogenide"),"opt",(1.1,1.8),.05,2,1729,120)
+    spec=ExperimentSpec(1,"E1","H1","d"*64,split,template,("oxide","chalcogenide"),"opt",(1.1,1.8),.05,2,1729,120)
     st.register_spec(spec); st.append_event("run", "run_created", actor="host", mode=mode); st.append_event("run", "selection", actor="pi", mode=mode, payload_ref="E1")
     c=tmp_path/"context.json"; c.write_text(json.dumps({"schema_version":1,"mode":"live","db":str(db),"run_id":"run"})); c.chmod(0o600)
     return st,c,spec
+
+def test_live_bridge_rejects_non_discovery_before_worker_start(monkeypatch, tmp_path):
+    st, c, _ = setup(tmp_path, split=Split.HOLDOUT)
+    monkeypatch.setattr(live_bridge, "LIVE_CONTEXT_PATH", c)
+
+    def should_not_start(_registered):
+        raise AssertionError("holdout spec reached worker construction")
+
+    monkeypatch.setattr(live_bridge, "_controller_factory", should_not_start)
+    with pytest.raises(ValueError, match="requires a discovery split"):
+        live_bridge.execute_live_registered_experiment("E1")
+    assert st.list_results() == []
+    assert [event.event_type for event in st.list_events("run")] == ["run_created", "selection"]
 
 def test_live_bridge_authorization_idempotency(monkeypatch,tmp_path):
     st,c,s=setup(tmp_path); monkeypatch.setattr(live_bridge,"LIVE_CONTEXT_PATH",c)

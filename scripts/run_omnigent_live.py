@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the six-turn, tightly scoped Omnigent Codex pilot for NOVA-MAT.
+"""Run the eight-turn, tightly scoped Omnigent Codex pilot for NOVA-MAT.
 
 This is a low-level SDK host for B's registered live tools, not the YAML
 multi-agent server. The host prepares B's live context, exposes one function
@@ -36,12 +36,13 @@ OMNIGENT_SDK_PIN = "0.16.0"
 CODEX_APP_SERVER_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false")
 CODE_MODE_HOST_PATH_ENV = "CODEX_CODE_MODE_HOST_PATH"
 TURN_TIMEOUT_SECONDS = 120
-MAX_ROLE_TURNS = 6
-MAX_MODEL_TURNS = 12
-MAX_TOOL_CALLS = 6
+MAX_ROLE_TURNS = 8
+MAX_MODEL_TURNS = 16
+MAX_TOOL_CALLS = 8
 _SECRETISH = re.compile(r"(?i)\b(?:bearer\s+|sk-|rk-|gh[pousr]_|xox[baprs]-)[A-Za-z0-9._-]{12,}")
 
-ROLE_ORDER = ("planner", "pi_initial", "runner_first", "skeptic", "pi_second", "runner_second")
+ROLE_ORDER = ("planner", "pi_initial", "runner_first", "skeptic", "pi_second", "runner_second",
+              "skeptic_final", "pi_freeze")
 
 
 class NoToolCallError(RuntimeError):
@@ -124,6 +125,33 @@ TOOLS: dict[str, dict[str, Any]] = {
             "additionalProperties": False,
         },
     },
+    "skeptic_final": {
+        "name": "submit_final_review",
+        "description": "Record the final cautious review of the completed threshold follow-up.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "result_id": {"type": "string", "minLength": 1, "maxLength": 160},
+                "concern": {"type": "string", "minLength": 1, "maxLength": 500},
+            },
+            "required": ["result_id", "concern"],
+            "additionalProperties": False,
+        },
+    },
+    "pi_freeze": {
+        "name": "freeze_final",
+        "description": "Freeze the reviewed discovery protocol and derive, but do not execute, its holdout.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "main_result_id": {"type": "string", "minLength": 1, "maxLength": 160},
+                "followup_result_id": {"type": "string", "minLength": 1, "maxLength": 160},
+                "explanation": {"type": "string", "maxLength": 500},
+            },
+            "required": ["main_result_id", "followup_result_id", "explanation"],
+            "additionalProperties": False,
+        },
+    },
 }
 
 
@@ -191,11 +219,13 @@ def _default_api() -> dict[str, Callable[..., Any]]:
         "execute_live_registered_experiment": live_bridge.execute_live_registered_experiment,
         "submit_live_review": decision_tools.submit_live_review,
         "commit_next_spec": decision_tools.commit_next_spec,
+        "submit_final_review": decision_tools.submit_final_review,
+        "freeze_final": decision_tools.freeze_final,
     }
 
 
 class LivePilotHost:
-    """Strict six-step host that only accepts each role's one registered tool."""
+    """Strict eight-step host that only accepts each role's one registered tool."""
 
     def __init__(self, database: Path, run_id: str, api: Mapping[str, Callable[..., Any]] | None = None):
         self.database = Path(database).resolve()
@@ -210,6 +240,8 @@ class LivePilotHost:
         self.review: dict[str, Any] | None = None
         self.second_id: str | None = None
         self.second_result: dict[str, Any] | None = None
+        self.final_review: dict[str, Any] | None = None
+        self.frozen: dict[str, Any] | None = None
         self.executed_ids: set[str] = set()
 
     @property
@@ -313,22 +345,51 @@ class LivePilotHost:
                 response = {"experiment_id": experiment_id, "template": "threshold_sensitivity",
                             "parent_result_id": result_id, "review_id": result_id, "approved": True}
             else:
-                experiment_id = args["experiment_id"]
-                if experiment_id != self.second_id or experiment_id in self.executed_ids:
-                    self._reject("Runner may execute only the selected follow-up ID, once")
-                spec = self._registered_spec(experiment_id, "threshold_sensitivity")
-                if not self.first_result or spec.parent_result_id != self.first_result.get("result_id"):
-                    self._reject("follow-up ID is not linked to the first result")
-                self.executed_ids.add(experiment_id)
-                value = await asyncio.wait_for(
-                    asyncio.to_thread(self.api["execute_live_registered_experiment"], experiment_id),
-                    timeout=TURN_TIMEOUT_SECONDS,
-                )
-                data = _result_dict(value)
-                if data.get("experiment_id") != experiment_id or data.get("execution_status") != "completed" or data.get("error"):
-                    self._reject("registered follow-up did not return a completed Result")
-                self.second_result = data
-                response = data
+                if role == "skeptic_final":
+                    result_id, concern = args["result_id"], args["concern"]
+                    if not self.second_result or result_id != self.second_result.get("result_id"):
+                        self._reject("final review must cite the actual follow-up result")
+                    if not isinstance(concern, str) or not concern.strip() or len(concern) > 500:
+                        self._reject("final review concern must be bounded and non-empty")
+                    result = self.api["submit_final_review"](result_id, concern.strip())
+                    if (not isinstance(result, Mapping) or result.get("result_id") != result_id
+                            or result.get("recommended_template") is not None):
+                        self._reject("final review did not bind to the follow-up result")
+                    self.final_review = dict(result)
+                    response = self.final_review
+                elif role == "pi_freeze":
+                    main_id = args["main_result_id"]
+                    followup_id = args["followup_result_id"]
+                    explanation = args["explanation"]
+                    if (not self.first_result or not self.second_result or not self.final_review
+                            or main_id != self.first_result.get("result_id")
+                            or followup_id != self.second_result.get("result_id")):
+                        self._reject("final freeze must follow both results and the final review")
+                    if not isinstance(explanation, str) or len(explanation) > 500:
+                        self._reject("final explanation must be bounded")
+                    result = self.api["freeze_final"](main_id, followup_id, explanation.strip())
+                    if (not isinstance(result, Mapping) or not result.get("frozen_protocol_id")
+                            or not result.get("holdout_experiment_id")):
+                        self._reject("final freeze did not return a frozen protocol and holdout ID")
+                    self.frozen = dict(result)
+                    response = self.frozen
+                else:
+                    experiment_id = args["experiment_id"]
+                    if experiment_id != self.second_id or experiment_id in self.executed_ids:
+                        self._reject("Runner may execute only the selected follow-up ID, once")
+                    spec = self._registered_spec(experiment_id, "threshold_sensitivity")
+                    if not self.first_result or spec.parent_result_id != self.first_result.get("result_id"):
+                        self._reject("follow-up ID is not linked to the first result")
+                    self.executed_ids.add(experiment_id)
+                    value = await asyncio.wait_for(
+                        asyncio.to_thread(self.api["execute_live_registered_experiment"], experiment_id),
+                        timeout=TURN_TIMEOUT_SECONDS,
+                    )
+                    data = _result_dict(value)
+                    if data.get("experiment_id") != experiment_id or data.get("execution_status") != "completed" or data.get("error"):
+                        self._reject("registered follow-up did not return a completed Result")
+                    self.second_result = data
+                    response = data
             self.phase += 1
             return response if isinstance(response, dict) else dict(response)
         except Exception:
@@ -371,6 +432,19 @@ class LivePilotHost:
             return (f"Execute only the approved registered follow-up experiment ID: {self.second_id}. "
                     f"Call the function with exactly this JSON parameter: {{\"experiment_id\": \"{self.second_id}\"}}. "
                     "After the tool succeeds, reply with only a short ACK; do not repeat the Result.")
+        if role == "skeptic_final":
+            if not self.second_result:
+                raise ValueError("final review has no follow-up Result")
+            return ("Review the completed threshold follow-up Result conservatively. State one bounded final concern "
+                    "and whether the preregistered discovery protocol is ready to freeze. Call submit_final_review "
+                    "with the actual result ID and your own concise concern. Do not propose or execute a holdout.\n"
+                    "RESULT:\n" + _compact(self.second_result))
+        if role == "pi_freeze":
+            return ("Review the two completed discovery Results and the final Skeptic review. Call freeze_final with "
+                    "the exact primary and follow-up result IDs and a concise explanation. This only freezes the "
+                    "protocol and derives a holdout ID; never execute the holdout.\nPRIMARY:\n" +
+                    _compact(self.first_result) + "\nFOLLOWUP:\n" + _compact(self.second_result) +
+                    "\nFINAL_REVIEW:\n" + _compact(self.final_review))
         raise ValueError("unknown role")
 
     def _stored_result_and_payload(self, result_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -411,10 +485,10 @@ def _coverage_summary(result: Mapping[str, Any]) -> str:
     return ", ".join(values) if values else "unavailable"
 
 
-def _new_codex_executor(executor_type: Any, cwd: str, sdk_version: str) -> Any:
+def _new_codex_executor(executor_type: Any, cwd: str, sdk_version: str, model: str = MODEL) -> Any:
     if sdk_version != OMNIGENT_SDK_PIN:
         raise RuntimeError(f"private Codex config override requires omnigent=={OMNIGENT_SDK_PIN}")
-    executor = executor_type(cwd=cwd, model=MODEL, enable_web_search=False,
+    executor = executor_type(cwd=cwd, model=model, enable_web_search=False,
                              disable_native_tools=True, skills_filter="none")
     # Pinned Omnigent 0.16.0 internal API: CodexExecutor passes this private
     # list into _CodexAppServerSession; _start_unchecked translates each entry
@@ -483,6 +557,16 @@ def _repair_instruction(role: str, tool: Mapping[str, Any], host: LivePilotHost)
             "Write the required concern yourself from the supplied actual Result and scientific payload, using its "
             "counts, delta, and interval. Do not copy a generic limitation or use a prewritten concern. "
         )
+    elif role == "skeptic_final":
+        if not host.second_result:
+            raise RuntimeError("cannot repair final review without the follow-up Result")
+        example = {"result_id": host.second_result["result_id"]}
+        authored_argument_instruction = "Write the final concern yourself from the actual follow-up Result. "
+    elif role == "pi_freeze":
+        if not host.first_result or not host.second_result:
+            raise RuntimeError("cannot repair final freeze without both Results")
+        example = {"main_result_id": host.first_result["result_id"],
+                   "followup_result_id": host.second_result["result_id"], "explanation": ""}
     else:
         if not host.first_result:
             raise RuntimeError("cannot repair PI follow-up turn without the actual first Result")
@@ -503,7 +587,7 @@ def _repair_instruction(role: str, tool: Mapping[str, Any], host: LivePilotHost)
 
 async def _consume_role_turn(executor: Any, host: LivePilotHost, audit: JsonlAudit, role: str,
                             turn_number: int, timeout: int, *, role_turn: int | None = None,
-                            role_attempt: int = 1, repair: bool = False) -> dict[str, Any]:
+                            role_attempt: int = 1, repair: bool = False, model: str = MODEL) -> dict[str, Any]:
     from omnigent.inner.executor import ExecutorConfig, ExecutorError, ToolCallComplete, ToolCallRequest, TurnComplete
 
     phase_before = host.phase
@@ -531,7 +615,7 @@ async def _consume_role_turn(executor: Any, host: LivePilotHost, audit: JsonlAud
     if repair:
         user_content += "\n\n" + _repair_instruction(role, tool, host)
     messages = [{"role": "user", "content": user_content, "session_id": session_id}]
-    config = ExecutorConfig(model=MODEL, max_tokens=700, extra={"reasoning_effort": "low"})
+    config = ExecutorConfig(model=model, max_tokens=700, extra={"reasoning_effort": "low"})
     state: dict[str, Any] = {"request_count": 0, "complete_count": 0, "tool_status": None,
                              "usage": None, "response": None, "turn_completed": False}
 
@@ -609,7 +693,7 @@ async def _consume_role_turn(executor: Any, host: LivePilotHost, audit: JsonlAud
             pass
         observed = {"turn": turn_number, "role_turn": role_turn or turn_number,
                     "role_attempt": role_attempt, "repair_attempt": repair, "role": role,
-                    "model": MODEL, "harness": HARNESS,
+                    "model": model, "harness": HARNESS,
                     "response_summary": state["response"], "usage": state["usage"],
                     "request_count": state["request_count"], "complete_count": state["complete_count"],
                     "callback_count": callback_count, "tool_status": state["tool_status"], "status": status}
@@ -631,7 +715,7 @@ async def _consume_role_turn(executor: Any, host: LivePilotHost, audit: JsonlAud
 
 async def _run_role_with_repair(executor: Any, host: LivePilotHost, audit: JsonlAudit,
                                 role: str, role_turn: int, first_model_turn: int,
-                                timeout: int) -> tuple[dict[str, Any], int]:
+                                timeout: int, model: str = MODEL) -> tuple[dict[str, Any], int]:
     """Run one host role, permitting a single repair only for a clean no-tool reply."""
     phase_before = host.phase
     for role_attempt in (1, 2):
@@ -643,6 +727,7 @@ async def _run_role_with_repair(executor: Any, host: LivePilotHost, audit: Jsonl
             observed = await _consume_role_turn(
                 executor, host, audit, role, model_turn, timeout,
                 role_turn=role_turn, role_attempt=role_attempt, repair=role_attempt == 2,
+                model=model,
             )
         except NoToolCallError:
             if (role_attempt == 1 and host.phase == phase_before and not host.aborted
@@ -688,7 +773,7 @@ def _inside(path: Path, parent: Path) -> bool:
 
 
 def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, Any]],
-            audit_path: Path, error: str | None) -> Path | None:
+            audit_path: Path, error: str | None, model: str = MODEL) -> Path | None:
     import hashlib
     import sqlite3
     from nova.evidence import export_run
@@ -739,7 +824,7 @@ def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, An
         "schema_version": 1,
         "run_id": run_id,
         "mode": "live",
-        "model": MODEL,
+        "model": model,
         "harness": HARNESS,
         "omnigent_sdk_version": OMNIGENT_SDK_PIN,
         "native_tools_disabled": True,
@@ -766,14 +851,14 @@ def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, An
 
 
 async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
-                        timeout: int = TURN_TIMEOUT_SECONDS) -> tuple[LivePilotHost, list[dict[str, Any]]]:
+                        timeout: int = TURN_TIMEOUT_SECONDS, model: str = MODEL) -> tuple[LivePilotHost, list[dict[str, Any]]]:
     from importlib.metadata import version as package_version
     from omnigent.inner.codex_executor import CodexExecutor
 
     host = LivePilotHost(database, run_id)
     turns: list[dict[str, Any]] = []
     with tempfile.TemporaryDirectory(prefix="nova-codex-cwd-", dir="/tmp") as model_cwd:
-        executor = _new_codex_executor(CodexExecutor, model_cwd, package_version("omnigent"))
+        executor = _new_codex_executor(CodexExecutor, model_cwd, package_version("omnigent"), model=model)
         try:
             model_turn = 1
             for role_turn, role in enumerate(ROLE_ORDER, start=1):
@@ -781,6 +866,7 @@ async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
                     raise RuntimeError("pilot role-turn budget exceeded")
                 observed, model_turn = await _run_role_with_repair(
                     executor, host, audit, role, role_turn, model_turn, timeout,
+                    model=model,
                 )
                 turns.append(observed)
             if host.phase != MAX_ROLE_TURNS or host.tool_calls != MAX_TOOL_CALLS:
@@ -790,7 +876,8 @@ async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
     return host, turns
 
 
-def run_pilot(database: Path, run_id: str | None = None, timeout: int = TURN_TIMEOUT_SECONDS) -> Path:
+def run_pilot(database: Path, run_id: str | None = None, timeout: int = TURN_TIMEOUT_SECONDS,
+              model: str = MODEL) -> Path:
     if not sys.platform.startswith("linux"):
         raise RuntimeError("The live Codex pilot must run in Linux/WSL; Windows CODEX_HOME permission checks are unsupported.")
     if timeout < 1 or timeout > TURN_TIMEOUT_SECONDS:
@@ -815,11 +902,11 @@ def run_pilot(database: Path, run_id: str | None = None, timeout: int = TURN_TIM
     turns: list[dict[str, Any]] = []
     host: LivePilotHost | None = None
     error_summary: str | None = None
-    audit.write("PilotStarted", run_id=actual_run_id, model=MODEL, harness=HARNESS,
+    audit.write("PilotStarted", run_id=actual_run_id, model=model, harness=HARNESS,
                 native_tools_disabled=True, web_search_disabled=True, skills_filter="none")
     try:
         with _minimal_codex_config():
-            host, turns = asyncio.run(_run_six_turns(database, actual_run_id, audit, timeout))
+            host, turns = asyncio.run(_run_six_turns(database, actual_run_id, audit, timeout, model=model))
     except Exception as exc:
         error_summary = f"{type(exc).__name__}: {_safe_text(str(exc), 220)}"
         audit.write("PilotFailed", run_id=actual_run_id, error_summary=error_summary)
@@ -828,7 +915,7 @@ def run_pilot(database: Path, run_id: str | None = None, timeout: int = TURN_TIM
         audit.write("PilotFinished", run_id=actual_run_id, completed=error_summary is None)
         audit.close()
         try:
-            _export(database, actual_run_id, run_dir, turns, audit_path, error_summary)
+            _export(database, actual_run_id, run_dir, turns, audit_path, error_summary, model=model)
         except Exception:
             if error_summary is None:
                 raise
@@ -840,8 +927,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--database", required=True, type=Path, help="new SQLite path under runs/")
     parser.add_argument("--run-id", help="optional safe NOVA run identifier")
     parser.add_argument("--turn-timeout", type=int, default=TURN_TIMEOUT_SECONDS)
+    parser.add_argument("--model", default=MODEL, help="explicit model name for all eight role turns")
     args = parser.parse_args(argv)
-    evidence = run_pilot(args.database, args.run_id, args.turn_timeout)
+    if not isinstance(args.model, str) or not args.model.strip() or any(c in args.model for c in "\r\n\x00"):
+        parser.error("--model must be a non-empty single-line model name")
+    evidence = run_pilot(args.database, args.run_id, args.turn_timeout, args.model.strip())
     print(json.dumps({"status": "completed", "evidence": str(evidence)}, sort_keys=True))
     return 0
 

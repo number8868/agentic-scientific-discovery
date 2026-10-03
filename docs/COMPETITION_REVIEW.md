@@ -1,6 +1,6 @@
 # NOVA-MAT competition readiness review
 
-Reviewed 2026-10-03 against repository main `11baca8`. This is a coordination plan, not evidence that outstanding runs have succeeded.
+Reviewed 2026-10-03 against repository main `5163e96`, including the teammate's final-protocol evidence requirements. This is a coordination plan, not evidence that outstanding runs have succeeded.
 
 ## Requirements and source boundaries
 
@@ -22,10 +22,10 @@ Internal acceptance criteria include four scientific roles, competing proposals,
 | Shared data | Prepared JARVIS snapshot and frozen split exist locally and in the private [prepared-data release](https://github.com/number8868/agentic-scientific-discovery/releases/tag/data-prepared-20261003-v1). Release checksums support an identical teammate setup. Raw/prepared data remain outside Git history. |
 | Real science | Registered discovery `family_screen` and `threshold_sensitivity` execute real computations with portable evidence. Holdout outcomes remain closed. |
 | Scientific finding | Discovery has 3/7,657 oxide passes and 6/3,158 chalcogenide passes: difference 0.15081 percentage points. Only nine primary passes exist. Threshold results share the same snapshot and are not independent replications. No general materials-performance or synthesis claim follows. |
-| Model connectivity | [PR #6](https://github.com/number8868/agentic-scientific-discovery/pull/6) is merged. `luna-pilot-06` records nine actual model turns, six successful tool calls, two computed Results, a linked model review, and eleven live events. Three zero-call repair turns and earlier failures are preserved. |
+| Model connectivity | [PR #6](https://github.com/number8868/agentic-scientific-discovery/pull/6) is merged. `luna-pilot-06` records nine actual model turns, six successful tool calls, two computed Results, a linked model review, and eleven live events. Three zero-call repair turns and earlier failures are preserved. It remains partial: the export has no second review, final protocol freeze, or holdout Spec. |
 | Orchestration boundary | The verified SDK pilot uses a host-fixed role order and family-to-threshold path. It proves connectivity and dependent provenance, but does not prove autonomous CLI/YAML root-to-child orchestration or comparison of alternative experiments. |
 | Runtime checks | The recorded final pilot integration baseline passed 154 tests against main `f366048`. Do not automatically attribute that result to later launcher/config changes. Pipe draining and bounded worker execution are covered; end-to-end model-run deadline enforcement still needs confirmation. |
-| Teammate progress | Main now includes isolated model selection/session controls and an increased YAML per-session tool limit of 48. This is a configuration change, not evidence that a full run succeeded. The recorded SDK pilot uses `gpt-6-luna`; the current live YAML selects `gpt-5.6-luna`. |
+| Teammate progress | Main now includes isolated model selection/session controls, an increased YAML per-session tool limit of 48, and stricter final-protocol evidence checks. The fixed-role host now includes final review and protocol freeze (eight successful calls, at most sixteen model turns); the preserved pilot predates those additions. These changes are not evidence that a new full run succeeded. The recorded SDK pilot uses `gpt-6-luna`; the current live YAML selects `gpt-5.6-luna`. |
 
 See [pilot evidence](OMNIGENT_LIVE_PILOT.md), [portable run](results/omnigent_luna_run), and [verification](results/omnigent_luna_verification.json). The repository does not yet contain verified evidence for a complete CLI/YAML run through frozen holdout validation, three full rehearsals, or a paired timing baseline. Teammates may have unpublished local work; check their latest commits and evidence before duplicating it.
 

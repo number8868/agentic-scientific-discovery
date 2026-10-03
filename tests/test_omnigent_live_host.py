@@ -107,6 +107,20 @@ class FakeLiveApi:
         self.store.append_event(self.run_id, "second_selection", actor="pi", mode="live", payload_ref=spec.experiment_id)
         return spec.experiment_id
 
+    def submit_final_review(self, result_id: str, concern: str):
+        result = self.store.get_result(result_id)
+        review = ReviewPacket(result.experiment_id, result_id,
+                              (Concern("final_protocol", "medium", (result_id,)),),
+                              None, concern, (result_id,))
+        self.store.save_review(review)
+        self.store.append_event(self.run_id, "second_review", actor="skeptic", mode="live", payload_ref=result_id)
+        return review.to_dict()
+
+    def freeze_final(self, main_result_id: str, followup_result_id: str, explanation: str):
+        return {"frozen_protocol_id": "frozen-id", "holdout_experiment_id": "holdout-id",
+                "protocol": {"main_result_id": main_result_id, "followup_result_id": followup_result_id,
+                              "explanation": explanation}}
+
 
 def _host(tmp_path: Path) -> tuple[LivePilotHost, FakeLiveApi]:
     tmp_path.mkdir(parents=True, exist_ok=True)
@@ -119,6 +133,7 @@ def vars_api(api: FakeLiveApi):
     return {name: getattr(api, name) for name in (
         "register_initial_plan", "commit_initial_spec", "execute_live_registered_experiment",
         "submit_live_review", "commit_next_spec",
+        "submit_final_review", "freeze_final",
     )}
 
 
@@ -158,7 +173,7 @@ def _install_fake_executor_sdk(monkeypatch):
     return sdk_events
 
 
-def test_host_enforces_six_registered_transitions_and_rejects_reexecution(tmp_path):
+def test_host_enforces_eight_registered_transitions_and_rejects_reexecution(tmp_path):
     host, api = _host(tmp_path)
     _advance_to_first_runner(host)
     first = _call(host, "runner_first", {"experiment_id": "initial-id"})
@@ -168,8 +183,13 @@ def test_host_enforces_six_registered_transitions_and_rejects_reexecution(tmp_pa
     assert second["parent_result_id"] == first["result_id"]
     final = _call(host, "runner_second", {"experiment_id": second["experiment_id"]})
     assert final["result_id"] == "result-threshold-id"
-    assert host.phase == len(ROLE_ORDER) == 6
-    assert host.tool_calls == 6
+    review = _call(host, "skeptic_final", {"result_id": final["result_id"], "concern": "bounded final concern"})
+    assert review["result_id"] == final["result_id"]
+    frozen = _call(host, "pi_freeze", {"main_result_id": first["result_id"],
+                                        "followup_result_id": final["result_id"], "explanation": "ready"})
+    assert frozen["holdout_experiment_id"] == "holdout-id"
+    assert host.phase == len(ROLE_ORDER) == 8
+    assert host.tool_calls == 8
     assert api.executed == ["initial-id", "threshold-id"]
     with pytest.raises(ValueError, match="tool-call budget exceeded"):
         _call(host, "runner_second", {"experiment_id": "threshold-id"})
@@ -192,6 +212,22 @@ def test_host_rejects_unregistered_runner_ids_and_duplicate_arguments(tmp_path):
             "extra": "not allowed",
         }))
     assert host2.aborted
+
+
+def test_final_freeze_requires_second_review(tmp_path):
+    host, _api = _host(tmp_path)
+    _advance_to_first_runner(host)
+    first = _call(host, "runner_first", {"experiment_id": "initial-id"})
+    _call(host, "skeptic", {"result_id": first["result_id"], "concern": "bounded", "recommended_template": "threshold_sensitivity"})
+    second = _call(host, "pi_second", {"result_id": first["result_id"], "recommended_template": "threshold_sensitivity"})
+    followup = _call(host, "runner_second", {"experiment_id": second["experiment_id"]})
+    # Simulate the runner having returned control to the final PI step while
+    # omitting the required second-review transition.
+    host.phase = 7
+    with pytest.raises(ValueError, match="final freeze must follow both results and the final review"):
+        _call(host, "pi_freeze", {"main_result_id": first["result_id"],
+                                   "followup_result_id": followup["result_id"], "explanation": "ready"})
+    assert host.frozen is None and host.aborted
 
 
 def test_initial_result_id_cannot_be_executed_twice(tmp_path):
@@ -342,8 +378,8 @@ def test_role_gets_one_repair_after_clean_no_tool_reply(tmp_path, monkeypatch):
     assert observed["turn"] == 2 and observed["role_turn"] == 1
     assert observed["role_attempt"] == 2 and observed["repair_attempt"] is True
     assert host.phase == 1 and host.tool_calls == 1 and not host.aborted
-    assert MAX_ROLE_TURNS == len(ROLE_ORDER) == 6
-    assert MAX_MODEL_TURNS == 12 == 2 * MAX_ROLE_TURNS
+    assert MAX_ROLE_TURNS == len(ROLE_ORDER) == 8
+    assert MAX_MODEL_TURNS == 16 == 2 * MAX_ROLE_TURNS
     retry_prompt = executor.calls[1]["messages"][0]["content"]
     assert "REPAIR REQUIRED" in retry_prompt
     assert "register_initial_plan" in retry_prompt

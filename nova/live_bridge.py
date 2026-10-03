@@ -3,7 +3,7 @@ from __future__ import annotations
 import json, os, stat
 from pathlib import Path
 from typing import Any
-from .contracts import Result, Template
+from .contracts import Result, Split, Template
 from .storage import Storage
 from .process_control import ProcessController, WorkerTimeoutError
 
@@ -62,6 +62,12 @@ def execute_live_registered_experiment(experiment_id: str) -> Result:
     spec = store.read_spec(experiment_id)
     if spec is None or spec.template not in {Template.FAMILY_SCREEN, Template.THRESHOLD_SENSITIVITY}:
         raise ValueError("experiment is not registered for live execution")
+    # Reject non-discovery specs before checking cached results or starting a
+    # worker.  The science adapter also enforces this boundary, but keeping it
+    # at the bridge prevents a malformed or tampered registration from ever
+    # entering the live execution path.
+    if spec.split is not Split.DISCOVERY:
+        raise ValueError("live execution requires a discovery split")
     existing = next((result for result in store.list_results() if result.experiment_id == experiment_id), None)
     if existing is not None:
         if not any(event.event_type == "result" and event.actor == "runner" and
