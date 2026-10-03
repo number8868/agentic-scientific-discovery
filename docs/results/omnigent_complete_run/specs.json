@@ -1,0 +1,74 @@
+[
+  {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-b9525e52a8d8c247",
+    "frozen_protocol_id": null,
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": null,
+    "review_id": null,
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "discovery",
+    "template": "family_screen",
+    "timeout_seconds": 120
+  },
+  {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-f1f86dacb11f36de",
+    "frozen_protocol_id": null,
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": "nova-result-28dd8fd53dc6ab1092bbf8c93e4effd4cb801a78670093d4f15aafcf2b5c5fbe",
+    "review_id": "nova-result-28dd8fd53dc6ab1092bbf8c93e4effd4cb801a78670093d4f15aafcf2b5c5fbe",
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "discovery",
+    "template": "threshold_sensitivity",
+    "timeout_seconds": 120
+  },
+  {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-HOLDOUT-b00615c52aad4ebe",
+    "frozen_protocol_id": "NOVA-FINAL-9961f208c1a6dc6d",
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": "nova-result-190c4a6f95d37287bcd518a958a6a8025a032782fa660949bb112553d7584813",
+    "review_id": "nova-result-190c4a6f95d37287bcd518a958a6a8025a032782fa660949bb112553d7584813",
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "holdout",
+    "template": "holdout_validation",
+    "timeout_seconds": 120
+  }
+]

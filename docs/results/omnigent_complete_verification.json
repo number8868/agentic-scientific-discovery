@@ -1,0 +1,21 @@
+{
+  "run_id": "luna-pilot-07",
+  "status": "complete_protocol_evidence",
+  "requested_model": "gpt-5.6-luna",
+  "model_provider_attested": false,
+  "gates": {
+    "sqlite_live_evidence": "passed",
+    "portable_export": "passed"
+  },
+  "portable_counts": {
+    "events": 13,
+    "results": 2,
+    "reviews": 2,
+    "specs": 3
+  },
+  "final_protocol_frozen": true,
+  "frozen_protocol_id": "NOVA-FINAL-9961f208c1a6dc6d",
+  "holdout_experiment_id": "NOVA-HOLDOUT-b00615c52aad4ebe",
+  "holdout_executed": false,
+  "scientific_language_warning": "The final Skeptic review calls the observed pass-rate difference a missingness gap. That wording is scientifically incorrect for this endpoint; do not quote it as a valid interpretation."
+}

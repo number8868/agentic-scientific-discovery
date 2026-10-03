@@ -1,0 +1,38 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-28dd8fd53dc6ab1092bbf8c93e4effd4cb801a78670093d4f15aafcf2b5c5fbe"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-28dd8fd53dc6ab1092bbf8c93e4effd4cb801a78670093d4f15aafcf2b5c5fbe"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-b9525e52a8d8c247",
+    "reason": "Both groups have complete observed coverage (oxide and chalcogenide 100.0%), but the joint inclusive bandgap-plus-ehull screen pass-rate difference is small (delta=0.001508) and its resampling interval is wide relative to that estimate ([0.000111, 0.003222]); this snapshot therefore does not establish a stable group difference or support generalization beyond the observed compositions. Missingness should be interpreted separately via missingness_interval, not delta.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-28dd8fd53dc6ab1092bbf8c93e4effd4cb801a78670093d4f15aafcf2b5c5fbe"
+  },
+  {
+    "claim_refs": [
+      "nova-result-190c4a6f95d37287bcd518a958a6a8025a032782fa660949bb112553d7584813"
+    ],
+    "concerns": [
+      {
+        "concern_type": "final_protocol",
+        "evidence_refs": [
+          "nova-result-190c4a6f95d37287bcd518a958a6a8025a032782fa660949bb112553d7584813"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-f1f86dacb11f36de",
+    "reason": "The observed missingness gap is positive but modest, and its resampling interval is wide; freeze is reasonable only as a preregistered snapshot conclusion, without treating the effect as precisely established.",
+    "recommended_template": null,
+    "result_id": "nova-result-190c4a6f95d37287bcd518a958a6a8025a032782fa660949bb112553d7584813"
+  }
+]
