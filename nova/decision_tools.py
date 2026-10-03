@@ -106,6 +106,13 @@ def submit_live_review(result_id: str, concern: str, recommended_template: str) 
     if result is None or result.execution_status != "completed" or result.error is not None:
         _fail(run_id, store, "review requires a successful stored result")
     spec = store.get_spec(result.experiment_id)
+    events = store.list_events(run_id)
+    if spec is None or not any(e.actor == "pi" and e.event_type in {"selection", "second_selection"}
+                               and e.payload_ref == spec.experiment_id for e in events):
+        _fail(run_id, store, "review result is not registered for this run")
+    if not any(e.actor == "runner" and e.event_type == "result" and e.payload_ref == result_id
+               for e in events):
+        _fail(run_id, store, "review result is not owned by this run")
     if spec is None or spec.template.value == recommended_template:
         _fail(run_id, store, "review must recommend a different template")
     review = ReviewPacket(spec.experiment_id, result_id, (Concern("protocol_weakness", "medium", (result_id,)),), Template(recommended_template), concern.strip(), (result_id,))
