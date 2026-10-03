@@ -44,3 +44,5 @@ These are real scientific-computation records. They now run through the register
 The real science executor now also supports the shared Result mapping and portable evidence packaging. See [registered science integration](docs/SCIENCE_INTEGRATION.md). Its validated control plane is currently human scripted; actual Omnigent model/tool connectivity remains a separate check.
 
 The two-round real-data check is complete: the first family result informs a recorded threshold follow-up, and all three frozen thresholds retain the same observed direction. See the [threshold chart](docs/results/threshold_sensitivity.png) and [two-round evidence](docs/results/two_round_live_science). All 90 combined tests pass; holdout outcomes remain unexamined.
+
+The Windows Omnigent installation and B science-adapter check are now recorded in [Windows setup and verification](docs/OMNIGENT_WINDOWS.md). Both real templates reproduce in isolated Python 3.12. The latest synced suite includes four POSIX fixture checks that fail on Windows; see the current [team status](docs/TEAM_STATUS.md) for exact verification boundaries.
