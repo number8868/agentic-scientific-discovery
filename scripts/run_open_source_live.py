@@ -23,8 +23,16 @@ REQUIRED_ENV = {
 
 
 def command() -> list[str]:
-    """Return the fixed Omnigent argv; no caller options are accepted."""
-    return [str(OMNIGENT), "run", str(CONFIG)]
+    """Return a fresh, non-resumable Omnigent invocation.
+
+    A normal ``run`` may offer the most recent conversation (or resume it
+    when the UI is driven non-interactively).  That can silently retain the
+    model selected by an earlier session.  ``--no-session`` gives every
+    bounded live attempt a new local store, so the YAML executor models are
+    authoritative and the resulting audit cannot be attributed to a stale
+    conversation.
+    """
+    return [str(OMNIGENT), "run", "--no-session", str(CONFIG)]
 
 
 def main(argv: list[str] | None = None) -> int:
