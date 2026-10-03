@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-fa0ff8779b155a94e6a127af9c2ced580dbafe36af4afaf6f32de9e96d1ec6f9"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-fa0ff8779b155a94e6a127af9c2ced580dbafe36af4afaf6f32de9e96d1ec6f9"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-ee91331fff3c9017",
+    "reason": "The observed chalcogenide-minus-oxide missingness difference is 0.001508 (6/3158 vs 3/7657), but its composition-level family-stratified bootstrap interval is 0.000111 to 0.003222, indicating uncertainty around the estimated magnitude within this snapshot. The computation also records a provisional adapter contract pending shared integration.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-fa0ff8779b155a94e6a127af9c2ced580dbafe36af4afaf6f32de9e96d1ec6f9"
+  }
+]

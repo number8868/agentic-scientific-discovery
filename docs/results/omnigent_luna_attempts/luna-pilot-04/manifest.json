@@ -1,0 +1,24 @@
+{
+  "exported_at": "2026-10-03T21:38:46.603361+00:00",
+  "files": {
+    "events.jsonl": {
+      "count": 4,
+      "sha256": "43a986c51a50131ea5de6d9b89d66d80516d7994f9f2d3a3267d7f48aa83dfff"
+    },
+    "results.json": {
+      "count": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "reviews.json": {
+      "count": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "specs.json": {
+      "count": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    }
+  },
+  "mode": "live",
+  "run_id": "luna-pilot-04",
+  "schema_version": 1
+}
