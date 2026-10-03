@@ -1,5 +1,15 @@
 # Team status and handoff
 
+## Competition readiness review — 2026-10-03
+
+PR #6 is merged at main `11baca8`. The official participant screenshot confirms an October 4 **08:00 America/Chicago** deadline, mandatory platform **and Google Form** submissions, and **60-second MP4/MOV videos per section**. The original challenge wording/scoring remains to be independently verified; distinguish it from the agreed internal technical plan.
+
+See [competition review and next-stage plan](COMPETITION_REVIEW.md). The next priorities are genuine CLI/YAML root-to-child orchestration with evidence-dependent experiment selection, A's controlled frozen-protocol holdout boundary, then validation, three full engineering rehearsals and a paired manual baseline. The fixed-role SDK pilot is completed connectivity evidence, not the full competition loop. Review B's latest session controls and 48-call per-session policy against the shared wall-clock budget before another live run. Holdout outcomes remain closed.
+
+Freeze features by October 4 04:00 Chicago and target both submissions by 06:00, leaving the final two hours for corrections. Use the existing interface and scientific evidence; defer frontend/platform expansion. This update changes documentation only and does not claim new live runs or tests against the latest launcher changes.
+
+---
+
 ## Team A milestone 6 — real Luna two-result pilot (partial), 2026-10-03
 
 Synced main `5d04bbf`, including B's final-protocol, process control and result-ownership changes. Real run `luna-pilot-06` completed the six-role `gpt-6-luna` workflow through the pinned Omnigent 0.16.0 internal SDK: nine model turns, six actual successful function calls, two real discovery Results, one model-authored review and eleven live events. Three clean no-tool responses were repaired once each. The review cites the actual first Result, correctly identifies sparse pass counts and interval width, and leads to its registered threshold follow-up. This export is partial: it has no second review, final protocol freeze, or holdout Spec. See [the pilot](OMNIGENT_LIVE_PILOT.md), [portable evidence](results/omnigent_luna_run), and [independent verification](results/omnigent_luna_verification.json).
