@@ -9,6 +9,9 @@ from __future__ import annotations
 
 import math
 import multiprocessing
+import queue
+import threading
+import time
 import traceback
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping, Sequence
@@ -38,6 +41,15 @@ class WorkerResult:
 
     value: Any
     worker_pid: int
+
+
+def _receive_message(conn: Any, result_queue: queue.Queue) -> None:
+    try:
+        result_queue.put((True, conn.recv()))
+    except BaseException as exc:  # relay transport failures to the host thread
+        result_queue.put((False, exc))
+    finally:
+        conn.close()
 
 
 def _worker_entry(fn: Callable[..., Any], args: tuple[Any, ...], kwargs: dict[str, Any], conn: Any) -> None:
@@ -96,31 +108,67 @@ class ProcessController:
             args=(self._registered[name], call_args, call_kwargs, child),
             daemon=True,
         )
-        process.start()
-        child.close()
+        receiver = None
         try:
-            process.join(float(deadline_seconds))
-            if process.is_alive():
-                process.terminate()
-                process.join(1.0)
-                if process.is_alive() and hasattr(process, "kill"):
-                    process.kill()
-                    process.join(1.0)
+            process.start()
+            child.close()
+            # Keep the existing contract: process creation is synchronous, so
+            # the execution budget starts once start() has returned. From here
+            # one deadline covers execution, pipe draining, and worker exit.
+            deadline = time.monotonic() + float(deadline_seconds)
+
+            # A dedicated reader continuously drains the pipe so large sends
+            # cannot block the worker. The host thread waits on its queue with
+            # the deadline, so recv() cannot extend the wall-clock budget.
+            received = queue.Queue(maxsize=1)
+            reader = threading.Thread(
+                target=_receive_message, args=(parent, received), daemon=True
+            )
+            reader.start()
+            receiver = reader
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
                 raise WorkerTimeoutError(f"worker exceeded {deadline_seconds:g}s deadline")
-            if parent.poll(0.2):
-                message = parent.recv()
-            else:
-                raise ProcessControlError(f"worker exited without a result (exitcode={process.exitcode})")
+            try:
+                has_message, payload = received.get(timeout=remaining)
+            except queue.Empty as exc:
+                raise WorkerTimeoutError(
+                    f"worker exceeded {deadline_seconds:g}s deadline"
+                ) from exc
+            if not has_message:
+                process.join(0)
+                if isinstance(payload, EOFError):
+                    raise ProcessControlError(
+                        f"worker exited without a result (exitcode={process.exitcode})"
+                    ) from payload
+                raise ProcessControlError(f"could not receive worker result: {payload}") from payload
+            message = payload
+
+            # Receiving an envelope can take time for a large value. Keep the
+            # same wall-clock deadline for worker shutdown as for execution.
+            if time.monotonic() >= deadline:
+                raise WorkerTimeoutError(f"worker exceeded {deadline_seconds:g}s deadline")
+            process.join(max(0.0, deadline - time.monotonic()))
+            if process.is_alive():
+                raise WorkerTimeoutError(f"worker exceeded {deadline_seconds:g}s deadline")
             if message[0] == "error":
                 raise WorkerExecutionError(message[1], message[2], message[3])
             if message[0] != "ok":
                 raise ProcessControlError("worker returned an invalid result envelope")
             return WorkerResult(value=message[1], worker_pid=process.pid or -1)
         finally:
-            parent.close()
-            if process.is_alive():
-                process.terminate()
+            child.close()
+            if receiver is None:
+                parent.close()
+            if process.pid is not None:
+                if process.is_alive():
+                    process.terminate()
                 process.join(1.0)
+                if process.is_alive() and hasattr(process, "kill"):
+                    process.kill()
+                    process.join(1.0)
+            if receiver is not None:
+                receiver.join(0.1)
 
 
 __all__ = [

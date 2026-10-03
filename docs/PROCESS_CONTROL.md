@@ -6,6 +6,12 @@ name-to-function registry and invokes a name with a positive wall-clock
 deadline.  The child is created with Python's `spawn` context and is always
 joined before the call returns or raises.
 
+The parent drains the result pipe in a supervised reader thread while the
+worker is running. Waiting for exit before reading can deadlock when a result
+exceeds the pipe buffer. One deadline covers execution, result receipt and
+worker exit after synchronous `Process.start()` returns; synchronous creation
+and termination/reaping cleanup are outside that budget.
+
 Only registered, importable top-level functions are accepted.  There is no
 shell command, module name, path, or source-code execution API.  Unknown names,
 lambda functions, and invalid deadlines are rejected before a worker is
