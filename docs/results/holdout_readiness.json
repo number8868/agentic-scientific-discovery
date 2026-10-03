@@ -1,0 +1,55 @@
+{
+  "base_commit": "51d45d95cc5e21866ae57856e479c7924d861798",
+  "development_checks": [
+    "Fixed synthetic fixture state leakage and inconsistent point metadata.",
+    "Final full suite used an isolated Linux checkout with the installed Linux environment."
+  ],
+  "full_suite": {
+    "errors": 0,
+    "failed": 0,
+    "passed": 196,
+    "skipped": 0
+  },
+  "holdout_gate_cases": 18,
+  "holdout_science_cases": 13,
+  "implementation_file_sha256": {
+    "nova/experiments/executor.py": "77bcc0c05e54d85963c1062274065ba1a11b0de3ed311347b26ef5d4a40b6c0d",
+    "nova/experiments/holdout_validation.py": "6b89ac0594b522222d9fcd0a6da886cc727c4557d58fca191cd35da0bc148e44",
+    "nova/holdout_bridge.py": "ae0b68d8dc0592570cb01c76526a7911fd2824500c6a5e10fb40f9b242fbf7fc",
+    "scripts/run_holdout_validation.py": "d21fb0c0b0c6889badf54e96c455078e51a690e3560053bc72132dc5e78a142b"
+  },
+  "limitations": [
+    "Full YAML root-to-child orchestration is not established by this milestone.",
+    "The bridge does not enforce an overall 12-minute model-workflow deadline.",
+    "Worker startup and cleanup remain outside the controller measured deadline.",
+    "Private artifact permission checks require the existing POSIX environment."
+  ],
+  "new_model_run_executed": false,
+  "real_holdout_executed": false,
+  "real_prepared_input_preflight": {
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "passed": true,
+    "protocol_sha256": "9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+    "scope": "metadata and byte hashes only; prepared-row loader not called",
+    "split_assignment_sha256": "96c9c210f77698d47bfdb68f9b3ad65673766a879785a6c7d983d7ee3777a58c",
+    "threshold_extension_protocol_sha256": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3"
+  },
+  "recorded_at_utc": "2026-10-03T23:37:14.593304+00:00",
+  "schema_version": 1,
+  "stage": "frozen_holdout_implementation_readiness",
+  "synthetic_cli_gate_actual_executor_export": "passed",
+  "teammate_portable_export_check": {
+    "final_protocol_frozen": true,
+    "passed": true,
+    "results": 2,
+    "reviews": 2,
+    "run_id": "luna-pilot-07",
+    "scope": "existing portable export structural checker"
+  },
+  "verification_environment": {
+    "os": "Ubuntu WSL",
+    "private_context_in_test_checkout": false,
+    "python": "3.12.13",
+    "real_data_in_test_checkout": false
+  }
+}

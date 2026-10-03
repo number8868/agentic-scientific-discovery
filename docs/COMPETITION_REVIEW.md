@@ -2,6 +2,8 @@
 
 Reviewed 2026-10-03 against repository main `5163e96`, including the teammate's final-protocol evidence requirements. This is a coordination plan, not evidence that outstanding runs have succeeded.
 
+Subsequent stage update against main `51d45d9`: B published complete fixed-role SDK protocol evidence for `luna-pilot-07`, including the previously missing final review and freeze. A's separate frozen holdout interface now passes synthetic verification (196 full Linux tests), but actual holdout execution and full YAML orchestration remain outstanding. See [current team status](TEAM_STATUS.md) and [holdout handoff](HOLDOUT_VALIDATION.md). The review tables below preserve the earlier snapshot and should be read with this update.
+
 ## Requirements and source boundaries
 
 The participant supplied a screenshot of the official Team & Submission page for [the event](https://app.hack-nation.ai/?eventId=4ee144f2-dd47-4613-9290-cf3e47509011). It confirms:

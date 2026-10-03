@@ -1,5 +1,19 @@
 # Team status and handoff
 
+## Team A milestone 7 — frozen holdout interface verified with synthetic data, 2026-10-03
+
+Synced main `51d45d9`, including B's `luna-pilot-07` complete fixed-role SDK protocol export. Its portable structural checker passes: two discovery Results, two native reviews, final freeze and an unexecuted holdout Spec. This does not establish YAML root-to-child orchestration. Preserve the original final review, but do not repeat its incorrect “missingness gap” wording for the screening pass-rate endpoint.
+
+Added `nova.holdout_bridge.execute_live_registered_holdout(experiment_id)` as a separate ID-only host tool. It validates frozen hashes/parameters, native run-owned discovery/review lineage, both content-addressed discovery artifacts and exact registered Results before claiming a single attempt. Duplicate requests cannot create another worker; a successful cached Result is revalidated, while failure/interruption stays closed. The worker is bounded to at most 120 seconds, capped by the remaining 360-second science allowance, and the gate requires exactly two prior native discovery starts with no failed discovery attempt. Whole-model deadline enforcement remains a separate host responsibility; synchronous worker startup/cleanup remain outside the measured controller deadline.
+
+The scientific executor computes the primary holdout endpoint and every frozen threshold point, labels each comparison separately, preserves sample/coverage/degeneracy protections and snapshot-only scope, and includes its implementation hash in the immutable payload. Existing discovery tools remain discovery-only. See [Team B integration and launcher](HOLDOUT_VALIDATION.md) and [verification record](results/holdout_readiness.json).
+
+The final complete suite passes **196 Linux tests** against the latest team base, including 13 synthetic science cases and 18 gate cases. A synthetic CLI-to-gate-to-actual-executor-to-export test passes. The isolated Linux test checkout contains no real prepared data or private live context. Real frozen metadata and byte-hash preflight also pass separately. The frozen data pipeline and science dependency files were preserved. No real holdout result, new model run, full YAML rehearsal or efficiency gain is claimed in this milestone.
+
+Next: B wires the dedicated post-freeze Runner into formal orchestration and verifies its shared deadline. Execute the frozen real holdout once through this gate, then publish verified comparison evidence, complete rehearsals/baseline and prepare both submissions. The current YAML's explicit post-freeze stop must change together with the dedicated tool; adding a callable alone does not complete that workflow.
+
+---
+
 ## Competition readiness review — 2026-10-03
 
 PR #6 is merged at main `11baca8`. The official participant screenshot confirms an October 4 **08:00 America/Chicago** deadline, mandatory platform **and Google Form** submissions, and **60-second MP4/MOV videos per section**. The original challenge wording/scoring remains to be independently verified; distinguish it from the agreed internal technical plan.

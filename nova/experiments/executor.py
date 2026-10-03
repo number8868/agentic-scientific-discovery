@@ -61,6 +61,14 @@ _SCIENTIFIC_STATES = frozenset({
     "inconclusive",
     "data_limited",
 })
+_HOLDOUT_STATES = frozenset({
+    "replicated_in_snapshot",
+    "direction_consistent_inconclusive",
+    "inconclusive",
+    "contradicted",
+    "data_limited",
+    "not_tested",
+})
 
 
 def _canonical_json(value: Any) -> str:
@@ -422,4 +430,95 @@ def execute(spec: Mapping[str, Any]) -> Result:
     )
 
 
-__all__ = ["active_dataset_sha256", "execute", "export_science_artifacts"]
+def execute_holdout(
+    payload: Mapping[str, Any],
+    frozen_protocol: Mapping[str, Any],
+    discovery_evidence: Mapping[str, Any] | None = None,
+) -> Result:
+    """Execute the sole registered holdout computation and adapt its Result.
+
+    The bridge supplies only run-owned discovery Results and the verified
+    threshold artifact. All frozen-protocol and prepared-input checks happen
+    inside the science module before it opens prepared compositions.
+    """
+    from nova.experiments import holdout_validation
+
+    contract, _run_id = holdout_validation._contract_from_payload(payload)
+    raw = holdout_validation.run_experiment(payload, frozen_protocol, discovery_evidence)
+    if raw.get("execution_status") != _SUCCESS:
+        raise RuntimeError("holdout validation did not complete successfully")
+    if raw.get("template") != Template.HOLDOUT_VALIDATION.value:
+        raise ValueError("holdout result template does not match the registered template")
+    if raw.get("dataset_sha256") != contract.dataset_sha256:
+        raise ValueError("holdout result dataset does not match the registered dataset")
+    if raw.get("split") != "holdout":
+        raise ValueError("holdout result does not identify the holdout split")
+    scientific_status = raw.get("scientific_status")
+    if scientific_status not in _HOLDOUT_STATES:
+        raise ValueError("holdout result has an invalid scientific status")
+
+    frozen_sha256 = raw.get("frozen_protocol_sha256")
+    extension_sha256 = raw.get("extension_protocol_sha256")
+    if not isinstance(frozen_sha256, str) or len(frozen_sha256) != 64:
+        raise ValueError("holdout result is missing its frozen protocol hash")
+    if not isinstance(extension_sha256, str) or len(extension_sha256) != 64:
+        raise ValueError("holdout result is missing its threshold extension hash")
+    computation_spec = holdout_validation.computation_spec(contract, frozen_sha256, extension_sha256)
+    computation_sha256 = _sha256(_canonical_json(computation_spec).encode("utf-8"))
+    if raw.get("computation_spec") != computation_spec or raw.get("spec_sha256") != computation_sha256:
+        raise ValueError("holdout computation spec or hash does not match executor input")
+
+    groups = _groups_summary(raw.get("groups_summary"))
+    started_at = raw.get("started_at")
+    finished_at = raw.get("finished_at")
+    elapsed = raw.get("elapsed_seconds")
+    if not isinstance(started_at, str) or not started_at:
+        raise ValueError("holdout result is missing started_at")
+    if not isinstance(finished_at, str) or not finished_at:
+        raise ValueError("holdout result is missing finished_at")
+    if isinstance(elapsed, bool) or not isinstance(elapsed, (int, float)) or not math.isfinite(elapsed) or elapsed < 0:
+        raise ValueError("holdout result has invalid elapsed_seconds")
+
+    artifact_body = _artifact_body(raw, contract, computation_sha256)
+    artifact_id, artifact_path = _write_immutable_artifact(artifact_body)
+    payload_sha256 = artifact_id.partition(":")[2]
+    result_id = "nova-result-" + _sha256(
+        _canonical_json({
+            "experiment_id": contract.experiment_id,
+            "spec_sha256": contract.sha256,
+            "payload_sha256": payload_sha256,
+        }).encode("utf-8")
+    )
+    raw_artifacts = raw.get("artifact_ids", ())
+    if not isinstance(raw_artifacts, (tuple, list)) or any(not isinstance(item, str) for item in raw_artifacts):
+        raise ValueError("holdout result artifact_ids must be a sequence of strings")
+    artifact_ids = tuple(raw_artifacts) + (
+        artifact_id,
+        f"nova-artifact-path:{artifact_path}",
+    )
+    quality_flags = raw.get("quality_flags")
+    if not isinstance(quality_flags, Mapping):
+        raise ValueError("holdout result must preserve its structured quality flags")
+    quality_entry = "science-quality-json-v1:" + _canonical_json(quality_flags)
+
+    return Result(
+        result_id=result_id,
+        experiment_id=contract.experiment_id,
+        spec_sha256=contract.sha256,
+        dataset_sha256=contract.dataset_sha256,
+        execution_status=_COMPLETED,
+        scientific_status=scientific_status,
+        started_at=started_at,
+        finished_at=finished_at,
+        elapsed_seconds=float(elapsed),
+        groups_summary=groups,
+        delta=raw.get("delta"),
+        resampling_interval=_interval(raw.get("resampling_interval"), "resampling_interval"),
+        missingness_interval=_interval(raw.get("missingness_interval"), "missingness_interval"),
+        quality_flags=(quality_entry,),
+        artifact_ids=artifact_ids,
+        error=None,
+    )
+
+
+__all__ = ["active_dataset_sha256", "execute", "execute_holdout", "export_science_artifacts"]
