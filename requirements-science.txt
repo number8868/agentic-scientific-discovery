@@ -1,0 +1,6 @@
+# Direct dependencies for the deterministic JARVIS family_screen.
+# Reproduce the verified environment with:
+#   python -m pip install -r requirements-science-lock.txt
+jarvis-tools==2026.6.12
+numpy==2.5.3
+pytest==9.1.1

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "template": "family_screen",
+  "split": "discovery",
+  "groups": ["oxide", "chalcogenide"],
+  "bandgap_method": "opt",
+  "gap_window_ev": [1.1, 1.8],
+  "ehull_max_ev_atom": 0.05,
+  "bootstrap_repeats": 2000,
+  "seed": 1729,
+  "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5"
+}
