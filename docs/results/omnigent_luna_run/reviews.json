@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-53c888f04846943ee5407bf3113864014327539d9e7ab14653c32ca95409dcc9"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-53c888f04846943ee5407bf3113864014327539d9e7ab14653c32ca95409dcc9"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-00d117e0f0e0c282",
+    "reason": "In this snapshot, all 7,657 oxide and 3,158 chalcogenide compositions are observed, yet only 3 and 6 pass the joint inclusive bandgap-plus-ehull screen. The pass-rate difference is 0.00151, with a family-stratified bootstrap interval of 0.00011 to 0.00322; given these low pass counts and the interval's width, the estimated difference may be sensitive to screen thresholds. The separate missingness_interval is [0.00151, 0.00151].",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-53c888f04846943ee5407bf3113864014327539d9e7ab14653c32ca95409dcc9"
+  }
+]

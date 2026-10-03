@@ -1,0 +1,41 @@
+{
+  "export_hashes_verified": true,
+  "all_attempts_incomplete": true,
+  "attempts": [
+    {
+      "run_id": "luna-pilot-01",
+      "successful_tool_calls": 5,
+      "result_count": 1,
+      "error_summary": "RuntimeError: runner_second turn did not complete exactly one successful registered tool call",
+      "completed": false
+    },
+    {
+      "run_id": "luna-pilot-02",
+      "successful_tool_calls": 3,
+      "result_count": 1,
+      "error_summary": "RuntimeError: skeptic turn did not complete exactly one successful registered tool call (no_tool_call)",
+      "completed": false
+    },
+    {
+      "run_id": "luna-pilot-03",
+      "successful_tool_calls": 4,
+      "result_count": 1,
+      "error_summary": "RuntimeError: pi_second turn did not complete exactly one successful registered tool call (no_tool_call)",
+      "completed": false
+    },
+    {
+      "run_id": "luna-pilot-04",
+      "successful_tool_calls": 1,
+      "result_count": 0,
+      "error_summary": "RuntimeError: pi_initial turn did not complete exactly one successful registered tool call (no_tool_call)",
+      "completed": false
+    },
+    {
+      "run_id": "luna-pilot-05",
+      "successful_tool_calls": 3,
+      "result_count": 1,
+      "error_summary": "RuntimeError: skeptic turn did not complete exactly one successful registered tool call (no_tool_call)",
+      "completed": false
+    }
+  ]
+}

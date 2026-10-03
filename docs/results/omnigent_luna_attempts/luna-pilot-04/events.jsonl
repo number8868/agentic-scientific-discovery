@@ -1,0 +1,4 @@
+{"actor":"host","attempt":0,"event_id":"31c579b9-c102-4dbb-a7ec-e58e59342ecf","event_type":"run_created","mode":"live","payload_ref":null,"run_id":"luna-pilot-04","seq":1,"timestamp_utc":"2026-10-03T21:37:27.697388+00:00"}
+{"actor":"host","attempt":0,"event_id":"b930909f-d8ed-4964-ad61-647b842b4529","event_type":"objective_registered","mode":"live","payload_ref":"NOVA-MAT live study","run_id":"luna-pilot-04","seq":2,"timestamp_utc":"2026-10-03T21:37:27.705185+00:00"}
+{"actor":"pi","attempt":0,"event_id":"d98f6345-e929-4e6c-a805-f9aa7f1661af","event_type":"hypothesis_frozen","mode":"live","payload_ref":"H-001","run_id":"luna-pilot-04","seq":3,"timestamp_utc":"2026-10-03T21:37:27.711089+00:00"}
+{"actor":"planner","attempt":0,"event_id":"449d89f5-5bc2-4d42-86f2-544f96fe66bf","event_type":"plan_registered","mode":"live","payload_ref":"NOVA-5898fec636507a85","run_id":"luna-pilot-04","seq":4,"timestamp_utc":"2026-10-03T21:38:01.519629+00:00"}

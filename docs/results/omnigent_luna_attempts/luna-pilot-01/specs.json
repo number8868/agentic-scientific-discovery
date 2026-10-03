@@ -1,0 +1,50 @@
+[
+  {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-bd9a48aa8ac53984",
+    "frozen_protocol_id": null,
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": null,
+    "review_id": null,
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "discovery",
+    "template": "family_screen",
+    "timeout_seconds": 120
+  },
+  {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-1131167600e27939",
+    "frozen_protocol_id": null,
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": "nova-result-d391224f8fca8f463a35cce2917c5e205e2b0547909860b069fde30d4b796783",
+    "review_id": "nova-result-d391224f8fca8f463a35cce2917c5e205e2b0547909860b069fde30d4b796783",
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "discovery",
+    "template": "threshold_sensitivity",
+    "timeout_seconds": 120
+  }
+]

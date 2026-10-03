@@ -1,5 +1,17 @@
 # Team status and handoff
 
+## Team A milestone 6 — real Luna two-round pilot verified, 2026-10-03
+
+Synced main `5d04bbf`, including B's final-protocol, process control and result-ownership changes. Real run `luna-pilot-06` completed the six-role `gpt-6-luna` workflow through the pinned Omnigent 0.16.0 internal SDK: nine model turns, six actual successful function calls, two real discovery Results, one model-authored review and eleven live events. Three clean no-tool responses were repaired once each. The review cites the actual first Result, correctly identifies sparse pass counts and interval width, and leads to its registered threshold follow-up. All frozen numerical results reproduce. See [the verified pilot](OMNIGENT_LIVE_PILOT.md), [portable evidence](results/omnigent_luna_run), and [independent verification](results/omnigent_luna_verification.json).
+
+The separately shipped Codex code-mode host was installed and its executable path passed explicitly through the SDK's environment filter. At most twelve model turns and six actual function calls are permitted; tool failures and partial execution fail closed. Five earlier incomplete attempts remain preserved separately. This establishes the bounded SDK pilot with fixed protocols and role order; the YAML multi-agent server, Databricks runtime and complete OS sandbox remain separate verification scopes.
+
+Fixed pipe backpressure in B's process controller by draining the result concurrently under a bounded deadline. The 8 MiB round-trip and worker timeout/reap checks passed; the complete Linux suite passed **145 tests**, including twelve controlled-host checks. The frozen prepared-data readiness check still passes. The data release is available and PR #5 was merged. Holdout outcomes remain closed.
+
+After recording the model run, synced B's newest main `f366048`, which bounds the YAML SDK launcher and prevents stale session/model reuse. Its launcher expects `.venv-omnigent`; the Linux checkout now links that path to the installed real Linux environment. The merged full suite passes **154 tests**. This compatibility check does not claim a new live YAML run.
+
+---
+
 ## Team A milestone 5 — exact data transfer and Linux readiness, 2026-10-03
 
 Synced B's real orchestration implementation at main `b24b080`. The prepared-data environment prerequisite is satisfied locally: all original/raw, protocol, audit, pipeline and dependency-file digests match the frozen reference. Added a standard-library, metadata-only readiness check with missing-file, tamper, path and symlink rejection tests. Linux passes all seven readiness tests; Windows passes six and skips the privileged symlink case.
