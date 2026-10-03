@@ -54,3 +54,22 @@ def test_live_bridge_timeout_saves_no_result(monkeypatch, tmp_path):
         live_bridge.execute_live_registered_experiment("E1")
     assert st.list_results() == []
     assert st.list_events("run")[-1].event_type == "tool_failed"
+
+def test_live_bridge_rejects_result_for_wrong_registered_spec(monkeypatch, tmp_path):
+    st, c, s = setup(tmp_path)
+    monkeypatch.setattr(live_bridge, "LIVE_CONTEXT_PATH", c)
+    wrong = Result("R", "other", s.sha256, s.dataset_sha256, "completed", "inconclusive", "s", "f", 0)
+    monkeypatch.setattr("nova.science_adapter.execute_science_experiment", lambda payload: wrong)
+    monkeypatch.setattr(live_bridge, "_controller_factory", InlineController)
+    with pytest.raises(ValueError, match="live execution failed"):
+        live_bridge.execute_live_registered_experiment("E1")
+    assert st.list_results() == []
+    assert st.list_events("run")[-1].event_type == "tool_failed"
+
+def test_live_bridge_does_not_accept_orphan_existing_result(monkeypatch, tmp_path):
+    st, c, s = setup(tmp_path)
+    orphan = Result("orphan", "E1", s.sha256, s.dataset_sha256, "completed", "inconclusive", "s", "f", 0)
+    st.save_result(orphan)
+    monkeypatch.setattr(live_bridge, "LIVE_CONTEXT_PATH", c)
+    with pytest.raises(ValueError, match="run-owned result"):
+        live_bridge.execute_live_registered_experiment("E1")

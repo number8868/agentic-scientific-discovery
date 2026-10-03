@@ -29,11 +29,12 @@ def test_plan_pi_review_followup_state_order(tmp_path, monkeypatch):
     initial_id = tools.commit_initial_spec("family_screen")
     spec = store.get_spec(initial_id)
     result = add_result(store, initial_id, spec.sha256)
+    store.append_event("live-run-01", "result", actor="runner", mode="live", payload_ref=result.result_id)
     review = tools.submit_live_review(result.result_id, "threshold may affect ordering", "threshold_sensitivity")
     assert review["recommended_template"] == "threshold_sensitivity"
     second_id = tools.commit_next_spec(result.result_id, "threshold_sensitivity")
     assert store.get_spec(second_id).parent_result_id == result.result_id
-    assert [event.actor for event in store.list_events("live-run-01")] == ["planner", "pi", "skeptic", "pi"]
+    assert [event.actor for event in store.list_events("live-run-01")] == ["planner", "pi", "runner", "skeptic", "pi"]
 
 
 def test_rejects_unbounded_choices_and_bad_references(tmp_path, monkeypatch):
@@ -71,3 +72,12 @@ def test_context_loader_contract_is_the_only_location_source(tmp_path, monkeypat
     monkeypatch.setattr(tools, "_active_dataset_sha256", lambda: "b" * 64)
     with pytest.raises(ValueError):
         tools.commit_initial_spec("family_screen")
+
+def test_review_rejects_result_without_current_run_ledger(tmp_path, monkeypatch):
+    db, store = setup_run(tmp_path, monkeypatch)
+    tools.register_initial_plan("family_screen", "ok")
+    initial_id = tools.commit_initial_spec("family_screen")
+    spec = store.get_spec(initial_id)
+    result = add_result(store, initial_id, spec.sha256)
+    with pytest.raises(ValueError, match="review result is not owned by this run"):
+        tools.submit_live_review(result.result_id, "concern", "threshold_sensitivity")

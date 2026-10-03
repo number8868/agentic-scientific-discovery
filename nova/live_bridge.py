@@ -63,7 +63,11 @@ def execute_live_registered_experiment(experiment_id: str) -> Result:
     if spec is None or spec.template not in {Template.FAMILY_SCREEN, Template.THRESHOLD_SENSITIVITY}:
         raise ValueError("experiment is not registered for live execution")
     existing = next((result for result in store.list_results() if result.experiment_id == experiment_id), None)
-    if existing is not None: return existing
+    if existing is not None:
+        if not any(event.event_type == "result" and event.actor == "runner" and
+                   event.payload_ref == existing.result_id for event in events):
+            raise ValueError("registered experiment has no run-owned result")
+        return existing
     try:
         payload = spec.to_dict(); payload.update(mode="live", run_id=run_id)
         store.append_event(run_id, "running", actor="runner", mode="live", payload_ref=experiment_id)
@@ -74,6 +78,9 @@ def execute_live_registered_experiment(experiment_id: str) -> Result:
         )
         result = execution.value
         if not isinstance(result, Result): raise TypeError("science adapter returned non-canonical result")
+        if (result.experiment_id != experiment_id or result.spec_sha256 != spec.sha256 or
+                result.dataset_sha256 != spec.dataset_sha256):
+            raise ValueError("science adapter returned a result for the wrong registered spec")
         store.save_result(result)
         store.append_event(run_id, "result", actor="runner", mode="live", payload_ref=result.result_id)
         return result
