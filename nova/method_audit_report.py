@@ -40,6 +40,8 @@ AUDIT_FIELDS = (
 )
 
 _UNKNOWN = "Unknown"
+_GAP_WINDOW_EV = (1.1, 1.8)
+_EHULL_MAX_EV_ATOM = 0.05
 
 
 def ensure_output_dir_available(output_dir: str | Path) -> Path:
@@ -162,6 +164,8 @@ def _fmt_flags(value: Any) -> str:
 
 def _validate_rows(rows: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
     parsed = []
+    seen_jids: set[str] = set()
+    seen_family_formula: set[tuple[str, str]] = set()
     for index, original in enumerate(rows):
         row = _as_mapping(original, f"audit row {index}")
         missing = [field for field in AUDIT_FIELDS if field not in row]
@@ -181,8 +185,47 @@ def _validate_rows(rows: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]
                 raise ValueError(f"audit row {index} {key} must be text")
         if row["candidate_label"] not in CANDIDATE_LABELS:
             raise ValueError(f"audit row {index} has an unknown candidate_label")
+        if row["family"] not in FAMILY_ORDER:
+            raise ValueError(f"audit row {index} has an unknown family")
+        if not row["jid"].strip() or not row["reduced_formula"].strip():
+            raise ValueError(f"audit row {index} JID and reduced_formula must be nonempty")
+        if row["jid"] in seen_jids:
+            raise ValueError(f"duplicate audit JID: {row['jid']}")
+        family_formula = (row["family"], row["reduced_formula"])
+        if family_formula in seen_family_formula:
+            raise ValueError(f"duplicate audit family/reduced_formula: {family_formula}")
+        seen_jids.add(row["jid"])
+        seen_family_formula.add(family_formula)
+        opt_gap, mbj_gap, ehull = (row[key] for key in ("opt_gap_ev", "mbj_gap_ev", "ehull_ev_atom"))
+        ehull_valid = row["ehull_valid"] and ehull is not None
+        expected_opt = _screen_status(opt_gap, ehull, ehull_valid)
+        expected_mbj = _screen_status(mbj_gap, ehull, ehull_valid)
+        expected_paired = opt_gap is not None and mbj_gap is not None and ehull_valid
+        expected_label = _candidate_label(expected_opt, expected_mbj)
+        expected_shortlisted = expected_opt == "pass" or expected_mbj == "pass"
+        for key, expected in (("opt_status", expected_opt), ("mbj_status", expected_mbj),
+                              ("paired", expected_paired), ("candidate_label", expected_label),
+                              ("shortlisted", expected_shortlisted)):
+            if row[key] != expected:
+                raise ValueError(f"audit row {index} {key} contradicts frozen screening semantics")
         parsed.append(row)
     return _ordered_rows(parsed)
+
+
+def _screen_status(gap: float | None, ehull: float | None, ehull_valid: bool) -> str:
+    if gap is None or ehull is None or not ehull_valid:
+        return "unknown"
+    return "pass" if _GAP_WINDOW_EV[0] <= gap <= _GAP_WINDOW_EV[1] and ehull <= _EHULL_MAX_EV_ATOM else "fail"
+
+
+def _candidate_label(opt_status: str, mbj_status: str) -> str:
+    labels = {
+        ("pass", "pass"): "passes_both_methods", ("pass", "fail"): "opt_only",
+        ("fail", "pass"): "mbj_only", ("pass", "unknown"): "opt_pass_mbj_unknown",
+        ("unknown", "pass"): "mbj_pass_opt_unknown", ("fail", "fail"): "neither_passes",
+        ("unknown", "unknown"): "insufficient_evidence",
+    }
+    return labels.get((opt_status, mbj_status), "no_current_pass_incomplete_evidence")
 
 
 def _validate_result(result: Mapping[str, Any]) -> None:
@@ -229,6 +272,116 @@ def _validate_result(result: Mapping[str, Any]) -> None:
         elif delta is None or not math.isclose(delta, expected_delta, rel_tol=0.0, abs_tol=1e-12):
             raise ValueError(f"arm {arm_name} delta does not match its family rates")
 
+
+def _validate_row_aggregates(result: Mapping[str, Any], rows: list[Mapping[str, Any]]) -> None:
+    """Cross-check all aggregates derivable from the row-level evidence."""
+    counts = {label: 0 for label in CANDIDATE_LABELS}
+    by_family = {family: {label: 0 for label in CANDIDATE_LABELS} for family in FAMILY_ORDER}
+    groups: dict[str, dict[str, tuple[int, int, int]]] = {}
+    transitions = {family: {key: 0 for key in ("pass_to_pass", "pass_to_fail", "fail_to_pass", "fail_to_fail")} for family in FAMILY_ORDER}
+    for row in rows:
+        label, family = row["candidate_label"], row["family"]
+        counts[label] += 1
+        by_family[family][label] += 1
+        if row["paired"]:
+            transitions[family][f"{row['opt_status']}_to_{row['mbj_status']}"] += 1
+    for key, expected in (("candidate_counts", counts), ("candidate_counts_by_family", by_family), ("transitions", transitions)):
+        actual = _as_mapping(result[key], key)
+        for k, value in expected.items():
+            if k not in actual:
+                raise ValueError(f"{key} is missing {k}")
+            if isinstance(value, dict):
+                nested = _as_mapping(actual[k], f"{key} {k}")
+                if any(_count(nested.get(label), f"{key} {k} {label}") != n for label, n in value.items()):
+                    raise ValueError(f"{key} {k} does not match audit rows")
+            elif _count(actual[k], f"{key} {k}") != value:
+                raise ValueError(f"{key} does not match audit rows")
+    for arm in ARM_ORDER:
+        summaries = result["arms"][arm]["groups_summary"]
+        arm_samples_present = True
+        for family in FAMILY_ORDER:
+            subset = [r for r in rows if r["family"] == family and (arm == "opt_all" or r["paired"])]
+            method = "mbj_status" if arm == "mbj_paired" else "opt_status"
+            observed = sum(r[method] in {"pass", "fail"} for r in subset)
+            passed = sum(r[method] == "pass" for r in subset)
+            arm_samples_present &= observed > 0
+            group = summaries[family]
+            if (group["n_total"], group["n_observed"], group["n_pass"]) != (len([r for r in rows if r["family"] == family]), observed, passed):
+                raise ValueError(f"arm {arm} {family} counts do not match audit rows")
+        arm_result = result["arms"][arm]
+        if (arm_result.get("delta") is not None) != arm_samples_present or (arm_result.get("resampling_interval") is not None) != arm_samples_present:
+            raise ValueError(f"arm {arm} delta/interval availability contradicts observed family samples")
+        flags = _as_mapping(result["arms"][arm].get("quality_flags"), f"arm {arm} quality_flags")
+        minimum = 40 if arm == "opt_all" else 20
+        gate_pass = True
+        endpoint_ok = True
+        for family in FAMILY_ORDER:
+            group = summaries[family]
+            family_flags = _as_mapping(flags.get(family), f"arm {arm} {family} flags")
+            enough = group["n_observed"] >= minimum
+            coverage_ok = (group["coverage"] is not None and group["coverage"] >= 0.8) if arm == "opt_all" else None
+            mixed = 0 < group["n_pass"] < group["n_observed"]
+            expected_family_flags = {"minimum_evaluable_count_pass": enough, "minimum_coverage_pass": coverage_ok, "endpoint_has_pass_and_fail": mixed}
+            if any(family_flags.get(k) != v for k, v in expected_family_flags.items()):
+                raise ValueError(f"arm {arm} {family} quality flags do not match audit rows")
+            gate_pass &= enough and coverage_ok is not False
+            endpoint_ok &= mixed
+        interval = result["arms"][arm].get("resampling_interval")
+        contains_zero = None if interval is None else interval[0] <= 0 <= interval[1]
+        expected_status = "data_limited" if not gate_pass else "inconclusive" if not endpoint_ok or contains_zero is not False else "supported_in_snapshot" if interval[0] > 0 else "reversed_in_snapshot" if interval[1] < 0 else "inconclusive"
+        expected_flags = {"minimum_sample_and_coverage_pass": gate_pass, "endpoint_non_degenerate": endpoint_ok, "interval_contains_zero": contains_zero, "paired_scope_conditional_only": arm != "opt_all"}
+        if any(flags.get(k) != v for k, v in expected_flags.items()) or result["arms"][arm].get("scientific_status") != expected_status:
+            raise ValueError(f"arm {arm} status or aggregate quality flags contradict row evidence and interval")
+    paired = _as_mapping(result["paired_method_change"].get("groups_summary"), "paired change groups_summary")
+    for family in FAMILY_ORDER:
+        subset = [r for r in rows if r["family"] == family and r["paired"]]
+        group = paired[family]
+        vals = [int(r["mbj_status"] == "pass") - int(r["opt_status"] == "pass") for r in subset]
+        expected = (len(subset), sum(r["opt_status"] == "pass" for r in subset), sum(r["mbj_status"] == "pass" for r in subset), sum(v == 1 for v in vals), sum(v == -1 for v in vals))
+        actual = tuple(_count(group.get(k), f"paired {family} {k}") for k in ("n_paired", "n_opt_pass", "n_mbj_pass", "n_gained", "n_lost"))
+        if actual != expected:
+            raise ValueError(f"paired method change {family} counts do not match audit rows")
+    paired_flags = _as_mapping(result["paired_method_change"].get("quality_flags"), "paired change quality_flags")
+    paired_values: dict[str, list[int]] = {}
+    enough = all(paired[family]["n_paired"] >= 20 for family in FAMILY_ORDER)
+    constant: dict[str, bool] = {}
+    nonconstant = True
+    for family in FAMILY_ORDER:
+        group = paired[family]
+        vals = [int(r["mbj_status"] == "pass") - int(r["opt_status"] == "pass") for r in rows if r["family"] == family and r["paired"]]
+        paired_values[family] = vals
+        expected_mean = sum(vals) / len(vals) if vals else None
+        actual_mean = _finite_number(group.get("mean_change"), f"paired {family} mean_change")
+        if expected_mean is None and actual_mean is not None or expected_mean is not None and (actual_mean is None or not math.isclose(actual_mean, expected_mean, rel_tol=0, abs_tol=1e-12)):
+            raise ValueError(f"paired method change {family} mean does not match audit rows")
+        constant[family] = bool(vals and len(set(vals)) == 1)
+        nonconstant &= len(vals) >= 2 and not constant[family]
+        family_flags = _as_mapping(paired_flags.get(family), f"paired change {family} flags")
+        if family_flags.get("minimum_paired_rows_pass") != (len(vals) >= 20) or family_flags.get("paired_differences_constant") != constant[family]:
+            raise ValueError(f"paired method change {family} quality flags do not match audit rows")
+    paired_interval = result["paired_method_change"].get("resampling_interval")
+    paired_samples_present = all(paired_values[family] for family in FAMILY_ORDER)
+    paired_delta_expected = (sum(paired_values["chalcogenide"]) / len(paired_values["chalcogenide"])
+                             - sum(paired_values["oxide"]) / len(paired_values["oxide"])) if paired_samples_present else None
+    paired_delta_actual = _finite_number(result["paired_method_change"].get("delta"), "paired method delta")
+    if (paired_delta_expected is None and (paired_delta_actual is not None or paired_interval is not None)
+            or paired_delta_expected is not None and (paired_delta_actual is None or paired_interval is None or not math.isclose(paired_delta_actual, paired_delta_expected, rel_tol=0, abs_tol=1e-12))):
+        raise ValueError("paired method delta/interval availability or delta contradicts audit rows")
+    contains_zero = None if paired_interval is None else paired_interval[0] <= 0 <= paired_interval[1]
+    paired_status = "data_limited" if not enough else "inconclusive" if not nonconstant or contains_zero is not False else "direction_positive" if paired_interval[0] > 0 else "direction_negative" if paired_interval[1] < 0 else "inconclusive"
+    if (paired_flags.get("minimum_paired_rows_pass") != enough or paired_flags.get("paired_differences_nonconstant") != nonconstant
+            or paired_flags.get("interval_contains_zero") != contains_zero
+            or paired_flags.get("coverage_limits_generalization_to_all_eligible") is not True
+            or result["paired_method_change"].get("scientific_status") != paired_status):
+        raise ValueError("paired method change status or quality flags contradict row evidence and interval")
+    for family in FAMILY_ORDER:
+        all_group = result["arms"]["opt_all"]["groups_summary"][family]
+        paired_group = result["arms"]["opt_paired"]["groups_summary"][family]
+        expected_shift = (paired_group["observed_rate"] - all_group["observed_rate"]
+                          if paired_group["observed_rate"] is not None and all_group["observed_rate"] is not None else None)
+        actual_shift = _finite_number(result["subset_shift"].get(family), f"subset_shift {family}")
+        if expected_shift is None and actual_shift is not None or expected_shift is not None and (actual_shift is None or not math.isclose(actual_shift, expected_shift, rel_tol=0, abs_tol=1e-12)):
+            raise ValueError(f"subset_shift {family} does not match arm rates")
 
 def _summary_table_rows(result: Mapping[str, Any]) -> list[list[Any]]:
     arms = result["arms"]
@@ -543,10 +696,7 @@ def write_report(result: Mapping[str, Any], audit_rows: Iterable[Mapping[str, An
     target = ensure_output_dir_available(output_dir)
     _validate_result(_as_mapping(result, "result"))
     rows = _validate_rows(audit_rows)
-    if "n_eligible" in result and _count(result["n_eligible"], "n_eligible") != len(rows):
-        raise ValueError("n_eligible does not match the number of full audit rows")
-    if "n_shortlisted" in result and _count(result["n_shortlisted"], "n_shortlisted") != sum(row["shortlisted"] for row in rows):
-        raise ValueError("n_shortlisted does not match the shortlisted audit rows")
+    _validate_row_aggregates(result, rows)
 
     shortlist_rows = [row for row in rows if row["shortlisted"]]
     artifacts = {

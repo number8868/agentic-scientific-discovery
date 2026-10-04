@@ -50,7 +50,7 @@ def _result() -> dict:
         "mbj_pass_opt_unknown", "neither_passes", "no_current_pass_incomplete_evidence",
         "insufficient_evidence",
     )
-    return {
+    result = {
         "schema_version": 1,
         "template": "method_sensitivity",
         "execution_status": "completed",
@@ -112,6 +112,16 @@ def _result() -> dict:
         "n_eligible": 3,
         "n_shortlisted": 2,
     }
+    protocol, _ = method_sensitivity._read_method_protocol()
+    raw_rows = [{
+        "jid": row["jid"], "reduced_formula": row["reduced_formula"], "family": row["family"],
+        "opt_gap_ev": row["opt_gap_ev"], "mbj_gap_ev": row["mbj_gap_ev"],
+        "ehull_ev_atom": row["ehull_ev_atom"], "ehull_valid": row["ehull_valid"],
+        "split": "discovery", "excluded": False, "is_representative": True,
+    } for row in _rows()]
+    analysis, _ = method_sensitivity.analyze_rows(raw_rows, protocol)
+    result.update(analysis)
+    return result
 
 
 def _row(
@@ -179,7 +189,7 @@ def test_full_audit_csv_keeps_unknowns_blank_and_shortlist_is_subset(tmp_path: P
     markdown = (result["output_dir"] / "report.md").read_text(encoding="utf-8")
     assert "observed rate" in markdown.lower()
     assert "Unknown" in markdown
-    assert "paired_coverage_generalizable=false" in markdown
+    assert "coverage_limits_generalization_to_all_eligible=true" in markdown
 
 
 def test_reports_are_deterministic_and_manifest_hashes_each_output(tmp_path: Path):
@@ -251,6 +261,35 @@ def test_writer_refuses_to_overwrite_existing_directory(tmp_path: Path):
         write_report(_result(), _rows(), existing)
 
     assert marker.read_text(encoding="utf-8") == "keep"
+
+
+def test_writer_rejects_gap_status_and_candidate_contradictions(tmp_path: Path):
+    rows = _rows()
+    rows[1]["mbj_gap_ev"] = 9.0
+    with pytest.raises(ValueError, match="mbj_status contradicts"):
+        write_report(_result(), rows, tmp_path / "bad-gap")
+
+    rows = _rows()
+    rows[1]["shortlisted"] = False
+    with pytest.raises(ValueError, match="shortlisted contradicts"):
+        write_report(_result(), rows, tmp_path / "bad-shortlist")
+
+
+def test_writer_rejects_identity_and_aggregate_contradictions(tmp_path: Path):
+    rows = _rows()
+    rows[1]["jid"] = rows[0]["jid"]
+    with pytest.raises(ValueError, match="duplicate audit JID"):
+        write_report(_result(), rows, tmp_path / "duplicate-jid")
+
+    result = _result()
+    result["candidate_counts"]["passes_both_methods"] += 1
+    with pytest.raises(ValueError, match="candidate_counts does not match"):
+        write_report(result, _rows(), tmp_path / "bad-counts")
+
+    result = _result()
+    result["arms"]["mbj_paired"]["scientific_status"] = "supported_in_snapshot"
+    with pytest.raises(ValueError, match="status or aggregate quality flags"):
+        write_report(result, _rows(), tmp_path / "bad-status")
 
 
 def test_synthetic_science_analysis_writes_through_report_schema(tmp_path: Path):

@@ -23,6 +23,7 @@ from scripts.run_omnigent_live import (
     _consume_role_turn,
     _new_codex_executor,
     _run_role_with_repair,
+    _run_role_sequence,
 )
 
 
@@ -428,6 +429,31 @@ def test_role_does_not_repair_after_tool_callback_failure(tmp_path, monkeypatch)
     attempts = [record for record in records if record["event"] == "ModelTurnObserved"]
     assert len(attempts) == 1 and attempts[0]["status"] == "executor_error"
     assert not any(record["event"] == "NoToolCallRepairScheduled" for record in records)
+
+
+def test_total_host_deadline_aborts_sequence_before_next_role_or_tool(tmp_path):
+    host = LivePilotHost(tmp_path / "unused.sqlite", "deadline-test", api={})
+    audit_path = tmp_path / "deadline-audit.jsonl"
+    audit = JsonlAudit(audit_path)
+    roles_started: list[str] = []
+
+    async def run_role(role: str, role_turn: int, model_turn: int):
+        roles_started.append(role)
+        await asyncio.sleep(0.05)
+        host.tool_calls += 1
+        host.phase += 1
+        return {"role": role}, model_turn + 1
+
+    try:
+        with pytest.raises(TimeoutError, match="total deadline"):
+            asyncio.run(_run_role_sequence(host, audit, run_role, total_timeout=0.01))
+    finally:
+        audit.close()
+
+    assert roles_started == ["planner"]
+    assert host.aborted and host.phase == 0 and host.tool_calls == 0
+    records = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+    assert any(record["event"] == "PilotDeadlineExceeded" for record in records)
 
 
 def test_codex_overrides_are_pinned_and_applied_before_startup(tmp_path, monkeypatch):

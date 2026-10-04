@@ -36,6 +36,8 @@ OMNIGENT_SDK_PIN = "0.16.0"
 CODEX_APP_SERVER_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false")
 CODE_MODE_HOST_PATH_ENV = "CODEX_CODE_MODE_HOST_PATH"
 TURN_TIMEOUT_SECONDS = 120
+TOTAL_RUN_TIMEOUT_SECONDS = 720
+EXECUTOR_CLOSE_TIMEOUT_SECONDS = 10
 MAX_ROLE_TURNS = 8
 MAX_MODEL_TURNS = 16
 MAX_TOOL_CALLS = 8
@@ -743,6 +745,37 @@ async def _run_role_with_repair(executor: Any, host: LivePilotHost, audit: Jsonl
     raise RuntimeError(f"{role} exhausted its one no-tool repair attempt")
 
 
+async def _run_role_sequence(host: LivePilotHost, audit: JsonlAudit,
+                             run_role: Callable[[str, int, int], Any],
+                             total_timeout: float = TOTAL_RUN_TIMEOUT_SECONDS) -> tuple[list[dict[str, Any]], int]:
+    """Apply one wall-clock budget to every role, repair, and awaited tool callback.
+
+    Cancellation stops asyncio work; it cannot kill an already running thread.
+    The only science worker remains separately bounded by ProcessController's
+    120-second limit, so a timed-out worker may finish in the background for
+    at most that bound while the host records and exports the failure.
+    """
+    async def run_all() -> tuple[list[dict[str, Any]], int]:
+        turns: list[dict[str, Any]] = []
+        model_turn = 1
+        for role_turn, role in enumerate(ROLE_ORDER, start=1):
+            if role_turn > MAX_ROLE_TURNS:
+                raise RuntimeError("pilot role-turn budget exceeded")
+            observed, model_turn = await run_role(role, role_turn, model_turn)
+            turns.append(observed)
+        if host.phase != MAX_ROLE_TURNS or host.tool_calls != MAX_TOOL_CALLS:
+            raise RuntimeError("pilot did not complete its exact eight-turn protocol")
+        return turns, model_turn
+
+    try:
+        return await asyncio.wait_for(run_all(), timeout=total_timeout)
+    except asyncio.TimeoutError as exc:
+        host.aborted = True
+        audit.write("PilotDeadlineExceeded", timeout_seconds=total_timeout,
+                    completed_role_turns=host.phase, tool_calls=host.tool_calls)
+        raise TimeoutError(f"Omnigent pilot exceeded its {total_timeout:g}-second total deadline") from exc
+
+
 def _call_id(metadata: Any) -> str | None:
     if not isinstance(metadata, Mapping):
         return None
@@ -913,7 +946,8 @@ def _export(database: Path, run_id: str, run_dir: Path, turns: list[dict[str, An
 
 
 async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
-                        timeout: int = TURN_TIMEOUT_SECONDS, model: str = MODEL) -> tuple[LivePilotHost, list[dict[str, Any]]]:
+                        timeout: int = TURN_TIMEOUT_SECONDS, model: str = MODEL,
+                        total_timeout: float = TOTAL_RUN_TIMEOUT_SECONDS) -> tuple[LivePilotHost, list[dict[str, Any]]]:
     from importlib.metadata import version as package_version
     from omnigent.inner.codex_executor import CodexExecutor
 
@@ -922,19 +956,20 @@ async def _run_six_turns(database: Path, run_id: str, audit: JsonlAudit,
     with tempfile.TemporaryDirectory(prefix="nova-codex-cwd-", dir="/tmp") as model_cwd:
         executor = _new_codex_executor(CodexExecutor, model_cwd, package_version("omnigent"), model=model)
         try:
-            model_turn = 1
-            for role_turn, role in enumerate(ROLE_ORDER, start=1):
-                if role_turn > MAX_ROLE_TURNS:
-                    raise RuntimeError("pilot role-turn budget exceeded")
-                observed, model_turn = await _run_role_with_repair(
-                    executor, host, audit, role, role_turn, model_turn, timeout,
-                    model=model,
+            async def run_role(role: str, role_turn: int, model_turn: int):
+                observed, next_model_turn = await _run_role_with_repair(
+                    executor, host, audit, role, role_turn, model_turn, timeout, model=model,
                 )
-                turns.append(observed)
-            if host.phase != MAX_ROLE_TURNS or host.tool_calls != MAX_TOOL_CALLS:
-                raise RuntimeError("pilot did not complete its exact eight-turn protocol")
+                return observed, next_model_turn
+
+            turns, _ = await _run_role_sequence(host, audit, run_role, total_timeout=total_timeout)
         finally:
-            await executor.close()
+            try:
+                await asyncio.wait_for(executor.close(), timeout=EXECUTOR_CLOSE_TIMEOUT_SECONDS)
+            except asyncio.TimeoutError:
+                audit.write("ExecutorCloseTimedOut", timeout_seconds=EXECUTOR_CLOSE_TIMEOUT_SECONDS)
+            except Exception as exc:
+                audit.write("ExecutorCloseFailed", error_summary=_safe_text(f"{type(exc).__name__}: {exc}", 180))
     return host, turns
 
 
