@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-d8faa3a48f49ca9acb267e755d0a0fd83e0d44c26eceaa4c88c521691e8fc2c3"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-d8faa3a48f49ca9acb267e755d0a0fd83e0d44c26eceaa4c88c521691e8fc2c3"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-3562f4eb9143069e",
+    "reason": "The positive discovery contrast (delta 0.001508) rests on only 3 oxide and 6 chalcogenide passes, with a resampling interval of [0.000111, 0.003222] whose lower bound is close to zero. This supports the recorded snapshot but leaves robustness to the frozen threshold or method variations uncertain; the current Result does not establish that robustness.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-d8faa3a48f49ca9acb267e755d0a0fd83e0d44c26eceaa4c88c521691e8fc2c3"
+  }
+]

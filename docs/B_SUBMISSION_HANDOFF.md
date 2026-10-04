@@ -21,6 +21,12 @@ acceptance.
 
 ## Acceptance still open
 
+- Structured final PI capture is implemented on 7e83952 (382 regression tests
+  passed), preserving the exact TurnComplete text and linking it to the guarded
+  successful freeze call. Fresh run 05 failed earlier: Runner's scientific tool
+  completed, but its model turn failed and PI reported exhausted tool calls.
+  Finalization was not entered; this does not live-validate the new capture.
+  See [run 05 evidence](results/native_adaptive_live_05_runner_turn_failed/README.md).
 - Native run 04 completed discovery, final review and freeze, but exited 1
   because the final CLI output did not match the guarded response metadata hash.
   The mismatch remains unexplained. The preserved failure and posthoc text

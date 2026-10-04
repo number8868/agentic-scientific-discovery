@@ -1,5 +1,21 @@
 # Team status and handoff
 
+## B run 05 update — structured reply fix implemented, Runner feedback failed
+
+PR #17 is merged. B now records exact post-freeze guarded PI TurnComplete text
+in a private run-owned file and uses that text rather than CLI display for
+strong PID/call-ID/hash verification. Whitespace is preserved. Full regression
+on 7e83952: 382 tests, zero errors/failures/skips, 22.623 seconds.
+
+Fresh native run 05 returned an actual discovery Result but its Runner model
+turn failed. PI also reported exhaustion of the 16-call session policy. Host
+correctly rejected missing successful Runner feedback; original CLI exit 1 is
+preserved. Finalization was not reached, so the new reply capture has not yet
+passed live acceptance. No holdout was executed, no A scientific code changed,
+and no clean workflow success is claimed. Scientific artifact audit passes,
+not native acceptance. See [run 05 evidence](results/native_adaptive_live_05_runner_turn_failed/README.md)
+and [B submission handoff](B_SUBMISSION_HANDOFF.md).
+
 ## B run 04 update — final protocol frozen, native acceptance still failed
 
 PR #15 and #16 are merged; run 04 started from main c6cea09 with no tracked

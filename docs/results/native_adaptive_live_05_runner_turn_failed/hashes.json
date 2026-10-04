@@ -1,0 +1,14 @@
+{
+  "adaptive_evidence.json": "6360ea6ae84585f6e8c5a391d4814bac153b6ac08d233fdef1572e18d068331d",
+  "events.jsonl": "2b3d6f1010e37e73b57bf389bd9b83de74c0f3edd5c282b7c2fa1360842d570f",
+  "manifest.json": "a61bf2f7950bd3fa9c62f93f937ab23aa6beff5d933ec25defbc0af81a7d0a9e",
+  "native-model-audit.jsonl": "e193b2a2c26f8242712c621e677d3ce80fe4ab1e982a1543e24afb1a66447688",
+  "native-runtime-manifest.json": "6496282510b9bb11798ed700e02aa2ef4bf1dc8cd64025034403a18dde62b848",
+  "native-runtime-verification.json": "e7f232b92dc9cbee295356ffc7906831b9d03282447944c9115ef6d80953fbe1",
+  "results.json": "4e35bed2e0f1087a44a73d9685356645243896a9ae1f67eda5d5af1d78c02418",
+  "reviews.json": "23016e0518e91168d4fafc9a850ecf60525b28d2e593009f78f869cbba051809",
+  "science-artifacts.json": "750975a653bd6e280faa07f088fab472be795a68bd1ddf958b68d366b482027c",
+  "science-artifacts/science-payload-01a40eec0477d9dbec4e2a25e899b6d6ffa39824784f5cc02e07eefc742306e2.json": "01a40eec0477d9dbec4e2a25e899b6d6ffa39824784f5cc02e07eefc742306e2",
+  "science-artifacts/science-payload-95674ea01aad5777aa41fbd72f0df5cbe9ad5f3bc6ea30016c6671e0f0d9b26a.json": "95674ea01aad5777aa41fbd72f0df5cbe9ad5f3bc6ea30016c6671e0f0d9b26a",
+  "specs.json": "507bc456c91f4645bfba0efa0a01e38745d390f4ff678d3088ce3055160af40c"
+}
