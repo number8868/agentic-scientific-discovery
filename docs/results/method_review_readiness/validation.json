@@ -1,0 +1,61 @@
+{
+  "actual_calls": {
+    "browser_verified": false,
+    "holdout_executed": false,
+    "new_model_calls": 0,
+    "new_science_workers": 0
+  },
+  "limitations": [
+    "The emitted schema constrains structure; domain validation is also required.",
+    "Unrestricted assessment and rationale semantics are not verified.",
+    "Passing validation does not attest an independent model reviewer or a complete autonomous workflow.",
+    "Real holdout requires the original native frozen family/threshold run."
+  ],
+  "linux_regression": {
+    "errors": 0,
+    "failures": 0,
+    "new_review_tests": 40,
+    "numpy": "2.5.3",
+    "pytest_seconds": 36.939,
+    "python": "3.12.13",
+    "scope": "Combined A/B engineering suite in isolated checkout without prepared data or private live context",
+    "skipped": 0,
+    "status": "passed",
+    "tests": 320
+  },
+  "payload_bytes": {
+    "review-input.json": 8230,
+    "review-output-schema.json": 6334
+  },
+  "portable_evidence_probe": {
+    "default_sample": 3,
+    "explicit_all_shortlist_verified": true,
+    "negative_cases_rejected": 10,
+    "record": "independent_verification.json",
+    "review_outputs": "Host-written engineering fixtures; not model responses",
+    "source": "Existing real registered method evidence; not a new scientific computation",
+    "total_shortlist": 19
+  },
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "schema_version": 1,
+  "team_b_base": "44bc563",
+  "tested_source_sha256": {
+    "nova/method_review.py": "cd5f5fded5b8757f28c17359e8787f5d7eb1ef7cf5776ae951ed12d097d249ac",
+    "scripts/check_method_review.py": "3eed396b6951e02fcf1f5c3305a0fa04b2449ff2209a0ae759acae63f7342db2",
+    "tests/test_method_review.py": "d2426bb27da3adaf8a3969322ec3d75be5774b9deb29a70368c516b0be959f2f",
+    "tests/test_method_review_cli.py": "76dbb9309410419fdb765a4967279f21a31d9f836c0ee54795e02956c52a96cc"
+  },
+  "windows_focused": {
+    "cli_passed": 13,
+    "cli_skipped": 1,
+    "method_review_passed": 26,
+    "skip_scope": "Windows file-symlink creation privilege; the same case passed on Linux"
+  }
+}
