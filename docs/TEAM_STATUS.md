@@ -1,29 +1,53 @@
 # Team status and handoff
 
-## Team A milestone 10 — scientific review integration in progress, 2026-10-03
+## Team A milestone 10 — scientific review interface delivered, 2026-10-03
 
 Refreshed a clean worktree: main remains `01f17db`, and B has merged A's
 PR #11 into `codex/b-adaptive-discovery` at `44bc563`. The new
 `codex/method-review-integration` branch starts from that exact team base.
 The formal native review/return/next-decision implementation is not yet in
-the fetched branch, so A is adding an independent scientific interface
-without editing B's orchestration or shared contracts.
+the fetched branch. A's [PR #12](https://github.com/number8868/agentic-scientific-discovery/pull/12)
+delivers an independent scientific interface without editing B's
+orchestration or shared contracts.
 
-Two coding helpers are `gpt-6-luna` / `max`: one owns a pure compact method
-review input/schema/validator, and one owns its portable CLI and boundary
-tests. The parent independently reviews scientific scope and will run the
-complete Linux regression. See the [review interface](METHOD_REVIEW_HANDOFF.md).
+Two coding helpers used `gpt-6-luna` / `max`: one implemented the pure
+compact method review input/schema/validator, and one implemented the
+portable CLI and boundary tests. Independent review found and fixed source
+identity, clean-checkout startup, integer/float equality and citation gaps.
+The final complete Linux regression passes **320 tests with no skips**,
+including 40 new cases. Windows focused results are 26 core passes and
+13 CLI passes with one file-symlink privilege skip; Linux exercises that
+case. See the [review interface](METHOD_REVIEW_HANDOFF.md).
 
-The intended deliverable validates exact candidate/arm references and
+The delivered interface validates exact candidate/arm references and
 declared facts, preserves null/unknown and separate statistical statuses,
-discloses host sampling and accepts only host-supplied advisory actions.
-It does not certify unrestricted rationale text or independent model role
-identity. No model call or new scientific computation is part of this stage.
+discloses host sampling, retains frozen quality flags and units, and accepts
+only cited host-supplied advisory actions. It does not certify unrestricted
+rationale text or independent model role identity.
+
+The [portable readiness kit](results/method_review_readiness/README.md)
+uses actual published discovery evidence. Independently checked the default
+three-category sample and explicit all-19 selection with host-written
+engineering review fixtures. Ten incorrect-review cases are rejected:
+unknown-as-fail/zero, zero-endpoint support, cross-JID reference, percentage
+coverage, boolean counts, conflated contrast status, wrong hull stability,
+holdout action and unsupported recommendation citation. Source files remain
+unchanged. The CLI reads only the three named source-package files and
+creates no accepted output for rejected reviews. No new model call,
+scientific worker, browser verification or holdout result is part of this
+stage. The published kit contains input/schema, not a purported model review.
 
 Refreshed read-only native metadata still shows `luna-pilot-06`, two Result
 events, one review and zero final-protocol records. Outcome rows were not
 read. Real holdout must still use the original native frozen run and existing
 single-attempt gate; that missing lineage cannot be manufactured from exports.
+
+B's next integration is a real independent reviewer turn using this input,
+validation of the returned review, and PI continuation/stop from the actual
+result and critique. Preserve role/tool-result/timing/usage evidence and
+measure the rule/run-all comparison; passing A's validator alone does not
+establish that loop or acceleration. Keep the old method export scope until
+B's native multi-step record shape requires an explicit change.
 
 ---
 

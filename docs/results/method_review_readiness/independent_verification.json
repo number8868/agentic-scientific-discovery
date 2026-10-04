@@ -1,0 +1,39 @@
+{
+  "default_review_input_sha256": "2385f3f74096280fd1cd4cf61a98427074dc9bdad2affc40e949e6807347f925",
+  "default_sample_count": 3,
+  "default_sample_jids": [
+    "JVASP-107267",
+    "JVASP-121313",
+    "JVASP-120874"
+  ],
+  "explicit_full_shortlist_count": 19,
+  "explicit_full_shortlist_input_sha256": "94399cdde7d3667ddfaf32304a1e49bf76be94fce3eb202d438f66115a83e71b",
+  "free_text_semantics_not_verified": true,
+  "holdout_executed": false,
+  "input_manifest_checksums_pass": true,
+  "integer_float_equivalence_passed": true,
+  "negative_cases_rejected": [
+    "unknown_is_not_failure",
+    "unknown_is_not_zero_gap",
+    "zero_oxide_endpoint_not_supported",
+    "different_candidate_reference",
+    "coverage_not_percentage",
+    "boolean_is_not_zero_count",
+    "contrast_is_not_family_status",
+    "wrong_stability_value",
+    "holdout_not_an_advisory_action",
+    "unsupported_recommendation_reference"
+  ],
+  "new_model_calls": 0,
+  "new_science_workers": 0,
+  "positive_fixture_validation_passed": true,
+  "scope": "Real published discovery evidence input plus host-written engineering review fixtures; no model or science execution",
+  "source_evidence_sha256": "c1d0a12afe09474821b3c09bd7f96e2c04a69d7945b023838a1ace7087e0752c",
+  "source_files_checked": [
+    "manifest.json",
+    "method-audit.json",
+    "method-evidence.json"
+  ],
+  "source_package_files_unchanged": true,
+  "total_shortlist_count": 19
+}
