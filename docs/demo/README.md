@@ -1,39 +1,81 @@
 # NOVA-MAT submission videos
 
 NOVA-MAT turns material-screening evidence into the next scientific decision.
-These two English videos present the completed `native-adaptive-live-09` loop:
+These English clips present the completed `native-adaptive-live-09` loop:
 the agents review an actual Result, choose a follow-up, execute a registered
 experiment, complete controlled validation and export traceable evidence.
 Team introduction is handled separately by the team.
 
+For the current submission, pair B's Product demo with the revised Technical
+walkthrough below, which matches its visual style:
+
 | Submission field | Local file | Duration | Size |
 |---|---|---:|---:|
-| Product demo | `D:\Workspace\HackOS\.verification-repro\demo-videos\product_demo.mp4` | 55.00 seconds | about 2.36 MB |
-| Technical walkthrough | `D:\Workspace\HackOS\.verification-repro\demo-videos\technical_walkthrough.mp4` | 57.97 seconds | about 2.67 MB |
+| **Technical walkthrough — revised** | `D:\Workspace\HackOS\.verification-repro\demo-videos-bstyle\technical_walkthrough_bstyle.mp4` | **57.97 seconds** | **about 2.31 MB** |
 
-Both are 1920x1080, 30 fps, MP4 H.264/yuv420p with AAC audio. Each is under
-the submission form's 60-second and 1-GB limits. Select the corresponding MP4
-for each field. The platform screenshot indicates that selecting a file alone
+The original A clips are retained for reference:
+
+| Submission field | Local file | Duration | Size |
+|---|---|---:|---:|
+| Product demo — original A version | `D:\Workspace\HackOS\.verification-repro\demo-videos\product_demo.mp4` | 55.00 seconds | about 2.36 MB |
+| Technical walkthrough — original A version | `D:\Workspace\HackOS\.verification-repro\demo-videos\technical_walkthrough.mp4` | 57.97 seconds | about 2.67 MB |
+
+All A-rendered clips are 1920x1080, 30 fps, MP4 H.264/yuv420p with AAC audio.
+Each is under the submission form's 60-second and 1-GB limits. Use the revised
+MP4 for Technical walkthrough. The platform screenshot indicates that selecting
+a file alone
 does not upload it: upload happens on Save draft or Submit project. This stage
 does not claim an upload or final submission.
 
-The visual design uses a navy/teal/blue palette, a large NOVA-MAT opening title,
+The original A design uses a navy/teal/blue palette, a large NOVA-MAT opening title,
 an abstract lattice representing the scientific workflow, pulsing decision
 paths and animated evidence chains. Figures retain their exact values while
 cards and paths animate. The spoken pitch focuses on result-informed decisions,
 controlled validation and traceable scientific output.
 
-The Product demo shows the frozen question, real primary counts, three offered
+The original A Product demo shows the frozen question, real primary counts, three offered
 follow-up choices, the selected threshold analysis, one completed frozen
 holdout and the exported evidence. The Technical walkthrough explains A/B
 ownership, shared Spec/Result contracts, result-informed planning, provenance
 and the separate controlled holdout gate.
 
 The controlled holdout retains the observed direction and quantifies
-uncertainty under the frozen rules. Its recorded scientific classification and
-resampling interval remain visible, while the presentation focuses on the
+uncertainty under the frozen rules. The original A Product demo displays its
+recorded classification and resampling interval, while the presentation focuses on the
 completed engineering loop and the evidence it produces. See
 [A's scientific acceptance](../results/native09_science_acceptance/README.md).
+
+## Technical walkthrough matched to B's Product demo
+
+The revised technical clip follows the team-provided Product demo's visual
+direction: a dark navy background, Georgia serif headlines with cyan emphasis,
+left-side explanations, right-side architecture diagrams, a recorded-evidence
+badge and a continuous chapter progress line. It reuses the six original English
+narration WAVs and provides a separate SRT file to keep the diagrams uncluttered.
+
+Its six chapters explain the scientific/orchestration boundary, the native agent
+roles and selected threshold follow-up, registered Spec/Result links, host-owned
+holdout controls and evidence export. Actual shortened IDs and hashes come from
+the existing public native09 records. The team-supplied Product video is a style
+reference only; its bytes and the original A videos remain unchanged.
+
+[technical_bstyle.json](technical_bstyle.json) pins the public evidence and
+original narration. [technical_bstyle_validation.json](technical_bstyle_validation.json)
+records verification of the delivered variant. Reproduce it using the original
+audio directory and existing local media tools:
+
+```powershell
+& 'D:/Dev/Python314/python.exe' scripts/render_technical_walkthrough_bstyle.py `
+    --storyboard docs/demo/technical_bstyle.json `
+    --audio-dir .verification-repro/demo-videos/audio `
+    --output-dir .verification-repro/demo-videos-bstyle `
+    --ffmpeg .verification-repro/video-tools/ffmpeg-win-x86_64-v7.1.exe
+```
+
+Add `--preview-only` to produce the six scene previews without encoding the MP4.
+The style-reference video is retained locally under `.verification-repro` and
+is not included in Git. No new scientific, model or holdout execution is used
+to produce this variant.
 
 ## Delivery verification
 

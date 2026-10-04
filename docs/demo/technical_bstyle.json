@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "video_id": "technical_walkthrough_bstyle",
+  "title": "NOVA-MAT | Technical walkthrough",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "target_duration_seconds": 55.0,
+  "maximum_duration_seconds": 59.5,
+  "presentation": {
+    "header_left": "NOVA-MAT / TECHNICAL WALKTHROUGH",
+    "header_right": "RECORDED RUN · EVIDENCE REPLAY",
+    "background": "#071521",
+    "chapter_markers": ["INTRO", "BOUNDARY", "AGENTS", "CONTRACT", "HOLDOUT", "TRACE"],
+    "display_font": "C:/Windows/Fonts/georgia.ttf",
+    "display_font_bold": "C:/Windows/Fonts/georgiab.ttf",
+    "body_font": "C:/Windows/Fonts/segoeui.ttf",
+    "mono_font": "C:/Windows/Fonts/consola.ttf",
+    "captions_burned_in": false
+  },
+  "style_reference": {
+    "path": ".verification-repro/demo-videos-bstyle/reference/product_demo_reference.mp4",
+    "sha256": "e4120fd6fac10787188ee48e6a384d79874075e36ac61fbbc1b10c277b5c866e",
+    "required_for_render": false
+  },
+  "input_pins": {
+    "evidence_index": {
+      "path": "docs/demo/evidence.json",
+      "sha256": "78b6b376ea42cd250d79eaeadeabefe81a49db32707a94a198e47faaaa730b88"
+    },
+    "narration_storyboard": {
+      "path": "docs/demo/storyboard.json",
+      "sha256": "5c7e313fd599ad701dcb05ef1ebd2142f966e1c4eb5630d67441f2f9450f011a"
+    },
+    "public_aggregate_exports": [
+      {"path": "docs/results/native09_completed/README.md", "sha256": "b128cf83d63b21b132bb60b319218ebd1f64316a30a4d2caea56eb827f66fccb"},
+      {"path": "docs/results/native09_completed/results.json", "sha256": "5a79414648a42e79ab4141eb4c2c196bda39e6e57c96a74f1eeb325ba133a1a9"},
+      {"path": "docs/results/native09_completed/specs.json", "sha256": "1dc42f98f4b26f545d807461f614960ab681fbb3c28c68b784ba4278cc7b0af2"},
+      {"path": "docs/results/native09_completed/reviews.json", "sha256": "bdb8ff105ea961bceafc07a2804658d29eb0b5b6df6ded649cc90b440a09ba32"},
+      {"path": "docs/results/native09_completed/events.jsonl", "sha256": "cdb8ef736741a77770ec0026dae6d51d98c56f7472685c21596709625efa5e02"},
+      {"path": "docs/results/native09_completed/final_protocol.json", "sha256": "6fb91c4794855133784adf1e9ccf0e18ce7a6447f629faded292561e32258c8f"},
+      {"path": "docs/results/native09_completed/science-artifacts.json", "sha256": "9c5ac8b86acd9f7e43fae39c712598c4245a82899e14bc960b733d203bb593ee"},
+      {"path": "docs/results/native09_completed/native-holdout-result.json", "sha256": "a7aec06435a33d5a9d722735a15908f7bdba2cc9d69e430669b5168ffad410ff"},
+      {"path": "docs/results/native09_completed/manifest.json", "sha256": "003825dcd51f265b61b73a4be610586c34aed7d177b1d64251906e562faa7f0d"}
+    ]
+  },
+  "audio": {
+    "video_key": "technical_walkthrough",
+    "voice": "Microsoft Zira Desktop",
+    "voice_rate": 1,
+    "source_directory": ".verification-repro/demo-videos/audio",
+    "wav_prefix": "technical_walkthrough_",
+    "tail_seconds": 0.55,
+    "narration_binding": "Each narration must match the corresponding scene in docs/demo/storyboard.json byte-for-byte after JSON decoding."
+  },
+  "lineage_bindings": {
+    "primary_discovery": "primary_discovery",
+    "threshold_followup": "threshold_followup",
+    "holdout": "holdout",
+    "frozen_protocol": "frozen_protocol",
+    "summary_counts": {"results": 3, "reviews": 2, "holdouts": 1},
+    "result_records": [
+      {"role": "DISCOVERY", "experiment_id": "NOVA-dc9b40ba4d22c6f8", "lineage_key": "primary_discovery"},
+      {"role": "THRESHOLD SENSITIVITY", "experiment_id": "NOVA-0fcce1f550b846ed", "lineage_key": "threshold_followup"},
+      {"role": "FROZEN HOLDOUT", "experiment_id": "NOVA-HOLDOUT-f4c48d7913f24919", "lineage_key": "holdout"}
+    ],
+    "protocol_id": "NOVA-FINAL-016efccbe5a473d4",
+    "expected_review_result_refs": [
+      "nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d",
+      "nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"
+    ],
+    "holdout_status": "direction_consistent_inconclusive"
+  },
+  "scenes": [
+    {
+      "id": "01-architecture",
+      "chapter": "INTRO",
+      "kicker": "FROM AGENT ROLES",
+      "title": "to verifiable execution",
+      "dek": "NOVA-MAT connects native orchestration to a registered scientific pipeline.",
+      "visual": "opening",
+      "narration": "Team A’s scientific pipeline connects to Omnigent’s native multi-agent orchestration. Native09 completed the loop from screening Result through controlled validation and evidence export.",
+      "audio_wav": "technical_walkthrough_01-architecture.wav",
+      "source_refs": ["docs/demo/evidence.json", "docs/results/native09_completed/results.json"],
+      "host_seed_note": "Host-seeded initial hypothesis and primary screen"
+    },
+    {
+      "id": "02-ownership",
+      "chapter": "BOUNDARY",
+      "kicker": "01 / MODULE BOUNDARY",
+      "title": "Two modules, one shared contract",
+      "dek": "Science remains modular. Orchestration consumes a stable Result interface.",
+      "visual": "ownership",
+      "narration": "Team A owns data, experiments, statistics, and payloads. Team B plans follow-ups and runs registered tools through the shared Result contract.",
+      "audio_wav": "technical_walkthrough_02-ownership.wav",
+      "source_refs": ["docs/demo/storyboard.json", "docs/demo/evidence.json"],
+      "team_a": ["Data", "Experiments", "Statistics", "Science payload"],
+      "contract": "execute(registered Spec) → Result + immutable evidence",
+      "adapter": "nova.experiments.executor.execute(spec: Mapping[str, Any]) → Result",
+      "team_b": ["PI", "Planner", "Skeptic", "Runner"]
+    },
+    {
+      "id": "03-agents",
+      "chapter": "AGENTS",
+      "kicker": "02 / REVIEW-INFORMED CHOICE",
+      "title": "Review, choose, then execute",
+      "dek": "A host-seeded goal enters the loop; the selected follow-up is a registered Spec.",
+      "visual": "agents",
+      "narration": "The host seeds the initial hypothesis. Skeptic reviews the Result, Planner offers alternatives, and the PI chooses a registered threshold-sensitivity run.",
+      "audio_wav": "technical_walkthrough_03-agents.wav",
+      "source_refs": ["docs/demo/evidence.json", "docs/results/native09_completed/reviews.json", "docs/results/native09_completed/specs.json"],
+      "initial_goal": "HOST-SEEDED HYPOTHESIS",
+      "selected": "threshold_sensitivity",
+      "offered": ["method_sensitivity", "stop"],
+      "not_executed_note": "Method sensitivity was offered; it was not executed."
+    },
+    {
+      "id": "04-contract",
+      "chapter": "CONTRACT",
+      "kicker": "03 / PERSISTED LINEAGE",
+      "title": "Every record carries its links",
+      "dek": "Registered IDs and content digests connect Specs, Results, payloads, reviews and the frozen protocol.",
+      "visual": "contract",
+      "narration": "Registered Specs produce immutable Results. Reviews link decisions to evidence, while canonical hashes make the final protocol traceable.",
+      "audio_wav": "technical_walkthrough_04-contract.wav",
+      "source_refs": ["docs/demo/evidence.json", "docs/results/native09_completed/results.json", "docs/results/native09_completed/specs.json", "docs/results/native09_completed/science-artifacts.json"],
+      "display_roles": ["DISCOVERY", "THRESHOLD FOLLOW-UP", "HOLDOUT"],
+      "hash_display": "shortened_sha256_with_ellipsis"
+    },
+    {
+      "id": "05-holdout",
+      "chapter": "HOLDOUT",
+      "kicker": "04 / CONTROLLED VALIDATION",
+      "title": "A frozen path, checked at the host",
+      "dek": "The registered protocol moves through lineage, budget and single-attempt checks before Result export.",
+      "visual": "holdout",
+      "narration": "The holdout gate checked frozen lineage, shared time budget, and a one-attempt claim, then persisted the completed Result.",
+      "audio_wav": "technical_walkthrough_05-holdout.wav",
+      "source_refs": ["docs/demo/evidence.json", "docs/results/native09_completed/final_protocol.json", "docs/results/native09_completed/native-holdout-result.json"],
+      "host_controls": ["FROZEN LINEAGE", "SHARED TIME BUDGET", "ONE-ATTEMPT CLAIM"],
+      "closing_note": "Canonical hashes link exported records; host controls govern execution."
+    },
+    {
+      "id": "06-limits",
+      "chapter": "TRACE",
+      "kicker": "NOVA-MAT / TECHNICAL OUTCOME",
+      "title": "Evidence, connected.",
+      "dek": "A completed agent loop carries a registered decision through controlled validation and export.",
+      "visual": "closing",
+      "narration": "NOVA-MAT carries screening through agent review, registered execution, controlled validation, and evidence export. Its traceable records keep each decision connected to its evidence.",
+      "audio_wav": "technical_walkthrough_06-limits.wav",
+      "source_refs": ["docs/demo/evidence.json", "docs/results/native09_completed/results.json", "docs/results/native09_completed/reviews.json", "docs/results/native09_completed/final_protocol.json"],
+      "summary_label": "VERIFIABLE EXECUTION",
+      "summary_claims": ["3 Results", "2 Reviews", "1 Frozen Holdout"]
+    }
+  ]
+}
