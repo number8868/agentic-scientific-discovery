@@ -1,5 +1,18 @@
 # Team status and handoff
 
+## B finalization update — real review/freeze, clean CLI pending
+
+The opt-in native finalization path is implemented without changing A's
+data, experiments, statistics or holdout protocol. Real run 03 performed a
+second Skeptic review and PI freeze in two native sessions sharing one child,
+run, deadline and audit. Its holdout Spec remains unexecuted. Original CLI exit
+1 at a missing verifier role mapping is preserved; the mapping is fixed and
+the recorded required-tool trace passes posthoc checks without a model/science
+rerun. Final-stage PI reply text was not persisted before failure. See
+[B's evidence and next acceptance boundary](B_NATIVE_FINALIZATION.md).
+
+---
+
 ## Team A milestone 12 — recovered native discovery accepted with limits, 2026-10-03
 
 Started from B `fc41d23`, then synced newly merged main `359de7a` (PR #14).

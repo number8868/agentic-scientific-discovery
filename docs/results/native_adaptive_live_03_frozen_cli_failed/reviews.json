@@ -1,0 +1,38 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-92a420ecf666206f",
+    "reason": "The positive discovery contrast rests on only 3 oxide and 6 chalcogenide passes; its resampling interval [0.0001109144, 0.0032220183] has a lower bound close to zero. Although supported in this snapshot, the sparse endpoint counts leave the contrast's magnitude uncertain.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c"
+  },
+  {
+    "claim_refs": [
+      "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+    ],
+    "concerns": [
+      {
+        "concern_type": "final_protocol",
+        "evidence_refs": [
+          "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-ab363fcb76ea2cf2",
+    "reason": "Magnitude remains uncertain from sparse discovery endpoints: at 0.05 eV/atom, only 3/7657 oxide and 6/3158 chalcogenide compositions pass despite full coverage; delta=0.001508138314330796, bootstrap interval=[0.00011091441699668733,0.003222018323127856]. Positive intervals at 0.025, 0.05 and 0.1 reuse the same snapshot and do not independently resolve the parent review's sparse-count concern. This limitation concerns magnitude within the discovery snapshot.",
+    "recommended_template": null,
+    "result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+  }
+]

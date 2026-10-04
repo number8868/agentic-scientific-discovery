@@ -3,6 +3,42 @@
 NOVA-MAT is a 24-hour hackathon prototype for an auditable, result-driven
 materials-screening workflow orchestrated with Omnigent.
 
+## Current native orchestration evidence
+
+[Native run 03](docs/results/native_adaptive_live_03_frozen_cli_failed/README.md)
+adds a real final Skeptic review and PI protocol freeze; the derived holdout
+remains unexecuted. The original CLI still exited 1 at a now-corrected final
+role-map check, and the failed run is preserved. This is evidence of executed
+review/freeze tools, not a clean full-workflow acceptance run. Optional fresh-run
+finalization is documented in [B's runbook](docs/B_NATIVE_FINALIZATION.md).
+
+The current integration uses open-source Omnigent 0.16.0 and its Codex harness,
+not Databricks. [Native discovery run 02](docs/results/native_adaptive_live_02_recovered/README.md)
+records four specialist executor processes, five completed model turns, two
+discovery Results and the actual PI final response. Original CLI exit code 1
+and explicit host-only validation recovery are preserved. This is not a clean
+CLI acceptance run or completed challenge.
+
+For a fresh discovery rehearsal, use Python 3.12 with the pinned scientific and
+Omnigent environment, your own authenticated Codex CLI, the frozen prepared
+data described in [A's handoff](docs/A_DATA_HANDOFF.md), and a matching executable
+code-mode host selected through `CODEX_CODE_MODE_HOST_PATH`. Deliberately finish
+or archive any existing `.nova/live_context.json`; never replace it to replay
+an old failed run. Then choose a new run/database:
+
+```bash
+.venv-omnigent/bin/python scripts/run_native_adaptive.py --check-only
+.venv-omnigent/bin/python scripts/prepare_adaptive_run.py --database runs/my-discovery/run.sqlite --run-id my-discovery
+.venv-omnigent/bin/python scripts/run_native_adaptive.py --enable-native-live --model gpt-6-luna --remaining-seconds 600
+```
+
+Check-only performs no model/science calls. Preparation executes a host-seeded
+primary family screen; the live command makes paid model calls and may execute
+one registered discovery follow-up. Models are configurable through YAML or
+the optional CLI override; Luna is a low-cost default, not a required backend.
+See [B's finalization scope](docs/B_NATIVE_FINALIZATION.md) for the separate
+final-review/freeze acceptance boundary. No holdout result is claimed here.
+
 The immediate milestone is deliberately small:
 
 1. A Planner presents at least two valid experiments.

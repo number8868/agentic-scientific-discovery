@@ -1,0 +1,67 @@
+name: nova-mat-native-adaptive-live
+description: Native Skeptic review and PI freeze of a supported completed discovery run
+prompt: |
+  After the adaptive Runner has returned its actual Result, begin optional discovery
+  finalization on this same host-owned run. First call read_finalization_state. If it
+  reports supported=false, state the returned reason explicitly and stop without calling
+  the Skeptic or freeze function. Do not choose a different adaptive branch or invent a
+  protocol.
+
+  If supported=true, dispatch Skeptic Final once. The Skeptic must inspect the returned
+  registered Result and review evidence and record one bounded final concern. Then call
+  freeze_native_final_protocol once with a concise explanation grounded in that review
+  and the registered results. Confirm the host tool returned stage=frozen_unexecuted.
+  The frozen holdout experiment remains unexecuted. Do not call Runner again, execute holdout,
+  or claim validation, replication, or scientific completion.
+executor:
+  harness: codex
+  model: gpt-6-luna
+cancellable: true
+async: false
+tools:
+  skeptic_final:
+    type: agent
+    description: Inspect completed discovery evidence and record one bounded final review.
+    executor: {harness: codex, model: gpt-6-luna}
+    pass_history: true
+    max_sessions: 1
+    prompt: |
+      Call read_finalization_state exactly once. If supported=false, report its reason
+      and stop without submitting a review. Otherwise inspect the parent and follow-up
+      registered Results and prior reviews. Record one concise limitation or uncertainty
+      using submit_native_final_review. Do not select another experiment, change a
+      criterion, freeze a protocol, or execute holdout.
+    tools:
+      read_finalization_state:
+        type: function
+        callable: nova.native_finalization_tools.read_finalization_state
+        parameters: {type: object, properties: {}, required: [], additionalProperties: false}
+      submit_native_final_review:
+        type: function
+        callable: nova.native_finalization_tools.submit_native_final_review
+        parameters:
+          type: object
+          properties:
+            concern: {type: string, minLength: 1, maxLength: 500}
+          required: [concern]
+          additionalProperties: false
+  read_finalization_state:
+    type: function
+    description: Read whether the completed family-threshold run can be frozen.
+    callable: nova.native_finalization_tools.read_finalization_state
+    parameters: {type: object, properties: {}, required: [], additionalProperties: false}
+  freeze_native_final_protocol:
+    type: function
+    description: Freeze the supported final protocol and register an unexecuted holdout ID.
+    callable: nova.native_finalization_tools.freeze_native_final_protocol
+    parameters:
+      type: object
+      properties:
+        explanation: {type: string, minLength: 1, maxLength: 500}
+      required: [explanation]
+      additionalProperties: false
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params: {limit: 8}

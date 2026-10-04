@@ -218,6 +218,143 @@ def _native_runtime(manifest: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _native_finalization_evidence(db: sqlite3.Connection, run_id: str, parent_result,
+                                  store, events) -> dict[str, Any] | None:
+    """Return optional, run-bound native finalization records without executing holdout."""
+    tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    state = None
+    if "native_adaptive_finalization_state" in tables:
+        row = db.execute(
+            "SELECT parent_result_id,followup_result_id,status,review_json,review_sha256,freeze_json,freeze_sha256 "
+            "FROM native_adaptive_finalization_state WHERE run_id=?", (run_id,)).fetchone()
+        if row is not None:
+            state = {
+                "parent_result_id": row[0], "followup_result_id": row[1], "status": row[2],
+                "review": _verified_finalization_packet(row[3], row[4], "review") if row[3] else None,
+                "review_sha256": row[4],
+                "freeze": _verified_finalization_packet(row[5], row[6], "freeze") if row[5] else None,
+                "freeze_sha256": row[6],
+            }
+
+    protocol_row = None
+    if "final_protocols" in tables:
+        protocol_row = db.execute(
+            "SELECT frozen_protocol_id,protocol_sha256,protocol_json,holdout_experiment_id "
+            "FROM final_protocols WHERE run_id=?", (run_id,)).fetchone()
+    final_protocol = None
+    holdout_spec = None
+    if protocol_row is not None:
+        frozen_id, protocol_sha, protocol_json, holdout_id = protocol_row
+        try:
+            protocol = json.loads(protocol_json)
+        except (TypeError, json.JSONDecodeError):
+            raise ValueError("native final protocol JSON is invalid") from None
+        # Storage.freeze_final hashes sorted compact JSON with the default ASCII escaping.
+        canonical = json.dumps(protocol, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        if not isinstance(protocol, dict) or hashlib.sha256(canonical.encode("utf-8")).hexdigest() != protocol_sha:
+            raise ValueError("native final protocol hash is invalid")
+        if _sanitize(protocol) != protocol:
+            raise ValueError("native final protocol contains content that cannot be exported without changing its hash")
+        if (protocol.get("main_result_id") != parent_result.result_id or
+                protocol.get("main_spec", {}).get("experiment_id") != parent_result.experiment_id):
+            raise ValueError("native final protocol does not belong to the exported parent Result")
+        frozen_events = [event for event in events if event.event_type == "final_protocol_frozen"
+                         and event.actor == "host" and event.payload_ref == frozen_id]
+        if len(frozen_events) != 1:
+            raise ValueError("native final protocol is not uniquely registered in this run")
+        holdout_spec_obj = store.get_spec(holdout_id)
+        from nova.contracts import Split, Template
+        if (holdout_spec_obj is None or holdout_spec_obj.experiment_id != holdout_id or
+                holdout_spec_obj.split is not Split.HOLDOUT or
+                holdout_spec_obj.template is not Template.HOLDOUT_VALIDATION or
+                holdout_spec_obj.frozen_protocol_id != frozen_id):
+            raise ValueError("native final protocol holdout Spec is unavailable or mismatched")
+        from nova.contracts import ExperimentSpec
+        try:
+            main_spec = ExperimentSpec.from_dict(protocol["main_spec"])
+            followup_spec = ExperimentSpec.from_dict(protocol["followup_spec"])
+            expected_holdout = ExperimentSpec(
+                1, holdout_id, main_spec.hypothesis_id, main_spec.dataset_sha256,
+                Split.HOLDOUT, Template.HOLDOUT_VALIDATION, main_spec.groups,
+                main_spec.bandgap_method, main_spec.gap_window_ev, main_spec.ehull_max_ev_atom,
+                main_spec.bootstrap_repeats, main_spec.seed, main_spec.timeout_seconds,
+                protocol["followup_result_id"], protocol["followup_result_id"], frozen_id)
+        except (KeyError, TypeError, ValueError):
+            raise ValueError("native final protocol Specs are invalid") from None
+        followup_result_id = protocol.get("followup_result_id")
+        followup_result = store.get_result(followup_result_id) if isinstance(followup_result_id, str) else None
+        if (store.get_spec(followup_spec.experiment_id) != followup_spec or
+                followup_spec.parent_result_id != protocol.get("main_result_id") or
+                followup_spec.review_id != protocol.get("main_result_id") or
+                followup_result is None or followup_result.experiment_id != followup_spec.experiment_id or
+                not any(event.actor == "runner" and event.event_type == "result" and
+                        event.payload_ref == followup_result_id for event in events) or
+                expected_holdout != holdout_spec_obj):
+            raise ValueError("registered holdout Spec differs from the frozen protocol derivation")
+        holdout_spec = holdout_spec_obj.to_dict()
+        final_protocol = {"frozen_protocol_id": frozen_id, "protocol_sha256": protocol_sha,
+                          "protocol": protocol, "holdout_experiment_id": holdout_id}
+
+    pi_response = None
+    if "native_finalization_supervisor_results" in tables:
+        row = db.execute("SELECT response_text,response_sha256 FROM native_finalization_supervisor_results "
+                         "WHERE run_id=?", (run_id,)).fetchone()
+        if row is not None:
+            response_text, response_sha = row
+            response_event = [event for event in events
+                              if event.event_type == "native_finalization_supervisor_response" and
+                              event.actor == "pi" and event.payload_ref == f"sha256:{response_sha}"]
+            if (not isinstance(response_text, str) or
+                    hashlib.sha256(response_text.encode("utf-8")).hexdigest() != response_sha or
+                    len(response_event) != 1):
+                raise ValueError("native finalization PI response hash or event is invalid")
+            exported_text = _sanitize(response_text)
+            pi_response = {"response_text": exported_text, "response_sha256": response_sha,
+                           "exported_response_sha256": hashlib.sha256(exported_text.encode("utf-8")).hexdigest(),
+                           "response_redacted": exported_text != response_text}
+
+    if state is None and final_protocol is None and pi_response is None:
+        return None
+    if state is not None and final_protocol is not None:
+        freeze = state.get("freeze") or {}
+        if (state["status"] != "frozen" or
+                freeze.get("frozen_protocol_id") != final_protocol["frozen_protocol_id"] or
+                freeze.get("protocol_sha256") != final_protocol["protocol_sha256"] or
+                freeze.get("holdout_experiment_id") != final_protocol["holdout_experiment_id"]):
+            raise ValueError("native finalization state differs from the registered final protocol")
+        if (state["parent_result_id"] != parent_result.result_id or
+                state["followup_result_id"] != final_protocol["protocol"].get("followup_result_id")):
+            raise ValueError("native finalization follow-up differs from the frozen protocol")
+    return {
+        "schema_version": 1,
+        "run_id": run_id,
+        "finalization_state": state,
+        "final_pi_response": pi_response,
+        "final_protocol": final_protocol,
+        "holdout_spec": holdout_spec,
+        "holdout_result_present": bool(final_protocol and any(
+            result.experiment_id == final_protocol["holdout_experiment_id"]
+            for result in store.list_results())),
+        "holdout_execution_performed_by_exporter": False,
+    }
+
+
+def _verified_finalization_packet(raw: str, expected_sha256: str, label: str) -> dict[str, Any]:
+    if not isinstance(raw, str) or not isinstance(expected_sha256, str):
+        raise ValueError(f"native finalization {label} packet is incomplete")
+    try:
+        packet = json.loads(raw)
+    except (TypeError, json.JSONDecodeError):
+        raise ValueError(f"native finalization {label} packet is invalid") from None
+    canonical = json.dumps(packet, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                           allow_nan=False, default=str)
+    if not isinstance(packet, dict) or hashlib.sha256(canonical.encode("utf-8")).hexdigest() != expected_sha256:
+        raise ValueError(f"native finalization {label} packet hash is invalid")
+    if _sanitize(packet) != packet:
+        raise ValueError(f"native finalization {label} packet contains content that cannot be exported without changing its hash")
+    return packet
+
+
 def export_adaptive_evidence(database: Path, run_id: str, output: Path,
                              *, remaining_seconds: float = 600,
                              model: str = "gpt-6-luna",
@@ -243,6 +380,7 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
                if has_decisions else None)
         method_output = _method_records(db, run_id)
         native_state = _native_state(db, run_id, parent.result_id)
+        native_finalization = _native_finalization_evidence(db, run_id, parent, store, events)
     native_manifest, native_trace = _read_native_files(database.parent, run_id)
     native_events = any(event.event_type.startswith("native_adaptive_") for event in events)
     native_mode = native_state is not None or native_events or native_manifest is not None or native_trace is not None
@@ -319,6 +457,8 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
         recovered = bool(native_state is not None and native_state["status"] == "completed" and
                          response_recorded and recovery_event)
         native_status = ("completed_with_host_validation_recovery" if recovered else
+                         "failed_after_discovery_completion" if persisted_failed and native_state is not None
+                         and native_state["status"] == "completed" else
                          native_state["status"] if native_state is not None else
                          "failed_without_state" if persisted_failed else "state_not_persisted")
         retrospective_witness_observed = any(
@@ -362,6 +502,8 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
         trace_path.write_text("".join(
             json.dumps(_sanitize(record), sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n"
             for record in native_trace), encoding="utf-8")
+    if native_finalization is not None:
+        _dump(native / "native-finalization-evidence.json", native_finalization)
     event_refs = {event.payload_ref for event in events if event.payload_ref}
     run_results = [result for result in store.list_results() if result.result_id in event_refs]
     for result in run_results:

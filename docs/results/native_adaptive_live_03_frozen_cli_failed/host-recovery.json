@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "run_id": "native-adaptive-live-03",
+  "status": "frozen_cli_failed",
+  "original_cli_exit_code": 1,
+  "model_or_science_rerun": false,
+  "posthoc_trace_check": "all_three_required_review_and_freeze_tools_verified_after_role_mapping_fix",
+  "verified_executor_pids": [
+    91654,
+    91755,
+    91879,
+    92016,
+    92211,
+    92317
+  ],
+  "completed_model_turns": 7,
+  "final_stage_pi_response_text_persisted": false,
+  "holdout_executed": false,
+  "clean_cli_success_demonstrated": false,
+  "original_terminal_failure": "Traceback (most recent call last):\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 574, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 565, in main\n    return _run_native_adaptive_child(model=args.model, remaining_seconds=args.remaining_seconds,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 426, in _run_native_adaptive_child\n    verify_executor_trace(audit_path, codex_host,\n  File \"/Users/lk4u/agentic-scientific-discovery/nova/native_adaptive_runtime.py\", line 326, in verify_executor_trace\n    raise RuntimeError(f\"native finalization tool {tool} lacks a guarded successful turn trace\")\nRuntimeError: native finalization tool record_adaptive_review lacks a guarded successful turn trace\nTraceback (most recent call last):\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 574, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 568, in main\n    return run_native_adaptive(model=args.model, remaining_seconds=args.remaining_seconds,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lk4u/agentic-scientific-discovery/scripts/run_native_adaptive.py\", line 546, in run_native_adaptive\n    raise RuntimeError(f\"Omnigent native adaptive CLI exited with status {process.returncode}\")\nRuntimeError: Omnigent native adaptive CLI exited with status 1\n"
+}

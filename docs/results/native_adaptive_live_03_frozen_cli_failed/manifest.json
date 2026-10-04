@@ -1,0 +1,64 @@
+{
+  "exported_at": "2026-10-04T03:12:26.417814+00:00",
+  "files": {
+    "README.md": {
+      "count": 1,
+      "sha256": "a6b0331016c5e20c75f57f1eea56d67d9669d6ed99dcab4a1229823b07a3632f"
+    },
+    "adaptive_evidence.json": {
+      "count": 1,
+      "sha256": "91fd04d8e80bb7eea0645666ca313837b2ea44dd2a3fc1b9d59a78c2b165a1ce"
+    },
+    "events.jsonl": {
+      "count": 23,
+      "sha256": "4cf85c97db369c82d549e02f4d7cbe48ad92981ff651d10f315b52ab84cdee61"
+    },
+    "host-recovery.json": {
+      "count": 1,
+      "sha256": "487df9dcedf3997d0a62f2598181195f77ab90d6295e643090bf212586d781a2"
+    },
+    "native-finalization-evidence.json": {
+      "count": 1,
+      "sha256": "b43b74b97e9b03cec5a3c13c887d4d3784798e65c28d6d1f16a7b81a04ee9a88"
+    },
+    "native-model-audit.jsonl": {
+      "count": 89,
+      "sha256": "d70b31318d2effadb34dee9f37e434701d64af82e59a5be316c4129a4d082743"
+    },
+    "native-runtime-manifest.json": {
+      "count": 1,
+      "sha256": "ea875aa97d396ad68fb1a15538dcde90b273e5db166f79e9100e5356c87b3afd"
+    },
+    "native-runtime-verification.json": {
+      "count": 1,
+      "sha256": "8aa468493cfeaf9b9f4d65f5774b533ac7673e993deed330254f3d6684b38540"
+    },
+    "results.json": {
+      "count": 2,
+      "sha256": "0c713924ec8c810568ebf8ced0aa973bad72db6ccaef1eadf5082965304e4674"
+    },
+    "reviews.json": {
+      "count": 2,
+      "sha256": "441e4543796f2e184602189e77d39b94ce59dea02b7293996c548e71b8d3c857"
+    },
+    "science-artifacts.json": {
+      "count": 2,
+      "sha256": "e003ed363827b3dc6ced2441f0a2f93354e76227881c8290d834224a5622e64d"
+    },
+    "science-artifacts/science-payload-13bebdf63f9373ee9a1f1dbbbfe3020a2232b7877a891fada7f597bc8259600f.json": {
+      "count": 1,
+      "sha256": "13bebdf63f9373ee9a1f1dbbbfe3020a2232b7877a891fada7f597bc8259600f"
+    },
+    "science-artifacts/science-payload-ffab3299adb4b790d8d24be9c1fdbd962fa8aef54109338cfca85f8de8b961ef.json": {
+      "count": 1,
+      "sha256": "ffab3299adb4b790d8d24be9c1fdbd962fa8aef54109338cfca85f8de8b961ef"
+    },
+    "specs.json": {
+      "count": 2,
+      "sha256": "beb43699169801012e1bc0992547292114d3d92fa1338a0eb7161742d9935638"
+    }
+  },
+  "mode": "live",
+  "run_id": "native-adaptive-live-03",
+  "schema_version": 1
+}

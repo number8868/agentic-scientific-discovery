@@ -27,6 +27,7 @@ _PAYLOAD = re.compile(r"^science-artifacts/science-payload-([0-9a-f]{64})\.json$
 _FIXED_FILES = frozenset({
     "adaptive_evidence.json", "events.jsonl", "hashes.json", "manifest.json",
     "native-model-audit.jsonl", "native-runtime-manifest.json", "README.md", "host-recovery.json",
+    "native-finalization-evidence.json",
     "native-runtime-verification.json", "results.json", "reviews.json",
     "science-artifacts.json", "specs.json",
 })

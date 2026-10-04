@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 AGENT = ROOT / "agents" / "adaptive-live.yaml"
+AGENT_FINALIZE = ROOT / "agents" / "adaptive-finalize.yaml"
 SDK_PIN = "0.16.0"
 DEFAULT_MODEL = "gpt-6-luna"
 CONFIG_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false", 'web_search="disabled"')
@@ -78,6 +79,47 @@ def _validate_agent(path: Path = AGENT) -> dict[str, Any]:
     return raw
 
 
+def _finalization_yaml() -> dict[str, Any]:
+    """Validate the native finalization stage run after adaptive response persistence."""
+    from omnigent.inner.loader import load_agent_def_from_path
+
+    base = _validate_agent(AGENT)
+    fragment = _load_yaml(AGENT_FINALIZE)
+    load_agent_def_from_path(str(AGENT_FINALIZE))
+    if fragment.get("name") != base.get("name"):
+        raise ValueError("finalization YAML must retain the native PI agent identity")
+    expected = {
+        "skeptic_final": {"type": "agent", "executor": {"harness": "codex"},
+                          "tools": {"read_finalization_state": "nova.native_finalization_tools.read_finalization_state",
+                                    "submit_native_final_review": "nova.native_finalization_tools.submit_native_final_review"}},
+        "read_finalization_state": {"type": "function", "callable": "nova.native_finalization_tools.read_finalization_state"},
+        "freeze_native_final_protocol": {"type": "function", "callable": "nova.native_finalization_tools.freeze_native_final_protocol"},
+    }
+    tools = fragment.get("tools")
+    if not isinstance(tools, dict) or set(tools) != set(expected):
+        raise ValueError("finalization YAML tool set differs from the bounded host contract")
+    for name, contract in expected.items():
+        item = tools[name]
+        for key, value in contract.items():
+            if key == "tools":
+                actual = item.get("tools", {})
+                if {tool_name: spec.get("callable") for tool_name, spec in actual.items()} != value:
+                    raise ValueError("final Skeptic tool allowlist differs from host contract")
+                if any(spec.get("type") != "function" for spec in actual.values()):
+                    raise ValueError("final Skeptic may expose only the bounded native functions")
+            elif key == "executor":
+                executor = item.get("executor", {})
+                model_name = executor.get("model")
+                if (executor.get("harness") != value["harness"] or not isinstance(model_name, str) or
+                        not model_name.strip() or len(model_name) > 120):
+                    raise ValueError("final Skeptic must use a configurable Codex model")
+            elif item.get(key) != value:
+                raise ValueError(f"finalization tool {name} differs from its native host binding")
+    if not getattr(load_agent_def_from_path(str(AGENT_FINALIZE)), "tools", None):
+        raise ValueError("Omnigent parsed no tools from the finalization YAML")
+    return fragment
+
+
 def _codex_binaries(*, require_host: bool) -> tuple[Path | None, Path | None]:
     codex = shutil.which("codex")
     if not codex:
@@ -93,11 +135,13 @@ def _codex_binaries(*, require_host: bool) -> tuple[Path | None, Path | None]:
     return Path(codex).resolve(), host.resolve()
 
 
-def check_only() -> dict[str, Any]:
+def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
     version = importlib.metadata.version("omnigent")
     if version != SDK_PIN:
         raise RuntimeError(f"native security bootstrap is pinned to omnigent=={SDK_PIN}, found {version}")
     _validate_agent()
+    if finalize_discovery:
+        _finalization_yaml()
     codex, host = _codex_binaries(require_host=False)
     route_available = False
     if host is not None:
@@ -111,7 +155,10 @@ def check_only() -> dict[str, Any]:
             "live_execution_enabled": False, "guardrail_verified": False,
             "guardrail_status": "requested_unverified_not_effective", "runtime_blocker": RUNTIME_BLOCKER,
             "omnigent_version": version,
-            "agent_yaml": str(AGENT.relative_to(ROOT)), "codex_cli": str(codex) if codex else None,
+            "agent_yaml": ([str(AGENT.relative_to(ROOT)), str(AGENT_FINALIZE.relative_to(ROOT))]
+                           if finalize_discovery else str(AGENT.relative_to(ROOT))),
+            "finalize_discovery": finalize_discovery,
+            "codex_cli": str(codex) if codex else None,
             "codex_code_mode_host": str(host) if host else None, "native_agent_tools": True,
             "model_calls": False, "science_calls": False}
 
@@ -130,7 +177,7 @@ def _verify_runtime_route() -> None:
         raise RuntimeError("pinned Codex constructor, turn, or harness registry API changed")
 
 
-def _require_runtime_ready(check: dict[str, Any], *, enable_native_live: bool) -> None:
+def _require_runtime_ready(check: dict[str, Any], *, enable_native_live: bool = False) -> None:
     """Check the pinned direct runner-to-harness bootstrap before touching context."""
     if not enable_native_live:
         raise RuntimeError("native adaptive live execution requires --enable-native-live")
@@ -159,6 +206,30 @@ def _record(event_type: str, payload_ref: str | None = None) -> None:
     _db, run_id = _read_context()
     Storage(_db).initialize().append_event(run_id, event_type, actor="host", mode=Mode.LIVE,
                                            payload_ref=payload_ref)
+
+
+def _record_finalization_response(database: Path, run_id: str, transcript: str) -> str:
+    """Persist the bounded final PI response separately from the adaptive response."""
+    from nova.contracts import Mode
+    from nova.storage import Storage
+
+    if not transcript.strip() or len(transcript) > 20_000:
+        raise ValueError("native finalization PI response must contain 1-20000 characters")
+    transcript = transcript.strip()
+    digest = hashlib.sha256(transcript.encode("utf-8")).hexdigest()
+    store = Storage(database).initialize()
+    if any(event.event_type == "native_finalization_supervisor_response" and event.actor == "pi"
+           for event in store.list_events(run_id)):
+        raise ValueError("a native finalization PI response is already persisted")
+    import sqlite3
+    with sqlite3.connect(database) as db:
+        db.execute("""CREATE TABLE IF NOT EXISTS native_finalization_supervisor_results (
+                     run_id TEXT PRIMARY KEY, response_text TEXT NOT NULL, response_sha256 TEXT NOT NULL)""")
+        db.execute("INSERT INTO native_finalization_supervisor_results VALUES(?,?,?)",
+                   (run_id, transcript, digest))
+    store.append_event(run_id, "native_finalization_supervisor_response", actor="pi", mode=Mode.LIVE,
+                       payload_ref=f"sha256:{digest}")
+    return digest
 
 
 def _require_trusted_child() -> float:
@@ -198,14 +269,19 @@ def _create_native_audit(database: Path, run_id: str, model: str | None) -> Path
 
 
 def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
-                             document: dict[str, Any]) -> Path:
+                             document: dict[str, Any], *, finalize_discovery: bool = False,
+                             finalization_document: dict[str, Any] | None = None) -> Path:
     """Persist the effective, non-secret role configuration before dispatch."""
     run_dir = database.parent.resolve()
     path = run_dir / "native-runtime-manifest.json"
     roles = {"pi": document.get("executor", {}).get("model")}
-    for name in ("planner", "skeptic", "runner"):
-        item = document.get("tools", {}).get(name, {})
-        roles[name] = item.get("executor", {}).get("model") if isinstance(item, dict) else None
+    for name, item in document.get("tools", {}).items():
+        if isinstance(item, dict) and item.get("type") == "agent":
+            roles[name] = item.get("executor", {}).get("model")
+    if finalization_document:
+        for name, item in finalization_document.get("tools", {}).items():
+            if isinstance(item, dict) and item.get("type") == "agent":
+                roles[name] = item.get("executor", {}).get("model")
     from nova import native_adaptive_runtime, native_adaptive_harness
     from omnigent.inner import codex_executor
 
@@ -214,8 +290,22 @@ def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
                           ("harness", Path(native_adaptive_harness.__file__)),
                           ("codex_executor", Path(codex_executor.__file__))):
         source_hashes[label] = hashlib.sha256(source.read_bytes()).hexdigest()
+    import yaml
+    selected_yaml = yaml.safe_dump(document, sort_keys=False).encode()
+    finalization_sha = None
+    if finalize_discovery and finalization_document is not None:
+        finalization_bytes = yaml.safe_dump(finalization_document, sort_keys=False).encode()
+        selected_yaml += b"\0" + finalization_bytes
+        from nova import native_finalization_tools
+        source_hashes["native_finalization_tools"] = hashlib.sha256(
+            Path(native_finalization_tools.__file__).read_bytes()).hexdigest()
+        finalization_sha = hashlib.sha256(finalization_bytes).hexdigest()
     manifest = {"schema_version": 1, "run_id": run_id, "omnigent_version": SDK_PIN,
                 "model_override": model, "effective_role_models": roles,
+                "finalize_discovery": finalize_discovery,
+                "selected_yaml_sha256": hashlib.sha256(selected_yaml).hexdigest(),
+                "base_yaml_sha256": hashlib.sha256(AGENT.read_bytes()).hexdigest(),
+                "finalization_yaml_sha256": finalization_sha,
                 "native_tools_policy_requested": "disabled",
                 "web_search_policy_requested": "disabled",
                 "guardrail_verification": "requested_unverified_not_effective",
@@ -232,15 +322,34 @@ def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
     return path
 
 
+def _run_omnigent_cli_session(cli_module: Any, document: dict[str, Any], *, prompt: str,
+                              model: str | None, codex_host: Path, prefix: str) -> str:
+    import yaml
+    from nova.native_adaptive_runtime import launch_cli_with_guarded_runner
+
+    with tempfile.TemporaryDirectory(prefix=prefix) as temp_dir:
+        agent_path = Path(temp_dir) / "adaptive-agent.yaml"
+        agent_path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        stdout = io.StringIO()
+        cli_args = ["run", str(agent_path), "--no-session"]
+        if model is not None:
+            cli_args.extend(["--model", model])
+        cli_args.extend(["-p", prompt])
+        with redirect_stdout(stdout):
+            launch_cli_with_guarded_runner(cli_module, cli_args, ROOT, codex_host)
+        return stdout.getvalue().strip()
+
+
 def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: float = 600,
-                               enable_native_live: bool = False) -> int:
+                               enable_native_live: bool = False,
+                               finalize_discovery: bool = False) -> int:
     actual_remaining = _require_trusted_child()
     if model is not None and (not model or len(model) > 120):
         raise ValueError("model must be a nonempty configurable model name")
     if (isinstance(remaining_seconds, bool) or not isinstance(remaining_seconds, (int, float)) or
             not math.isfinite(float(remaining_seconds)) or remaining_seconds <= 0 or remaining_seconds > RUN_TIMEOUT_SECONDS):
         raise ValueError(f"remaining_seconds must be in (0,{RUN_TIMEOUT_SECONDS}]")
-    checked = check_only()
+    checked = check_only(finalize_discovery=finalize_discovery)
     if enable_native_live:
         _require_runtime_ready(checked, enable_native_live=True)
     else:
@@ -256,11 +365,12 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     if db.resolve() != Path(expected_db).resolve() or run_id != expected_run:
         raise RuntimeError("native adaptive context differs from trusted parent binding")
     _assert_fresh_followup(db, run_id, store)
-    import yaml
     rendered = _model_yaml(_load_yaml(), model)
+    finalization_document = _model_yaml(_finalization_yaml(), model) if finalize_discovery else None
     codex_host = Path(checked["codex_code_mode_host"])
     audit_path = _create_native_audit(db, run_id, model)
-    _create_runtime_manifest(db, run_id, model, rendered)
+    _create_runtime_manifest(db, run_id, model, rendered, finalize_discovery=finalize_discovery,
+                             finalization_document=finalization_document)
     os.environ["NOVA_ADAPTIVE_TRACE_PATH"] = str(audit_path)
     os.environ["NOVA_ADAPTIVE_REMAINING_SECONDS"] = str(actual_remaining)
     import omnigent.cli as cli_module
@@ -269,51 +379,105 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
         "Dispatch Planner, then Skeptic, commit one feasible option or stop, and if an ID is returned "
         "dispatch Runner with exactly that ID. Return the actual tool Result summary."
     )
-    with tempfile.TemporaryDirectory(prefix="nova-native-adaptive-") as temp_dir:
-        agent_path = Path(temp_dir) / "adaptive-live.yaml"
-        agent_path.write_text(yaml.safe_dump(rendered, sort_keys=False), encoding="utf-8")
-        stdout = io.StringIO()
-        try:
-            cli_args = ["run", str(agent_path), "--no-session"]
-            if model is not None:
-                cli_args.extend(["--model", model])
-            cli_args.extend(["-p", prompt])
-            from nova.native_adaptive_runtime import launch_cli_with_guarded_runner
-            with redirect_stdout(stdout):
-                launch_cli_with_guarded_runner(cli_module, cli_args, ROOT, codex_host)
-            transcript = stdout.getvalue().strip()
-        except BaseException:
-            _record("native_adaptive_orchestration_failed")
-            raise
-    if transcript:
-        print(transcript)
+    try:
+        transcript = _run_omnigent_cli_session(cli_module, rendered, prompt=prompt, model=model,
+                                               codex_host=codex_host, prefix="nova-native-adaptive-")
+    except BaseException:
+        _record("native_adaptive_orchestration_failed")
+        raise
     if not transcript:
         _record("native_adaptive_orchestration_failed")
         raise RuntimeError("Omnigent native CLI returned no supervisor response")
-    from nova.native_adaptive_runtime import verify_executor_trace
-    executor_verification = verify_executor_trace(audit_path, codex_host)
+    print(transcript, flush=True)
     from nova.adaptive_agent_tools import record_supervisor_response
     record_supervisor_response(transcript)
+
+    finalization_transcript = ""
+    finalization_response_sha256 = None
+    finalization_status = None
+    if finalize_discovery:
+        from nova.native_finalization_tools import read_finalization_state
+
+        initial_finalization_state = read_finalization_state()
+        if not isinstance(initial_finalization_state, dict):
+            raise RuntimeError("native finalization state is not a host-owned mapping")
+        if initial_finalization_state.get("supported") is False:
+            reason = initial_finalization_state.get("reason")
+            if not isinstance(reason, str) or not reason.strip():
+                raise RuntimeError("unsupported finalization state omitted its reason")
+            finalization_status = {"status": "not_supported", "reason": reason}
+        else:
+            if initial_finalization_state.get("stage") != "ready":
+                raise RuntimeError("native finalization is not ready after the adaptive response")
+            followup = initial_finalization_state.get("followup_result")
+            followup_result = followup.get("result") if isinstance(followup, dict) else None
+            followup_result_id = followup_result.get("result_id") if isinstance(followup_result, dict) else None
+            if not isinstance(followup_result_id, str) or not followup_result_id:
+                raise RuntimeError("native finalization has no bound follow-up Result ID")
+            try:
+                finalization_transcript = _run_omnigent_cli_session(
+                    cli_module, finalization_document, prompt=finalization_document["prompt"],
+                    model=model, codex_host=codex_host, prefix="nova-native-finalize-")
+            except BaseException:
+                _record("native_adaptive_orchestration_failed")
+                raise
+            if not finalization_transcript:
+                raise RuntimeError("Omnigent finalization CLI returned no PI response")
+            print(finalization_transcript, flush=True)
+            from nova.native_adaptive_runtime import verify_executor_trace
+            verify_executor_trace(audit_path, codex_host,
+                                 required_tools=("record_adaptive_review", "submit_native_final_review",
+                                                 "freeze_native_final_protocol"))
+            from nova.contracts import Mode
+            from nova.storage import Storage
+            Storage(db).initialize().append_event(
+                run_id, "native_adaptive_finalization_supervisor_returned", actor="host",
+                mode=Mode.LIVE, payload_ref=followup_result_id)
+            persisted = read_finalization_state()
+            final_protocol = persisted.get("final_protocol") if isinstance(persisted, dict) else None
+            if (not isinstance(persisted, dict) or persisted.get("supported") is not True or
+                    persisted.get("stage") != "frozen_unexecuted" or not persisted.get("final_review") or
+                    not isinstance(final_protocol, dict) or
+                    not isinstance(final_protocol.get("holdout_experiment_id"), str) or
+                    not isinstance(final_protocol.get("protocol_sha256"), str)):
+                raise RuntimeError("host did not persist the requested unexecuted final protocol")
+            finalization_status = {"status": "frozen_unexecuted",
+                                   "holdout_experiment_id": final_protocol["holdout_experiment_id"],
+                                   "protocol_sha256": final_protocol["protocol_sha256"]}
+    from nova.native_adaptive_runtime import verify_executor_trace
+    required_final_tools = ("record_adaptive_review", "submit_native_final_review",
+                            "freeze_native_final_protocol") if finalization_transcript else ()
+    executor_verification = verify_executor_trace(audit_path, codex_host,
+                                                 required_tools=required_final_tools,
+                                                 final_response=finalization_transcript or None)
+    if finalization_transcript:
+        finalization_response_sha256 = _record_finalization_response(db, run_id, finalization_transcript)
     # A concise manifest event intentionally records no prompt, credentials,
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.
     _record("native_adaptive_orchestration_completed")
-    print(json.dumps({"status": "completed", "run_id": run_id, "model": model or "yaml-configured",
+    summary = {"status": "completed", "run_id": run_id, "model": model or "yaml-configured",
                       "omnigent_version": checked["omnigent_version"],
                       "guardrail_verified": True,
-                      **executor_verification}, sort_keys=True))
+                      "finalization": finalization_status,
+                      "finalization_response_sha256": finalization_response_sha256,
+                      **executor_verification}
+    if finalization_status and finalization_status["status"] == "not_supported":
+        summary["status"] = "discovery_completed_finalization_not_supported"
+    print(json.dumps(summary, sort_keys=True))
     return 0
 
 
 def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 600,
-                        enable_native_live: bool = False) -> int:
+                        enable_native_live: bool = False,
+                        finalize_discovery: bool = False) -> int:
     """Run the isolated native CLI child under one hard whole-run deadline."""
     if model is not None and (not model or len(model) > 120):
         raise ValueError("model must be a nonempty configurable model name")
     if (isinstance(remaining_seconds, bool) or not isinstance(remaining_seconds, (int, float)) or
             not math.isfinite(float(remaining_seconds)) or not 0 < remaining_seconds <= RUN_TIMEOUT_SECONDS):
         raise ValueError(f"remaining_seconds must be in (0,{RUN_TIMEOUT_SECONDS}]")
-    checked = check_only()
+    checked = check_only(finalize_discovery=finalize_discovery)
     if enable_native_live:
         _require_runtime_ready(checked, enable_native_live=True)
     else:
@@ -341,6 +505,8 @@ def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 
         command.extend(["--model", model])
     if enable_native_live:
         command.append("--enable-native-live")
+    if finalize_discovery:
+        command.append("--finalize-discovery")
     process = subprocess.Popen(command, cwd=ROOT, env=child_env, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT, text=True,
                                start_new_session=(os.name == "posix"))
@@ -386,16 +552,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--remaining-seconds", type=float, default=600)
     parser.add_argument("--enable-native-live", action="store_true",
                         help="authorize native model and science dispatch through the guarded Omnigent harness")
+    parser.add_argument("--finalize-discovery", action="store_true",
+                        help="after the adaptive Runner response, perform bounded final review and protocol freeze")
     parser.add_argument("--_trusted-child", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.check_only:
-        print(json.dumps(check_only(), sort_keys=True))
+        print(json.dumps(check_only(finalize_discovery=args.finalize_discovery), sort_keys=True))
         return 0
     if args._trusted_child:
         return _run_native_adaptive_child(model=args.model, remaining_seconds=args.remaining_seconds,
-                                          enable_native_live=args.enable_native_live)
+                                          enable_native_live=args.enable_native_live,
+                                          finalize_discovery=args.finalize_discovery)
     return run_native_adaptive(model=args.model, remaining_seconds=args.remaining_seconds,
-                               enable_native_live=args.enable_native_live)
+                               enable_native_live=args.enable_native_live,
+                               finalize_discovery=args.finalize_discovery)
 
 
 if __name__ == "__main__":
