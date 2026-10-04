@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "files": {
+    "audit.json": {
+      "sha256": "b3a2d8f80b9115a8b82a0948e384fd74eae138d067fac8a1900a9a99503ed8eb",
+      "byte_size": 18120
+    },
+    "README.md": {
+      "sha256": "eb3e4b8380fa666e38e1e5137a61f2d09bc0325292c865c7a735461a4fa5ec3b",
+      "byte_size": 4335
+    },
+    "source_manifest.json": {
+      "sha256": "b3eb37c765fa0e98b6d1ae16cdd3450d948b52b323ea0cb73c3257e063b5eb07",
+      "byte_size": 8702
+    },
+    "validation.json": {
+      "sha256": "1083962d8d78d6d25491b68f23ab8b465c390a1a2a585cbc39a669e048ffd470",
+      "byte_size": 2351
+    }
+  }
+}

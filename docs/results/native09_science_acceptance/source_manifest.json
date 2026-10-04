@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "source_commit": "19a1c9155e36d973cb17f97bcda2fa28804c9bd3",
+  "all_source_bytes_and_git_blob_ids_independently_verified": true,
+  "file_count": 36,
+  "files": [
+    {
+      "path": "docs/METHOD_AUDIT_PROTOCOL.json",
+      "sha256": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+      "byte_size": 4815,
+      "git_blob_oid": "8231382acd4e766bc8fbc03b2e59d5314928fbed"
+    },
+    {
+      "path": "docs/THRESHOLD_PROTOCOL.json",
+      "sha256": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+      "byte_size": 2297,
+      "git_blob_oid": "adc4057be5932006c0cc9f357b94ae6ed0183993"
+    },
+    {
+      "path": "nova/__init__.py",
+      "sha256": "4df77c00478e91de6395662d524fe0b20636b1bdfa593743c50f7094a0b7e5c2",
+      "byte_size": 86,
+      "git_blob_oid": "45485403ce1132ffa856ca59f7b48b4288605a7a"
+    },
+    {
+      "path": "nova/adaptive_agent_tools.py",
+      "sha256": "d07c5d5a530929c6bff46380bc7d1d72152ea0f1ba95ca9b9ab1bf8a6aa129ec",
+      "byte_size": 43532,
+      "git_blob_oid": "43d9c41280bd5a829e30819e027a8ed94b85e0a2"
+    },
+    {
+      "path": "nova/adaptive_policy.py",
+      "sha256": "28edbff078d2d2c3c1defe4ec270086a01fb6a769cb63359b518da337b45e504",
+      "byte_size": 7582,
+      "git_blob_oid": "6d7201a616b4037528b6495d86da1d653213b187"
+    },
+    {
+      "path": "nova/contracts.py",
+      "sha256": "728096cc704affff6ba238352cc8e4cc28912b2e6aa536207b35bfa247fa3e1d",
+      "byte_size": 8506,
+      "git_blob_oid": "708148bcbea83994d0d799aad01a0c9257da409f"
+    },
+    {
+      "path": "nova/data/__init__.py",
+      "sha256": "90eeb249c03bf30b5984557b1007932d2228cd0c194cee10726f735826229402",
+      "byte_size": 159,
+      "git_blob_oid": "aea8e640a8795eaf97f1a660e52910214cdba7d3"
+    },
+    {
+      "path": "nova/data/pipeline.py",
+      "sha256": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+      "byte_size": 30213,
+      "git_blob_oid": "201696450bdcf8ceabcef79d7733f2e49d99f4cf"
+    },
+    {
+      "path": "nova/decision_tools.py",
+      "sha256": "c8d86270d259bbf8058031941ce4eb49bb43c3fd5d9c038a40c6e0c054e98949",
+      "byte_size": 15613,
+      "git_blob_oid": "7e3f4d11a3e081eab2dd78f1753d79b517138a5d"
+    },
+    {
+      "path": "nova/evidence.py",
+      "sha256": "f2853c0bb38d2ea35deaac687c2cfec72189a790f965ab4c075b8c5bfe2f3ff3",
+      "byte_size": 4663,
+      "git_blob_oid": "d7bedf45259a38dd9ce6cbcc989ba1996cbcc9db"
+    },
+    {
+      "path": "nova/experiments/__init__.py",
+      "sha256": "8fed7096ef6afb8c00caa808f04478878ecb7a357b1e86f468468d7938bb4190",
+      "byte_size": 158,
+      "git_blob_oid": "e72213547ee51c57211d8f65909fae54e74d34f7"
+    },
+    {
+      "path": "nova/experiments/executor.py",
+      "sha256": "77bcc0c05e54d85963c1062274065ba1a11b0de3ed311347b26ef5d4a40b6c0d",
+      "byte_size": 23050,
+      "git_blob_oid": "7bf85cce3db02b8048e6a235e3ccd0202a8e2757"
+    },
+    {
+      "path": "nova/experiments/family_screen.py",
+      "sha256": "a5293b9f027fe4bbb48355c61fb408bda6a2b304081ec4765d4cb2c4074421cd",
+      "byte_size": 9780,
+      "git_blob_oid": "faac171d3ccdc3b4d1cfdcb4571f28106d030b8e"
+    },
+    {
+      "path": "nova/experiments/holdout_validation.py",
+      "sha256": "6b89ac0594b522222d9fcd0a6da886cc727c4557d58fca191cd35da0bc148e44",
+      "byte_size": 37257,
+      "git_blob_oid": "4b4ac3890e15f78b4f10dd2e881bbc396b41a4e4"
+    },
+    {
+      "path": "nova/experiments/method_sensitivity.py",
+      "sha256": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+      "byte_size": 25912,
+      "git_blob_oid": "ee3aa55cc54b7363a0d077cd83ddead43c44faee"
+    },
+    {
+      "path": "nova/experiments/threshold_sensitivity.py",
+      "sha256": "eaec7217a36b5ce6f12bd6f3ee4384779e5978524f0d1bc7bad60c5f9eb4f59a",
+      "byte_size": 14330,
+      "git_blob_oid": "44cab5190c0c836bf7557a8687fe04a9fddd0fc6"
+    },
+    {
+      "path": "nova/fixture_engine.py",
+      "sha256": "5d575d5962582579f6cedd697e59c1ed2af827a41d60b6310dd97bfa48a638bc",
+      "byte_size": 5822,
+      "git_blob_oid": "417bd359205d263f28af962e1e493b3128b61353"
+    },
+    {
+      "path": "nova/holdout_bridge.py",
+      "sha256": "ae0b68d8dc0592570cb01c76526a7911fd2824500c6a5e10fb40f9b242fbf7fc",
+      "byte_size": 34073,
+      "git_blob_oid": "12df313d55cf9c59bf66c135e11158399a703322"
+    },
+    {
+      "path": "nova/live_bridge.py",
+      "sha256": "8f9e629d72da0ed2c7b2af07ee7846d6c7677ce93d70ee9709e178b08aff725b",
+      "byte_size": 5358,
+      "git_blob_oid": "1590afedf1d287e4156433af6745d9f0801976cc"
+    },
+    {
+      "path": "nova/method_audit_report.py",
+      "sha256": "4e77dfff7e7d7e0ffdc1d4333ff1e0f082d4a87ed9ea456cb849d90e8368cf19",
+      "byte_size": 41941,
+      "git_blob_oid": "1b10c0bccf0eea3a6d3e5521041ecb7cdf4ed4fe"
+    },
+    {
+      "path": "nova/method_evidence.py",
+      "sha256": "117fa718d8d6d3b3b86e5c5bca2df249e0177deb8fd5c43f18219d98d5786a16",
+      "byte_size": 26108,
+      "git_blob_oid": "2ed6a3194e65f85a71aa0ec22405724e495ed9ff"
+    },
+    {
+      "path": "nova/method_evidence_export.py",
+      "sha256": "f872c9eeaa4cd34cea4809076ced7e715f0b8f2c883ac446d734b8727575b39a",
+      "byte_size": 24346,
+      "git_blob_oid": "1808b4f033d985197f5f0a6bfb43b0343a3873b1"
+    },
+    {
+      "path": "nova/method_review.py",
+      "sha256": "cd5f5fded5b8757f28c17359e8787f5d7eb1ef7cf5776ae951ed12d097d249ac",
+      "byte_size": 51724,
+      "git_blob_oid": "07a8b39f6e147995447feea9a6308118ccea4882"
+    },
+    {
+      "path": "nova/native_adaptive_harness.py",
+      "sha256": "2308a5e7701402b0a134c4009c2a98e739d805de3798202e4001ccfaf044bfd0",
+      "byte_size": 569,
+      "git_blob_oid": "3a734ce7256abf4b53fa03e291321bc68c0215bb"
+    },
+    {
+      "path": "nova/native_adaptive_runtime.py",
+      "sha256": "99890acc0d2bab323247929938b7e2a1344bf6e6e8dbb4c7007b795bead48945",
+      "byte_size": 35107,
+      "git_blob_oid": "9ae18450e783e217dc68519b1299972a22c583c2"
+    },
+    {
+      "path": "nova/native_finalization_tools.py",
+      "sha256": "0844a2cff83681943f9f8280ea32fa1b949f1fc3c0212024d03f707598fad0a8",
+      "byte_size": 32633,
+      "git_blob_oid": "9d08117c7be776a6b62177dbc404b7efd0794a71"
+    },
+    {
+      "path": "nova/native_holdout_tools.py",
+      "sha256": "b15838bbe8b9a52c91763155e6382bf198d7fa4b6a15daa5e4e8954f17acd762",
+      "byte_size": 10754,
+      "git_blob_oid": "920545eaa437415c713720931b792bcd92b9d05e"
+    },
+    {
+      "path": "nova/omnigent_bridge.py",
+      "sha256": "57e82983dfd682afaa12c88d2e1b61ed4a3c48d270147596bb09b9da2ab4e264",
+      "byte_size": 5161,
+      "git_blob_oid": "3aee916fbee97eabb402ff7fcdc15f9260e68e8f"
+    },
+    {
+      "path": "nova/process_control.py",
+      "sha256": "12efcc995859acf0a2cb6adf7357ccf957dfec6cb13a8a876905aaaa65023017",
+      "byte_size": 7276,
+      "git_blob_oid": "a5093752da0b795fd158db93111cdbc4745b0ec2"
+    },
+    {
+      "path": "nova/registered_method_audit.py",
+      "sha256": "e14fbad91d107bf1dd72b3efb19728e7de3cc98d0f09b1247da48213ec3bad6b",
+      "byte_size": 13943,
+      "git_blob_oid": "b5e3308137b5c84fc56c67878f0254c73e7a409c"
+    },
+    {
+      "path": "nova/runtime.py",
+      "sha256": "0e1507840ed1a08546e8e3c1dda929e4a367cb38bcb69b274e8da904cfc0969a",
+      "byte_size": 6479,
+      "git_blob_oid": "e3bb9847acfd6f8a4639604d37c337a993e764c3"
+    },
+    {
+      "path": "nova/science_adapter.py",
+      "sha256": "35bf459aae4cfe163cf0fc581805e02bbe663acd126249fe36f7eddab0f98dd9",
+      "byte_size": 2624,
+      "git_blob_oid": "9e86802ad61720eba602fe3354e2de1394c87ac6"
+    },
+    {
+      "path": "nova/statistics.py",
+      "sha256": "cf5663ba26a3c5212493eb6c8b1445018dcb3e666a1520fe18eaa37c23e6597b",
+      "byte_size": 4511,
+      "git_blob_oid": "f36a9ed58ab604f84ca554cf39057d96b9fd57b1"
+    },
+    {
+      "path": "nova/storage.py",
+      "sha256": "14385f72d372d5ca6479cb860584b8b8ecfde8c4f45894b1ba29df69c711c47d",
+      "byte_size": 8796,
+      "git_blob_oid": "1f511d870f3ae29f95a941b5a405d436577291aa"
+    },
+    {
+      "path": "nova/tools.py",
+      "sha256": "227b5394f7e33b17ffde9e6eb635377ca0d28881f4494d5a6bb66adf5cd41a38",
+      "byte_size": 2497,
+      "git_blob_oid": "2a079b22ac1aff16da7d14769261758fd61a36da"
+    },
+    {
+      "path": "nova/workflow.py",
+      "sha256": "1e987cb0656d586424c933d24f7872b8ef83b4722feb080425be2be267f3b1d0",
+      "byte_size": 9041,
+      "git_blob_oid": "91d1f9abd21419331b392ed37ef29657ee7d17e2"
+    }
+  ]
+}

@@ -1,5 +1,40 @@
 # Team status and handoff
 
+## Team A milestone 17 — native09 scientific evidence independently accepted
+
+Synced merged B PR #25 at main `11f81c1`. A independently accepts the existing
+native09 portable scientific evidence without another holdout execution. The
+[acceptance package](results/native09_science_acceptance/README.md) verifies
+all exported hashes, three Spec/Result/payload mappings, review/frozen lineage,
+event order, aggregate arithmetic and frozen quality/classification gates.
+The root reran the pure review in existing Ubuntu WSL and obtained the same
+aggregate audit bytes as the separate reviewer. All 36 isolated scientific
+source files/protocols byte-match B's actual `19a1c91` Git blobs; the Windows
+working science/dependency bytes were preserved. No model/science calls,
+bootstrap recomputation or raw/prepared outcome access occurred in this stage.
+B's 426-test Linux regression is attributed to B and was not rerun here.
+
+The holdout primary result is 1/3,282 oxide versus 3/1,354 chalcogenide passes,
+100% field coverage, difference +0.19110 percentage points, and stored 95%
+resampling interval [-0.03047, 0.48652]. Its direction matches discovery but
+the interval crosses zero: `direction_consistent_inconclusive`, not demonstrated
+replication. All frozen threshold holdout intervals cross zero. Portable
+consistency does not attest the private database/provider/OS or authorize a
+further attempt. Native09's real engineering completion remains distinct from
+scientific replication and a baseline speed/cost benefit.
+
+Initial local Product demo and Technical walkthrough clips were generated and
+passed audio/video decoding and source/subtitle checks. At the user's request,
+A is polishing both for competition presentation, with stronger visual design
+and a focus on completed, result-informed scientific decisions. The clips replay
+native09's existing evidence and retain its real scientific values. Final media
+packaging is a separate next milestone; MP4/audio/encoder files remain ignored.
+
+Shared-file change is this status entry only, after refreshing B's latest work.
+The team handles introduction; final upload and competition submissions remain
+to complete. Matched full model latency/cost baselines are still unfinished,
+and no measured acceleration or cost advantage is claimed.
+
 ## B native09 — real post-freeze holdout and export completed
 
 After the user confirmed A's early attempt was stopped with no freeze/claim or

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "run_id": "native-adaptive-live-09",
+  "reviewer": "Team A; independently rerun by root in existing Ubuntu WSL Python 3.12.13",
+  "status": "accepted_portable_scientific_consistency",
+  "source_commit": "19a1c9155e36d973cb17f97bcda2fa28804c9bd3",
+  "source_manifest_sha256": "b3eb37c765fa0e98b6d1ae16cdd3450d948b52b323ea0cb73c3257e063b5eb07",
+  "source_file_count": 36,
+  "audit_sha256": "b3a2d8f80b9115a8b82a0948e384fd74eae138d067fac8a1900a9a99503ed8eb",
+  "aggregate_audit_matches_independent_subagent_output": true,
+  "helper_sha256": "32258af8b2e91b93ba0d0d7ff2cf09ecb8da1f669136eb147a43c27b867952d4",
+  "implementation": {
+    "path": "nova/experiments/holdout_validation.py",
+    "sha256": "6b89ac0594b522222d9fcd0a6da886cc727c4557d58fca191cd35da0bc148e44",
+    "byte_size": 37257,
+    "git_blob_oid": "4b4ac3890e15f78b4f10dd2e881bbc396b41a4e4"
+  },
+  "isolated_source_uses_recorded_git_blob_bytes": true,
+  "working_scientific_source_or_dependency_bytes_changed": false,
+  "holdout_result_id": "nova-result-ec1717ee5923f960e1b69964ef1da537043547da6bedfeb9d350f3397009a210",
+  "holdout_scientific_status": "inconclusive",
+  "replication_status": "direction_consistent_inconclusive",
+  "checks": {
+    "all_13_manifest_files_sha256_and_sizes": true,
+    "hash_inventory_14_entries": true,
+    "three_specs_results_immutable_science_payloads": true,
+    "canonical_final_protocol_hash_and_separate_export_hash": true,
+    "review_and_parent_result_lineage": true,
+    "freeze_before_one_exported_holdout_start_and_one_result": true,
+    "native_holdout_result_matches_shared_result": true,
+    "recorded_aggregate_arithmetic_and_missingness": true,
+    "frozen_sample_coverage_and_nonzero_endpoint_gates": true,
+    "stored_intervals_classified_without_resampling": true
+  },
+  "new_model_calls": 0,
+  "new_science_calls": 0,
+  "raw_or_prepared_outcomes_read": false,
+  "bootstrap_recomputed": false,
+  "private_sqlite_or_exact_pi_response_read": false,
+  "runtime_authorization_or_provider_identity_attested": false,
+  "full_linux_regression": {
+    "source_reported_by_B": {
+      "passed": 426,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 23.22
+    },
+    "rerun_by_A_in_this_stage": false
+  },
+  "baseline_latency_and_cost_benefit_established": false
+}
