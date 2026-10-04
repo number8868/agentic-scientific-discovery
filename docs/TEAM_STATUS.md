@@ -2,7 +2,8 @@
 
 ## Team A milestone 15 — post-freeze adapter accepted offline
 
-Based on merged B PR #22 (main `cdde367`), A independently reviewed the
+On [A PR #23](https://github.com/number8868/agentic-scientific-discovery/pull/23),
+based on merged B PR #22 (main `cdde367`), A independently reviewed the
 dedicated ID-only holdout Runner and its three scoped wrappers around the
 unchanged scientific gate. The [acceptance package](results/postfreeze_gate_acceptance/README.md)
 records eleven source checks, seven synthetic integration cases using the
