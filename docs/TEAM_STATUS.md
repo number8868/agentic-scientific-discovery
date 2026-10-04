@@ -1,5 +1,53 @@
 # Team status and handoff
 
+## Team A milestone 13 — native frozen science accepted, runtime gate retained
+
+Synced newly merged main `c6cea09`, including A PR #15 and B PR #16. Branch:
+`codex/finalization-science-acceptance`. The existing A portable discovery
+audit now optionally checks B's frozen finalization sidecar: exact original
+OPT family/threshold parameters, canonical protocol/stage hashes, both
+Result/review/event chains and the derived unexecuted holdout Spec. Null,
+unredacted and redacted PI exports retain distinct hash-evidence boundaries.
+This is read-only consistency checking; it never opens private context/SQLite
+or authorizes native holdout execution. B runtime, prompts, shared contracts,
+historical evidence and frozen science files remain unchanged.
+
+The [independent A report](results/frozen_science_acceptance/README.md) verifies
+all 14 manifest entries/15 inventory entries, unchanged historical science,
+30 paired tool calls and the three accepted review/freeze argument/response
+hashes. Six recorded executor processes complete seven model turns. Final
+Skeptic and PI freeze explanations correctly retain sparse counts and
+correlated discovery-only scope. The six protected byte digests match.
+Keep original CLI exit 1, its post-freeze failure and missing final-stage PI
+text. Initial hypothesis/primary were host seeded; no method-candidate model
+review is established. Neither offline acceptance nor recorded guard settings
+prove runtime authorization, provider identity or OS confinement.
+
+Final complete Linux regression: **397 passed, zero skips**, 44.74 seconds,
+using the existing Linux environment and a clean source-only checkout. The
+new module has 18 acceptance cases. First full check: 395 passed / 1 failed
+because an old metadata test allowed an unsupported finalization placeholder;
+the generic fixture is migrated and that placeholder now has an explicit
+rejection test. All three changed source/test files match the tested bytes.
+Native run03 numerical fields equal B's historical audit; both earlier failed
+and recovered audit/manifest pairs remain byte-identical. Coding helper is
+`gpt-6-luna` / `max`, separate from Omnigent scientific-role configuration.
+
+The submission draft now describes recorded native final review/freeze and
+preserves the failure boundary. Narration is 108 words, unrecorded/untimed.
+No new real-data scientific run, scientific-role model invocation,
+prepared-property/holdout read, private runtime access or browser validation
+occurred. Synthetic regression code execution is a separate scope.
+
+Next B handoff: obtain fresh clean native finalization acceptance with
+persisted PI prose, preserve the untouched holdout ID and connect the
+dedicated post-freeze Runner under the same whole-run deadline. A reviews
+the owning native lineage and one controlled original-protocol validation;
+portable export checks cannot reopen failed runs, reset budgets or replace
+the single-attempt gate. Method-specific validation remains outside the
+original freeze. Matched full-latency/cost comparisons, clean rehearsals,
+recording and both submissions remain pending.
+
 ## B finalization update — real review/freeze, clean CLI pending
 
 The opt-in native finalization path is implemented without changing A's

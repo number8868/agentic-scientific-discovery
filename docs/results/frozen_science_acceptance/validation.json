@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "stage": "A native frozen discovery science acceptance",
+  "base_commit": "c6cea09",
+  "source_run_id": "native-adaptive-live-03",
+  "linux_complete_regression": {
+    "tests": 397,
+    "passed": 397,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 44.731,
+    "junit_sha256": "dcc59ec21f5aa9d5cc715dcd6744f7861dcc3c6a5dd236794a789a04fa20cf6d",
+    "environment": "Ubuntu WSL; Python3.12.13; NumPy2.5.3; existing Linux venv",
+    "command": "python -m pytest -q -o addopts= --junitxml=frozen-regression.xml",
+    "prepared_data_or_private_context_in_checkout": false
+  },
+  "direct_cli_replays": {
+    "native03_freeze_science_preflight_passed": true,
+    "native03_numerical_report_unchanged_from_B": true,
+    "legacy_failed_and_recovered_audit_manifest_pairs_byte_identical": true
+  },
+  "source_working_bytes_equal_tested_Linux_bytes": true,
+  "source_sha256": {
+    "scripts/audit_discovery_bundle.py": "fb2ebf3a71f76d345879d6782e617dd0d5cacd2221afb48f0b2c82141ca025e9",
+    "tests/test_frozen_discovery_audit.py": "4f4b87b5ff2dd87cc7ca4e8da45a265b4a0b57df8e4bf085e15f3bd7059f8ab5",
+    "tests/test_audit_discovery_bundle.py": "c51906c7a639e9fb0c2633c451b203d18d966215f6c6c59022a9b41a87737691"
+  },
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "independent_verification_sha256": "2eaa7d8f64a888bb4b5ecda0674400101cc89a667ba8b16f299f489a47cebb4f",
+  "draft_narration_words": 108,
+  "timed_rehearsal_or_recording": false,
+  "coding_helper": {
+    "task": "frozen_bundle_science_adapter",
+    "model": "gpt-6-luna",
+    "reasoning_effort": "max",
+    "separate_from_Omnigent_scientific_roles": true
+  },
+  "scope": {
+    "new_real_data_science_executions": 0,
+    "new_scientific_role_model_calls": 0,
+    "synthetic_tests_may_execute_scientific_code": true,
+    "prepared_properties_read": false,
+    "holdout_outcomes_read": false,
+    "private_runtime_context_or_database_opened": false,
+    "native_execution_authorization_reconstructed": false,
+    "holdout_execution_authorized_by_audit": false,
+    "clean_CLI_success_demonstrated": false,
+    "native_final_review_freeze_recorded_by_B": true,
+    "matched_baseline_measured": false,
+    "actual_billed_cost_known": false,
+    "browser_verified": false
+  },
+  "first_complete_regression": {
+    "tests": 396,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 50.348,
+    "junit_sha256": "4bad0a7894b8cc02583a93911b4ea739f51c451c293d7e7b782639aee450eb35",
+    "failed_case": "test_optional_native_metadata_is_allowlisted_but_still_checked",
+    "cause": "Legacy synthetic metadata fixture assumed an unsupported finalization placeholder was valid. The strict scientific sidecar correctly rejects it.",
+    "resolution": "Keep generic metadata inventory test, move unsupported freeze placeholder to an explicit rejection case; production validation not weakened."
+  },
+  "new_frozen_acceptance_cases_in_complete_regression": 18,
+  "existing_audit_cases_in_complete_regression": 25,
+  "local_document_links_checked": 77
+}

@@ -19,7 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from nova import holdout_bridge  # noqa: E402
-from nova.contracts import Event, ExperimentSpec, Mode, Result, Split, Template  # noqa: E402
+from nova.contracts import Event, ExperimentSpec, Mode, Result, ReviewPacket, Split, Template  # noqa: E402
 from nova.experiments import executor  # noqa: E402
 
 _HEX = re.compile(r"^[0-9a-f]{64}$")
@@ -391,6 +391,259 @@ def _read_results(rows: Any, specs: dict[str, ExperimentSpec]) -> dict[str, Resu
     return output
 
 
+class _PortableDiscoveryStore:
+    """Minimal read-only view of exported discovery records for the bridge ownership check."""
+
+    def __init__(self, specs: dict[str, ExperimentSpec], results: dict[str, Result],
+                 reviews: dict[str, ReviewPacket]):
+        self._specs = {item.experiment_id: item for item in specs.values()}
+        self._results = {item.result_id: item for item in results.values()}
+        self._reviews = reviews
+
+    def read_spec(self, experiment_id: str) -> ExperimentSpec | None:
+        return self._specs.get(experiment_id)
+
+    def read_result(self, result_id: str) -> Result | None:
+        return self._results.get(result_id)
+
+    def read_review(self, result_id: str) -> ReviewPacket | None:
+        return self._reviews.get(result_id)
+
+
+def _native_stage_sha256(packet: dict[str, Any]) -> str:
+    # Match nova.native_finalization_tools._canonical exactly.
+    encoded = json.dumps(packet, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                         allow_nan=False, default=str).encode("utf-8")
+    return _sha256(encoded)
+
+
+def _same_json(left: Any, right: Any) -> bool:
+    """Compare exported JSON values without Python's bool/int or int/float coercions."""
+    try:
+        return json.dumps(left, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                          allow_nan=False) == json.dumps(right, sort_keys=True, separators=(",", ":"),
+                                                          ensure_ascii=False, allow_nan=False)
+    except Exception:
+        return False
+
+
+def _validate_native_finalization(evidence: Any, manifest: dict[str, Any],
+                                  specs: dict[str, ExperimentSpec], results: dict[str, Result],
+                                  events: list[Event], root: Path,
+                                  source_hashes: dict[str, str]) -> dict[str, Any]:
+    """Validate an optional exported frozen-discovery record without live authorization."""
+    if (not _object(evidence) or set(evidence) != {
+            "schema_version", "run_id", "finalization_state", "final_pi_response", "final_protocol",
+            "holdout_spec", "holdout_result_present", "holdout_execution_performed_by_exporter"} or
+            type(evidence.get("schema_version")) is not int or evidence["schema_version"] != 1 or
+            evidence.get("run_id") != manifest.get("run_id") or
+            type(evidence.get("holdout_result_present")) is not bool or evidence["holdout_result_present"] or
+            type(evidence.get("holdout_execution_performed_by_exporter")) is not bool or
+            evidence["holdout_execution_performed_by_exporter"]):
+        _fail("native finalization evidence identity or unexecuted state is invalid")
+
+    state = evidence.get("finalization_state")
+    if (not _object(state) or set(state) != {
+            "parent_result_id", "followup_result_id", "status", "review", "review_sha256",
+            "freeze", "freeze_sha256"} or state.get("status") != "frozen"):
+        _fail("native finalization stage state is invalid")
+    final = evidence.get("final_protocol")
+    if (not _object(final) or set(final) != {
+            "frozen_protocol_id", "holdout_experiment_id", "protocol", "protocol_sha256"}):
+        _fail("native final protocol record is invalid")
+    protocol = final.get("protocol")
+    protocol_sha = final.get("protocol_sha256")
+    if (not _object(protocol) or type(protocol.get("schema_version")) is not int or
+            protocol.get("schema_version") != 1 or not isinstance(protocol_sha, str) or
+            not _HEX.fullmatch(protocol_sha)):
+        _fail("native frozen protocol identity is invalid")
+    try:
+        # decision_tools.freeze_final uses sorted compact JSON with ASCII escaping enabled.
+        protocol_raw = json.dumps(protocol, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    except Exception:
+        _fail("native frozen protocol encoding is invalid")
+    actual_protocol_sha = _sha256(protocol_raw)
+    frozen_id = "NOVA-FINAL-" + actual_protocol_sha[:16]
+    if (actual_protocol_sha != protocol_sha or final.get("frozen_protocol_id") != frozen_id or
+            state.get("parent_result_id") != protocol.get("main_result_id") or
+            state.get("followup_result_id") != protocol.get("followup_result_id")):
+        _fail("native frozen protocol hash or result identity is invalid")
+
+    review_packet = state.get("review")
+    freeze_packet = state.get("freeze")
+    review_sha = state.get("review_sha256")
+    freeze_sha = state.get("freeze_sha256")
+    if (not _object(review_packet) or set(review_packet) != {"followup_result_id", "review", "stage"} or
+            review_packet.get("stage") != "reviewed" or
+            review_packet.get("followup_result_id") != protocol.get("followup_result_id") or
+            not isinstance(review_sha, str) or not _HEX.fullmatch(review_sha) or
+            not _object(freeze_packet) or set(freeze_packet) != {
+                "explanation", "frozen_protocol_id", "holdout_experiment_id", "protocol_sha256", "stage"} or
+            freeze_packet.get("stage") != "frozen_unexecuted" or
+            not isinstance(freeze_sha, str) or not _HEX.fullmatch(freeze_sha)):
+        _fail("native finalization stage packet shape is invalid")
+    try:
+        actual_review_sha = _native_stage_sha256(review_packet)
+        actual_freeze_sha = _native_stage_sha256(freeze_packet)
+    except Exception:
+        _fail("native finalization stage packet encoding is invalid")
+    if actual_review_sha != review_sha or actual_freeze_sha != freeze_sha:
+        _fail("native finalization stage packet hash is invalid")
+
+    holdout_id = "NOVA-HOLDOUT-" + _sha256(
+        (manifest["run_id"] + ":" + frozen_id).encode("utf-8"))[:16]
+    if (final.get("holdout_experiment_id") != holdout_id or
+            freeze_packet.get("frozen_protocol_id") != frozen_id or
+            freeze_packet.get("holdout_experiment_id") != holdout_id or
+            freeze_packet.get("protocol_sha256") != protocol_sha or
+            freeze_packet.get("explanation") != protocol.get("explanation")):
+        _fail("native freeze packet does not match the canonical protocol")
+
+    try:
+        holdout_spec = ExperimentSpec.from_dict(evidence.get("holdout_spec"))
+        derived_holdout = holdout_bridge._derive_holdout(manifest["run_id"], protocol, frozen_id)
+    except Exception:
+        _fail("native holdout Spec cannot be derived from the frozen protocol")
+    if (not _same_json(evidence.get("holdout_spec"), derived_holdout.to_dict()) or
+            not _same_json(holdout_spec.to_dict(), derived_holdout.to_dict()) or
+            holdout_spec.experiment_id != holdout_id or
+            holdout_spec.experiment_id in {item.experiment_id for item in specs.values()} or
+            any(item.experiment_id == holdout_id for item in results.values())):
+        _fail("native holdout Spec differs from its frozen derivation")
+
+    if "reviews.json" not in manifest["files"] or manifest["files"]["reviews.json"]["count"] != 2:
+        _fail("native finalization requires both stored discovery reviews")
+    review_rows = _read_json_file(root, manifest, source_hashes, "reviews.json", expected_count=2)
+    if not isinstance(review_rows, list) or any(not _object(item) for item in review_rows):
+        _fail("stored discovery reviews are invalid")
+    review_objects: dict[str, ReviewPacket] = {}
+    review_dicts: dict[str, dict[str, Any]] = {}
+    try:
+        for row in review_rows:
+            review = ReviewPacket.from_dict(row)
+            if review.result_id in review_objects:
+                _fail("stored discovery reviews are ambiguous")
+            review_objects[review.result_id] = review
+            review_dicts[review.result_id] = row
+    except AuditError:
+        raise
+    except Exception:
+        _fail("stored discovery reviews are invalid")
+    followup_id = protocol.get("followup_result_id")
+    if not _same_json(review_dicts.get(followup_id), review_packet.get("review")):
+        _fail("native final review differs from the stored discovery review")
+    known_result_ids = {item.result_id for item in results.values()}
+    results_by_experiment = {item.experiment_id: item for item in results.values()}
+    for review in review_objects.values():
+        matching_result = results_by_experiment.get(review.experiment_id)
+        if matching_result is None or matching_result.result_id != review.result_id:
+            _fail("stored review is not bound to its own discovery Result")
+        if any(reference not in known_result_ids for reference in review.claim_refs):
+            _fail("stored review contains an unresolved Result reference")
+        if any(reference != review.result_id for reference in review.claim_refs):
+            _fail("stored review claim does not reference its own Result")
+        for concern in review.concerns:
+            if any(reference not in known_result_ids for reference in concern.evidence_refs):
+                _fail("stored review contains an unresolved Result reference")
+            if any(reference != review.result_id for reference in concern.evidence_refs):
+                _fail("stored review concern does not reference its own Result")
+
+    try:
+        main, followup, main_result, followup_result = holdout_bridge._assert_owned_discovery(
+            _PortableDiscoveryStore(specs, results, review_objects), events, protocol,
+            protocol.get("dataset_sha256"),
+        )
+    except Exception:
+        _fail("native frozen discovery ownership is invalid")
+    if (not _same_json(protocol.get("main_spec"), specs["family_screen"].to_dict()) or
+            not _same_json(protocol.get("followup_spec"), specs["threshold_sensitivity"].to_dict()) or
+            main.experiment_id != specs["family_screen"].experiment_id or
+            followup.experiment_id != specs["threshold_sensitivity"].experiment_id or
+            main_result.result_id != results["family_screen"].result_id or
+            followup_result.result_id != results["threshold_sensitivity"].result_id):
+        _fail("native frozen protocol does not match registered discovery records")
+
+    # The portable package may contain the holdout Spec, but it must contain no holdout attempt.
+    if any("holdout" in event.event_type.lower() or event.payload_ref == holdout_id for event in events):
+        _fail("native event history contains a holdout execution attempt")
+    if "native-model-audit.jsonl" not in manifest["files"]:
+        _fail("native model audit is required to check for holdout execution calls")
+    trace_raw = _read_verified(root, manifest, source_hashes, "native-model-audit.jsonl")
+    for line in trace_raw.decode("utf-8").splitlines():
+        record = _strict_json(line.encode("utf-8"))
+        if not _object(record):
+            _fail("native model audit record is invalid")
+        tool, trace_event = record.get("tool"), record.get("event")
+        if ((isinstance(tool, str) and "holdout" in tool.lower()) or
+                (isinstance(trace_event, str) and any(term in trace_event.lower() for term in
+                 ("holdout_running", "holdout_result", "holdout_claim", "holdout_failed", "holdout_executed")))):
+            _fail("native model trace contains a holdout execution attempt")
+
+    def one_event(kind: str, actor: str, reference: str | None) -> Event:
+        matches = [event for event in events if event.event_type == kind and event.actor == actor and
+                   event.payload_ref == reference]
+        if len(matches) != 1:
+            _fail("native finalization events are incomplete or ambiguous")
+        return matches[0]
+
+    skeptic_review = one_event("second_review", "skeptic", followup_id)
+    review_submitted = one_event("native_adaptive_final_review_submitted", "host", followup_id)
+    protocol_frozen = one_event("final_protocol_frozen", "host", frozen_id)
+    finalization_frozen = one_event("native_adaptive_final_protocol_frozen", "host", frozen_id)
+    if not skeptic_review.seq < review_submitted.seq < protocol_frozen.seq < finalization_frozen.seq:
+        _fail("native finalization events are out of order")
+    response = evidence.get("final_pi_response")
+    response_events = [event for event in events
+                       if event.event_type == "native_finalization_supervisor_response"]
+    response_hash_verified = False
+    if response is None:
+        if response_events:
+            _fail("native final PI response event has no exported response")
+    else:
+        if (not _object(response) or set(response) != {
+                "response_text", "response_sha256", "exported_response_sha256", "response_redacted"} or
+                not isinstance(response.get("response_text"), str) or
+                not isinstance(response.get("response_sha256"), str) or
+                not _HEX.fullmatch(response["response_sha256"]) or
+                not isinstance(response.get("exported_response_sha256"), str) or
+                not _HEX.fullmatch(response["exported_response_sha256"]) or
+                type(response.get("response_redacted")) is not bool or
+                _sha256(response["response_text"].encode("utf-8")) != response["exported_response_sha256"] or
+                (not response["response_redacted"] and
+                 response["response_sha256"] != response["exported_response_sha256"])):
+            _fail("native final PI response hashes or redaction metadata are invalid")
+        if (len(response_events) != 1 or response_events[0].actor != "pi" or
+                response_events[0].payload_ref != f"sha256:{response['response_sha256']}" or
+                response_events[0].seq <= finalization_frozen.seq):
+            _fail("native final PI response is not bound to its post-freeze event")
+        response_hash_verified = not response["response_redacted"]
+
+    failed_events = [event for event in events if event.event_type == "native_adaptive_orchestration_failed"]
+    completed_events = [event for event in events if event.event_type == "native_adaptive_orchestration_completed"]
+    if (len(failed_events) > 1 or len(completed_events) > 1 or
+            any(event.actor != "host" or event.mode is not Mode.LIVE or event.seq <= finalization_frozen.seq
+                for event in failed_events + completed_events) or
+            (failed_events and failed_events[0].payload_ref is not None) or
+            (completed_events and completed_events[0].payload_ref is not None) or
+            (failed_events and failed_events[0].seq != events[-1].seq) or
+            (failed_events and completed_events)):
+        _fail("native finalization completion events are inconsistent")
+
+    return {
+        "status": "frozen_discovery_evidence_verified",
+        "frozen_protocol_id": frozen_id,
+        "holdout_experiment_id": holdout_id,
+        "holdout_spec_derivation_verified": True,
+        "final_review_matches_stored_review": True,
+        "holdout_execution_attempt_evidence_found": False,
+        "post_freeze_cli_failure_preserved": bool(failed_events),
+        "final_pi_response_present": response is not None,
+        "final_pi_response_export_hash_verified": response is not None,
+        "final_pi_response_original_hash_verified": response_hash_verified,
+        "execution_boundary": "offline preflight does not authorize execution; runtime gate and context checks remain required",
+    }
+
+
 def _check_artifact_index(index: Any, manifest: dict[str, Any], specs: dict[str, ExperimentSpec],
                           results: dict[str, Result]) -> dict[str, str]:
     if (not _object(index) or index.get("schema_version") != 1 or type(index.get("schema_version")) is not int or
@@ -730,6 +983,12 @@ def _audit_document(evidence_dir: str | Path, output: str | Path) -> tuple[dict[
     grid = _validate_threshold(threshold_science, parent_science)
     result_facts = [_result_facts(results[role], role, specs[role], payload_digests[role], science_results[role])
                     for role in ("family_screen", "threshold_sensitivity")]
+    native_finalization = None
+    if "native-finalization-evidence.json" in manifest["files"]:
+        native_finalization = _validate_native_finalization(
+            _read_json_file(evidence, manifest, source_hashes, "native-finalization-evidence.json", expected_count=1),
+            manifest, specs, results, events, evidence, source_hashes,
+        )
     audit = {
         "schema_version": 1,
         "audit_type": "portable_discovery_evidence_audit",
@@ -754,6 +1013,14 @@ def _audit_document(evidence_dir: str | Path, output: str | Path) -> tuple[dict[
             "bootstrap_resampling_interval_reproduced": False,
         },
     }
+    if native_finalization is not None:
+        audit["native_finalization_preflight"] = native_finalization
+        audit["validation_scope"].update({
+            "native_frozen_discovery_protocol_verified": True,
+            "native_holdout_runtime_authorization_established": False,
+            "native_cli_success_verified": False,
+            "runtime_gate_and_context_checks_required": True,
+        })
     audit_raw = (json.dumps(audit, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8")
     output_manifest = {
         "schema_version": 1,

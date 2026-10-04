@@ -1,5 +1,31 @@
 # Scientific interpretation and citation handoff
 
+## Native run 03 final review and freeze
+
+After B PR #16 merged at `c6cea09`, A independently checked the actual second
+Skeptic review and PI freeze against the published discovery payloads. The
+review correctly cites sparse 3/7,657 oxide and 6/3,158 chalcogenide passes,
+full coverage, delta 0.001508138314330796 and interval
+[0.00011091441699668733, 0.003222018323127856]. It explicitly preserves that
+the three threshold points reuse one snapshot and do not independently
+resolve sparse-count uncertainty. PI freezes the same original OPT protocol
+and registers holdout unexecuted; no method extension enters validation.
+
+The [A acceptance report](results/frozen_science_acceptance/README.md) links
+both review records, the frozen canonical protocol, derived holdout Spec and
+the three accepted native tool packets to their recorded argument/response
+hashes and completed turns. Two final-review and two freeze requests are
+recorded, with one accepted persisted packet each. Dispatch success alone
+does not establish scientific success for the unmatched requests.
+
+Original CLI exit 1 and the terminal post-freeze failure remain unchanged.
+Final-stage PI prose is absent; its recorded completion hash does not permit
+reconstructing or interpreting that text. This audit establishes portable
+scientific consistency, not clean CLI acceptance or holdout execution
+authorization. Candidate-JID model review and autonomous initial hypothesis
+selection remain unproved. Native context, ownership, deadline and the
+single-attempt gate still apply to any eventual real validation.
+
 ## Recovered native discovery acceptance — 2026-10-03
 
 First inspected B integration `fc41d23`, then synced main `359de7a`. A

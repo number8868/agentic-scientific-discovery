@@ -1,5 +1,23 @@
 # Frozen holdout validation handoff
 
+## Latest native freeze review
+
+B PR #16 records a real second Skeptic review and PI freeze in native run 03.
+A's [independent portable acceptance](results/frozen_science_acceptance/README.md)
+checks the original OPT family/threshold parameters, canonical protocol/stage
+hashes, both discovery reviews and the derived unexecuted holdout Spec.
+The original CLI exit 1 and post-freeze failure remain preserved. This is
+scientific evidence consistency, not native execution authorization or clean
+workflow completion. It does not replace the owning native database/context,
+remaining deadline and single-attempt checks below, and must not reopen the
+failed run or import portable events to manufacture authorization.
+
+For the next accepted native run, B supplies the original untouched holdout ID
+and dedicated post-freeze Runner under the shared deadline; A checks the native
+lineage and interprets one controlled validation. Method audits cannot be
+substituted for the frozen threshold follow-up. No real holdout result is
+established by this acceptance stage.
+
 This stage adds an execution path for the currently supported frozen `family_screen` plus `threshold_sensitivity` protocol. It does not establish a new live Omnigent run or a real holdout result. Development and verification use synthetic rows and synthetic registered runs; actual holdout outcomes remain closed until the real workflow has completed both discovery results, both native reviews and final protocol freeze.
 
 During this stage, Team B published `luna-pilot-07` on main `51d45d9`. Its [portable export check](results/omnigent_complete_verification.md) passes with two discovery Results, two reviews, a freeze and an unexecuted holdout Spec. The fixed-role SDK evidence does not establish a full YAML workflow. Its final review's “missingness gap” wording is incorrect for the pass-rate endpoint and must not become the interpretation of validation results. Keep that review unedited for provenance.
