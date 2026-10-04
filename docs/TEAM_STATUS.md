@@ -1,5 +1,31 @@
 # Team status and handoff
 
+## Team A milestone 18 — polished Product demo and Technical walkthrough delivered
+
+The [submission videos](demo/README.md) are complete: Product demo **55.00 s**
+and Technical walkthrough **57.97 s**, 1920x1080/30 fps H.264/AAC MP4s, about
+2.36/2.67 MB. Both have English local narration and burned-in subtitles and
+fit the platform's per-section 60-second/1-GB limit. The competition presentation
+now emphasizes the completed real loop, result-informed follow-up choice,
+controlled validation and traceable evidence, with a consistent navy/teal design,
+large brand opener, abstract workflow lattice and pulsing decision/evidence paths.
+
+The root visually inspected both scene sheets and key full-size frames, corrected
+heading/lattice/chart label spacing, then verified full audio/video decoding,
+actual codec/duration, file/source hashes and narration/subtitle equality.
+Exact delivered hashes and sizes are in [the verification record](demo/validation.json).
+Displayed counts, interval and recorded scientific status are preserved; the
+clips visualize existing native09 evidence and make no new execution claim.
+
+A's acceptance is published in PR #26, with the [B handoff comment](https://github.com/number8868/agentic-scientific-discovery/pull/25#issuecomment-5977721127).
+The same PR carries the A-owned media recipes and status update. Generated
+MP4s/WAVs/encoder and private runtime files remain outside Git. No scientific
+source/dependency changes, new model/science calls or holdout computation were
+needed. The team can upload the documented local MP4 files now; introduction
+and final competition submissions are handled separately. Upload/browser
+completion is not claimed. Matched full-latency/cost benchmarks remain a
+separate unfinished scope.
+
 ## Team A milestone 17 — native09 scientific evidence independently accepted
 
 Synced merged B PR #25 at main `11f81c1`. A independently accepts the existing
