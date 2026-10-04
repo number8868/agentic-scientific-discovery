@@ -64,6 +64,16 @@ groups rather than always warming the adaptive arm last.
 
 ## Acceptance and interpretation
 
+The latest [native run06 acceptance](results/native06_science_acceptance/README.md)
+records a clean original CLI exit 0, actual threshold follow-up feedback,
+final review and freeze. It is one accepted bounded workflow, with no matched
+baseline arm or billed-cost evidence. Preserve every recorded attempt and
+both native sessions in any timing/usage accounting. An event-to-event span
+is not the full measured model latency or total operator time. The unselected
+method diagnostic means run-all can produce different evidence coverage;
+clean completion alone does not demonstrate acceleration. The historical
+failed/recovered runs below remain separate outcomes.
+
 A scientific component can succeed while the workflow fails. The first
 native attempt persisted two valid scientific Results and then failed
 feedback; that run remains a failure. The separately recorded

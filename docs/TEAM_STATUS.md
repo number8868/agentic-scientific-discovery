@@ -1,5 +1,52 @@
 # Team status and handoff
 
+## Team A milestone 14 — native06 science accepted, holdout conditions reviewed
+
+Started from main `903579c` after B PR #20 on
+`codex/native06-science-acceptance`. A replayed the existing portable science
+audit and independently reviewed run06's registered discovery Results,
+review/freeze packets, final PI reply and published trace. The
+[acceptance report](results/native06_science_acceptance/README.md) records
+the checks and source boundaries. The numerical primary/full-threshold facts
+match earlier accepted evidence; sparse counts, missing-value handling and
+snapshot-only uncertainty remain unchanged. The method candidate was offered
+but not selected, so the separate 19-material method audit is not a run06
+model-reviewed Result.
+
+Fresh independent Linux regression: **405 passed, zero skips**, 54.82 seconds,
+in a source-only checkout with no prepared data/private context. A changed
+no production module, frozen scientific/dependency byte, B runtime/prompt,
+shared contract or historical evidence. Coding helpers used
+`gpt-6-luna` / `max`, separately from Omnigent scientific-role configuration.
+This A stage made no new real scientific/model call, read no holdout outcomes
+and performed no browser or timed-recording validation. Synthetic tests are
+a separate scope. B's original clean run06 and prior failed runs are retained.
+
+PI's frozen explanation mistakenly labels experiment `NOVA-6438209c46bb471a`
+as a Result. Future presentation should cite
+`nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f`;
+the original explanation, frozen protocol and hash remain untouched.
+
+The [holdout gate review](results/native06_science_acceptance/holdout_gate_review.json)
+confirms immutable lineage and the atomic one-attempt science gate, with a
+120-second worker cap and 360-second aggregate scientific compute budget.
+It does not establish whole-run deadline enforcement or native permission
+from the portable export. Run06's original 600-second budget has elapsed and
+the current B YAML stops at freeze without a holdout tool. No holdout
+launcher was invoked, runtime-private state reopened or authorization
+reconstructed. Next B handoff: connect the dedicated post-freeze Runner to
+the existing A gate inside a fresh valid run's original shared deadline,
+keeping the discovery Runner guard and original family/threshold protocol.
+A then reviews and interprets one actual controlled validation. Method
+extension, retries and rule tuning do not enter that validation.
+
+The scientific narration now describes clean bounded run06 acceptance,
+host-seeded initial work, discovery-only threshold evidence and the separate
+method audit. Actual holdout, matched full-latency/cost comparison, remaining
+reliability rehearsals and final recording/submission remain pending.
+
+---
+
 ## B native06 — clean bounded finalization accepted
 
 Fresh run06 on 955aaea exited **0**: real adaptive choice/Runner feedback,

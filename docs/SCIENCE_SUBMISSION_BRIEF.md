@@ -1,9 +1,9 @@
 # Scientific submission wording and evidence
 
-Prepared from published discovery evidence after the method audit. This is
-submission material for the verified scientific component; it is not a
-recording, a new computation or evidence that the complete agent workflow
-succeeded. Keep the run-specific orchestration claims separate.
+Prepared from published discovery evidence after the method audit and clean
+bounded native run06. This is submission material for the verified scientific
+component and scoped workflow acceptance; it is not a recording, a new
+computation or evidence of real holdout validation or full challenge completion.
 
 ## Claims that the current evidence supports
 
@@ -40,29 +40,30 @@ validation has been performed for these examples.
 
 ## Short scientific narration
 
-This draft separates native run 03's recorded review/freeze from independently
-audited method evidence. It still needs a timed rehearsal and recording;
-no video-duration check is claimed. The [A freeze acceptance report](results/frozen_science_acceptance/README.md)
-supports the recorded workflow statements and preserves the original failure.
+This draft separates native run06's clean discovery/review/freeze from the
+independently audited method evidence. It still needs a timed rehearsal and
+recording; no video-duration check is claimed. The
+[A run06 acceptance report](results/native06_science_acceptance/README.md)
+supports the scientific statements; earlier failures remain preserved.
 
-> NOVA-MAT audits computational materials evidence with a frozen JARVIS snapshot.
-> Omnigent's Planner presented threshold and method diagnostics plus stopping.
-> Skeptic cited sparse pass counts; PI chose the threshold test and Runner
-> returned its results. A second Skeptic retained the uncertainty, and PI froze
-> the original protocol with holdout unexecuted. The run ended in host
-> verification failure. The OPT screen has three oxide and six chalcogenide
-> passes; its contrast persists across three correlated thresholds.
-> Separately, same-ID OPT/MBJ comparison finds
-> thirteen discordant candidates and six missing comparators, with no
-> both-method pass. Paired coverage is limited and family comparisons remain
-> inconclusive. Clean CLI completion, actual holdout and speed gains
-> remain unverified.
+> NOVA-MAT audits a frozen JARVIS snapshot. Starting from a host-seeded
+> hypothesis and primary screen, Omnigent's Planner offered threshold,
+> method and stop options. Skeptic cited sparse counts; PI chose threshold
+> sensitivity and Runner returned the registered Result. A final Skeptic
+> retained the uncertainty, and PI froze the original protocol. This bounded
+> run passed host acceptance. Three oxide and six chalcogenide records pass
+> OPT; the contrast persists across correlated thresholds. Separately,
+> same-JID OPT/MBJ analysis finds thirteen discordant candidates and six
+> missing comparators, with no both-method pass. Paired coverage is limited
+> and family comparisons remain inconclusive. Holdout is unexecuted;
+> generalization and speed gains remain unverified.
 
 ## Run-specific statements for the final presentation
 
 | Evidence | Statement permitted now | Evidence still needed |
 | --- | --- | --- |
-| [Native finalization run 03](results/frozen_science_acceptance/README.md) | Real second Skeptic review and PI freeze produced an unexecuted holdout Spec matching the original protocol. A checks the scientific records and accepted tool-packet hashes; six processes record seven model turns. Original CLI exit 1 remains preserved. | Clean fresh CLI acceptance and persisted final-stage PI prose; native gate authorization and actual holdout remain unverified. |
+| [Clean native run 06](results/native06_science_acceptance/README.md) | Recorded alternatives, actual threshold choice and Runner feedback, final Skeptic review and PI freeze completed with original CLI exit 0. A accepts the discovery science; final PI text matches its recorded hash and correctly preserves unexecuted holdout. | Dedicated post-freeze execution within the original shared deadline, one actual controlled validation, matched baseline measurements and final recording. Initial hypothesis and primary were host seeded. |
+| [Native finalization run 03](results/frozen_science_acceptance/README.md) | Real second Skeptic review and PI freeze produced an unexecuted holdout Spec matching the original protocol. A checks the scientific records and accepted tool-packet hashes; six processes record seven model turns. Original CLI exit 1 remains preserved. | This historical run stays failed; run06 is a separate fresh acceptance. Its export cannot authorize holdout or reconstruct its missing PI text. |
 | [Adaptive live run 02](results/adaptive_live_verification.json) | One bounded Omnigent model choice selected a threshold follow-up from recorded alternatives and the host executed it. | Independent reviewer invocation and supervisor receiving the new Result before its next decision. |
 | [First failed native attempt](NATIVE_ADAPTIVE_BLOCKERS.md) | Host records contain review, choice and two persisted discovery Results; native orchestration failed. Its separate failure remains preserved. | It remains failed; a later recovered run does not relabel it. |
 | [Recovered native run 02](results/recovered_science_acceptance/README.md) | Recorded separate Planner/Skeptic/PI/Runner turns support an evidence-grounded threshold choice, actual full-grid feedback and a matching PI summary. The original CLI exited 1; host validation recovery preserved the original work. | Clean-CLI acceptance, formal post-result review and explicit decision/freeze, original frozen holdout lineage, measured comparison. Initial hypothesis and primary screen were host seeded. |
