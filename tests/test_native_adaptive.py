@@ -86,6 +86,33 @@ def test_runtime_manifest_records_effective_models_before_dispatch(tmp_path):
         launcher._create_runtime_manifest(db, "run-1", None, rendered)
 
 
+def test_finalization_cli_reply_is_persisted_when_host_verification_fails(tmp_path):
+    db_path = tmp_path / "run.sqlite"
+    transcript = "The final review reply captured from the CLI."
+
+    def failed_verification():
+        raise ValueError("final response hash mismatch")
+
+    with pytest.raises(ValueError, match="final response hash mismatch"):
+        launcher._capture_finalization_response_before_verification(
+            db_path, "run-04", transcript, failed_verification,
+        )
+
+    with sqlite3.connect(db_path) as db:
+        row = db.execute(
+            "SELECT response_text,response_sha256 FROM native_finalization_supervisor_results WHERE run_id=?",
+            ("run-04",),
+        ).fetchone()
+    assert row == (transcript, __import__("hashlib").sha256(transcript.encode()).hexdigest())
+    from nova.storage import Storage
+    response_events = [event for event in Storage(db_path).initialize().list_events("run-04")
+                       if event.event_type == "native_finalization_supervisor_response" and event.actor == "pi"]
+    assert len(response_events) == 1
+    assert response_events[0].payload_ref == f"sha256:{row[1]}"
+    assert not any(event.event_type == "native_adaptive_orchestration_completed"
+                   for event in Storage(db_path).list_events("run-04"))
+
+
 def test_live_launcher_stops_on_runtime_preflight_before_context(monkeypatch):
     from nova import live_bridge
 
