@@ -74,6 +74,14 @@ Keep that recovered outcome separate from a clean success and include its
 additional choice request and operator/recovery time in any accounting.
 Recorded cross-process spans and individual SDK usage fields are available;
 they are not matched benchmark measurements or billed cost.
+The newer [native run 03](results/frozen_science_acceptance/README.md) records
+seven completed model turns, a second review and PI freeze, then original
+CLI exit 1. Preserve its two final-review requests and two freeze requests
+with one accepted packet each; dispatch success is not scientific success.
+Include all attempts and the second native session in full latency/usage
+accounting. Final PI prose is absent and billing remains unknown. This
+recorded freeze is not a clean benchmark success or permission to replay
+the failed run's holdout.
 Keep cancellation, timeout, invalid
 review, missing model usage, packaging failure and legal stop as distinct
 outcomes. Preserve failed attempts and their spent time/cost. A legal stop

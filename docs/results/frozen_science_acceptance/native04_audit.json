@@ -1,0 +1,300 @@
+{
+  "audit_type": "portable_discovery_evidence_audit",
+  "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+  "hypothesis_id": "H-001",
+  "native_finalization_preflight": {
+    "execution_boundary": "offline preflight does not authorize execution; runtime gate and context checks remain required",
+    "final_pi_response_export_hash_verified": false,
+    "final_pi_response_original_hash_verified": false,
+    "final_pi_response_present": false,
+    "final_review_matches_stored_review": true,
+    "frozen_protocol_id": "NOVA-FINAL-d1009139bc9744ba",
+    "holdout_execution_attempt_evidence_found": false,
+    "holdout_experiment_id": "NOVA-HOLDOUT-6b83a417827443f6",
+    "holdout_spec_derivation_verified": true,
+    "post_freeze_cli_failure_preserved": true,
+    "status": "frozen_discovery_evidence_verified"
+  },
+  "results": [
+    {
+      "counts": {
+        "chalcogenide": {
+          "n_observed": 3158,
+          "n_pass": 6,
+          "n_total": 3158
+        },
+        "oxide": {
+          "n_observed": 7657,
+          "n_pass": 3,
+          "n_total": 7657
+        }
+      },
+      "expected_computation_spec_sha256": "f5eaf8c139baa0f7d0850dae9a39bc96657f426b4939cc4ffd8012819a721079",
+      "experiment_id": "NOVA-b7a2dc417166f8fc",
+      "payload_sha256": "1864ba7703d5ad43bc0e6147718b6d73aea8dfbf9c8cda47d90f03f89c1c0dd1",
+      "registered_spec_sha256": "40e9fec34a66e1d41766ca6c951be790d4443e392ffad78ffa97a48b866f2a95",
+      "result_id": "nova-result-3dd5959fc94d1c30ad850a155ba85b75de46a19037b98a37a8753c27b6b3ea7f",
+      "role": "family_screen",
+      "scientific_status": "supported_in_snapshot"
+    },
+    {
+      "counts": {
+        "chalcogenide": {
+          "n_observed": 3158,
+          "n_pass": 6,
+          "n_total": 3158
+        },
+        "oxide": {
+          "n_observed": 7657,
+          "n_pass": 3,
+          "n_total": 7657
+        }
+      },
+      "expected_computation_spec_sha256": "6bd6307e8d56b6ba209a1e14d999262dce9d17743b9001a350dddb74d7be213a",
+      "experiment_id": "NOVA-3b16648b7eb16bdb",
+      "payload_sha256": "e1a019849ed713e4516a20a00a68feffdd7116d2cfe0959d8d080b673d163cf2",
+      "registered_spec_sha256": "4749757eafe5b61c285d800c77ad82c6ef1041333c6d37e7d10f037911ce3df6",
+      "result_id": "nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86",
+      "role": "threshold_sensitivity",
+      "scientific_status": "supported_in_snapshot"
+    }
+  ],
+  "run_id": "native-adaptive-live-04",
+  "schema_version": 1,
+  "source_sha256": {
+    "adaptive_evidence.json": "0a3f62909d15aae182322f1fd486273abbba8fb746e909b2e750ebf4b13dc9ef",
+    "events.jsonl": "4e855443111c89715eb6ba1e1b834768d45994e5cb128d21df39173af9c63f74",
+    "manifest.json": "89366094c640e21635647de63a13cad9095a7f18fb499f83b7ab511d18d6064f",
+    "native-finalization-evidence.json": "283e20b70a90a30e7647809757a4f67843c21e5de230b097b6a5af86b3c8f18d",
+    "native-model-audit.jsonl": "284e6f3a3b78a16f01cf47d904abf43869ed3182a403b508ac07b17b3ef6b4e5",
+    "native-runtime-manifest.json": "7ca57aaa271adcd882bd8e713234c184a3dbf30589c364dcb214c15f090d5406",
+    "native-runtime-verification.json": "0401ec225eb28ac68e273dfd631a696c6acbceaa520f3c8f189460d04c67aa72",
+    "results.json": "3da89399459c8478b0e7a2f5961123465d600d4b09c0132c929cf174aea77e41",
+    "reviews.json": "69bc3b4ec128683a56a5961b7121729831f41c146e2ed5d1f141ea631c2a5cf5",
+    "science-artifacts.json": "e9122dc3ac9f74bb13859d1929a1685839b7d7faccd54ff7788d3c35c9656ed0",
+    "science-artifacts/science-payload-1864ba7703d5ad43bc0e6147718b6d73aea8dfbf9c8cda47d90f03f89c1c0dd1.json": "1864ba7703d5ad43bc0e6147718b6d73aea8dfbf9c8cda47d90f03f89c1c0dd1",
+    "science-artifacts/science-payload-e1a019849ed713e4516a20a00a68feffdd7116d2cfe0959d8d080b673d163cf2.json": "e1a019849ed713e4516a20a00a68feffdd7116d2cfe0959d8d080b673d163cf2",
+    "specs.json": "02dd09dd7f887e4b25d6909d418184071edb4ea14b3b7ab330937e5f08418d75"
+  },
+  "status": "pass",
+  "threshold_grid": [
+    {
+      "bootstrap": {
+        "bootstrap_degenerate": false,
+        "delta": 0.0013220816543501486,
+        "family_endpoint_degenerate": {
+          "chalcogenide": false,
+          "oxide": false
+        },
+        "interval_method": "family-stratified percentile bootstrap at composition level",
+        "replicates": 2000,
+        "resampling_interval": [
+          5.5457208498343666e-05,
+          0.002905362211664905
+        ],
+        "seed": 1729
+      },
+      "delta": 0.0013220816543501486,
+      "groups_summary": {
+        "chalcogenide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0015832805573147563,
+          "missing_upper": 0.0015832805573147563,
+          "n_observed": 3158,
+          "n_pass": 5,
+          "n_total": 3158,
+          "observed_rate": 0.0015832805573147563
+        },
+        "oxide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0002611989029646076,
+          "missing_upper": 0.0002611989029646076,
+          "n_observed": 7657,
+          "n_pass": 2,
+          "n_total": 7657,
+          "observed_rate": 0.0002611989029646076
+        }
+      },
+      "missingness_interval": {
+        "chalcogenide_rate_lower": 0.0015832805573147563,
+        "chalcogenide_rate_upper": 0.0015832805573147563,
+        "lower": 0.0013220816543501486,
+        "oxide_rate_lower": 0.0002611989029646076,
+        "oxide_rate_upper": 0.0002611989029646076,
+        "upper": 0.0013220816543501486
+      },
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      },
+      "resampling_interval": [
+        5.5457208498343666e-05,
+        0.002905362211664905
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.025
+    },
+    {
+      "bootstrap": {
+        "bootstrap_degenerate": false,
+        "delta": 0.001508138314330796,
+        "family_endpoint_degenerate": {
+          "chalcogenide": false,
+          "oxide": false
+        },
+        "interval_method": "family-stratified percentile bootstrap at composition level",
+        "replicates": 2000,
+        "resampling_interval": [
+          0.00011091441699668733,
+          0.003222018323127856
+        ],
+        "seed": 1729
+      },
+      "delta": 0.001508138314330796,
+      "groups_summary": {
+        "chalcogenide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0018999366687777073,
+          "missing_upper": 0.0018999366687777073,
+          "n_observed": 3158,
+          "n_pass": 6,
+          "n_total": 3158,
+          "observed_rate": 0.0018999366687777073
+        },
+        "oxide": {
+          "coverage": 1.0,
+          "missing_lower": 0.00039179835444691133,
+          "missing_upper": 0.00039179835444691133,
+          "n_observed": 7657,
+          "n_pass": 3,
+          "n_total": 7657,
+          "observed_rate": 0.00039179835444691133
+        }
+      },
+      "missingness_interval": {
+        "chalcogenide_rate_lower": 0.0018999366687777073,
+        "chalcogenide_rate_upper": 0.0018999366687777073,
+        "lower": 0.001508138314330796,
+        "oxide_rate_lower": 0.00039179835444691133,
+        "oxide_rate_upper": 0.00039179835444691133,
+        "upper": 0.001508138314330796
+      },
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      },
+      "resampling_interval": [
+        0.00011091441699668733,
+        0.003222018323127856
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.05
+    },
+    {
+      "bootstrap": {
+        "bootstrap_degenerate": false,
+        "delta": 0.002141450537256699,
+        "family_endpoint_degenerate": {
+          "chalcogenide": false,
+          "oxide": false
+        },
+        "interval_method": "family-stratified percentile bootstrap at composition level",
+        "replicates": 2000,
+        "resampling_interval": [
+          0.0004830277369579823,
+          0.003985929997536062
+        ],
+        "seed": 1729
+      },
+      "delta": 0.002141450537256699,
+      "groups_summary": {
+        "chalcogenide": {
+          "coverage": 1.0,
+          "missing_lower": 0.00253324889170361,
+          "missing_upper": 0.00253324889170361,
+          "n_observed": 3158,
+          "n_pass": 8,
+          "n_total": 3158,
+          "observed_rate": 0.00253324889170361
+        },
+        "oxide": {
+          "coverage": 1.0,
+          "missing_lower": 0.00039179835444691133,
+          "missing_upper": 0.00039179835444691133,
+          "n_observed": 7657,
+          "n_pass": 3,
+          "n_total": 7657,
+          "observed_rate": 0.00039179835444691133
+        }
+      },
+      "missingness_interval": {
+        "chalcogenide_rate_lower": 0.00253324889170361,
+        "chalcogenide_rate_upper": 0.00253324889170361,
+        "lower": 0.002141450537256699,
+        "oxide_rate_lower": 0.00039179835444691133,
+        "oxide_rate_upper": 0.00039179835444691133,
+        "upper": 0.002141450537256699
+      },
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      },
+      "resampling_interval": [
+        0.0004830277369579823,
+        0.003985929997536062
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "threshold_ev_atom": 0.1
+    }
+  ],
+  "validation_scope": {
+    "bootstrap_resampling_interval_reproduced": false,
+    "frozen_dataset_identity_authenticated": false,
+    "holdout_outcomes_read": false,
+    "model_role_identity_verified": false,
+    "native_cli_success_verified": false,
+    "native_completion_verified": false,
+    "native_frozen_discovery_protocol_verified": true,
+    "native_holdout_runtime_authorization_established": false,
+    "new_model_calls": 0,
+    "new_science_executions": 0,
+    "payload_consistency_is_raw_source_reproduction": false,
+    "prose_semantics_verified": false,
+    "registered_payload_result_consistency_verified": true,
+    "runtime_gate_and_context_checks_required": true,
+    "threshold_counts_rates_delta_status_and_quality_verified": true
+  }
+}
