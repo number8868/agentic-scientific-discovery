@@ -3,7 +3,8 @@
 ## Team A milestone 14 — native06 science accepted, holdout conditions reviewed
 
 Started from main `903579c` after B PR #20 on
-`codex/native06-science-acceptance`. A replayed the existing portable science
+[`codex/native06-science-acceptance` (PR #21)](https://github.com/number8868/agentic-scientific-discovery/pull/21).
+A replayed the existing portable science
 audit and independently reviewed run06's registered discovery Results,
 review/freeze packets, final PI reply and published trace. The
 [acceptance report](results/native06_science_acceptance/README.md) records
