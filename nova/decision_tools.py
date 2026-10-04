@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -26,7 +27,14 @@ ALLOWED_TEMPLATES = frozenset(("family_screen", "threshold_sensitivity"))
 
 
 def _read_context() -> Tuple[Path, str]:
-    return _bridge_read_context()
+    path, run_id = _bridge_read_context()
+    expected_run = os.environ.get("NOVA_ADAPTIVE_EXPECTED_RUN_ID")
+    expected_database = os.environ.get("NOVA_ADAPTIVE_EXPECTED_DATABASE")
+    if expected_run is not None or expected_database is not None:
+        if (not expected_run or not expected_database or run_id != expected_run or
+                Path(path).resolve() != Path(expected_database).resolve()):
+            raise ValueError("active live context differs from the trusted adaptive run binding")
+    return path, run_id
 
 
 def _ctx() -> Tuple[Path, str, Storage]:

@@ -92,7 +92,7 @@ def test_live_launcher_stops_on_runtime_preflight_before_context(monkeypatch):
     def forbidden_context():
         raise AssertionError("disabled launcher must not inspect or change the active context")
 
-    monkeypatch.setattr(launcher, "check_only", lambda: {"runtime_ready": False})
+    monkeypatch.setattr(launcher, "check_only", lambda **_kwargs: {"runtime_ready": False})
     monkeypatch.setattr(launcher, "_require_runtime_ready",
                         lambda _check, **_kwargs: (_ for _ in ()).throw(RuntimeError("runtime preflight rejected")))
     monkeypatch.setattr(live_bridge, "_read_context", forbidden_context)

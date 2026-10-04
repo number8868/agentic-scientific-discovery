@@ -329,6 +329,7 @@ def test_optional_native_metadata_is_allowlisted_but_still_checked(tmp_path: Pat
     metadata = {
         "README.md": b"# Native discovery evidence\n",
         "host-recovery.json": _canonical({"recovery_type": "hash_bound_transport_witness_recorded"}),
+        "native-finalization-evidence.json": _canonical({"holdout_execution_status": "not_tested"}),
     }
     manifest_path = package / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

@@ -32,6 +32,47 @@ def _trace(event: str, **fields: Any) -> None:
                         pid=pid, role=role, details=fields)
 
 
+def _decode_native_function_result(value: Any) -> dict[str, Any] | None:
+    """Decode a bounded native tool result without evaluating executable text."""
+    candidate = value
+    if isinstance(candidate, dict) and set(candidate) == {"result"}:
+        candidate = candidate["result"]
+    if isinstance(candidate, str):
+        raw_candidate = candidate
+        if len(raw_candidate.encode("utf-8")) > 256_000:
+            return None
+        try:
+            import ast
+
+            parsed = ast.parse(raw_candidate, mode="eval")
+            stack = [(parsed, 0)]
+            count = 0
+            while stack:
+                node, depth = stack.pop()
+                count += 1
+                if count > 20_000 or depth > 80:
+                    return None
+                stack.extend((child, depth + 1) for child in ast.iter_child_nodes(node))
+            candidate = ast.literal_eval(parsed)
+        except (SyntaxError, ValueError, TypeError, MemoryError, RecursionError):
+            try:
+                candidate = json.loads(raw_candidate)
+            except (json.JSONDecodeError, TypeError):
+                return None
+    if isinstance(candidate, dict) and set(candidate) <= {"content", "isError"} and "content" in candidate:
+        content = candidate.get("content")
+        if candidate.get("isError", False) is not False or not isinstance(content, list) or len(content) != 1:
+            return None
+        block = content[0]
+        if not isinstance(block, dict) or set(block) != {"type", "text"} or block.get("type") != "text":
+            return None
+        try:
+            candidate = json.loads(block["text"])
+        except (json.JSONDecodeError, TypeError):
+            return None
+    return dict(candidate) if isinstance(candidate, dict) else None
+
+
 def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
     """Install pinned constructor enforcement and prompt-free turn tracing."""
     if importlib.metadata.version("omnigent") != SDK_PIN:
@@ -72,6 +113,8 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
             normalized = agent_name.strip().lower()
             roles = {"planner", "skeptic", "runner"}
             role = "pi" if normalized == "nova-mat-native-adaptive-live" else normalized
+            if role == "skeptic_final":
+                role = "skeptic"
             if role in roles | {"pi"}:
                 os.environ["NOVA_ADAPTIVE_ROLE"] = role
             else:
@@ -110,6 +153,8 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
                     if registered_id is None:
                         raise RuntimeError("Runner completion has no matching registered-ID request")
                     structured_result = _decode_native_runner_tool_result(event.result, registered_id)
+                elif event.name in {"record_adaptive_review", "submit_native_final_review", "freeze_native_final_protocol"}:
+                    structured_result = _decode_native_function_result(event.result)
                 record_native_trace("tool_complete", actor="omnigent-tool-dispatch", tool=event.name,
                                     call_id=call_id,
                                     result=event.result, model=model, pid=os.getpid(),
@@ -211,7 +256,9 @@ def launch_cli_with_guarded_runner(cli_module: Any, args: list[str], root: Path,
         cli_module._start_cli_runner_process = original_start
 
 
-def verify_executor_trace(path: Path, host_path: Path) -> dict[str, Any]:
+def verify_executor_trace(path: Path, host_path: Path, *,
+                          required_tools: tuple[str, ...] = (),
+                          final_response: str | None = None) -> dict[str, Any]:
     """Verify that every traced executor turn belongs to a guarded process."""
     from nova.adaptive_agent_tools import _valid_codex_config_overrides
 
@@ -248,4 +295,61 @@ def verify_executor_trace(path: Path, host_path: Path) -> dict[str, Any]:
             raise RuntimeError("native executor has an incomplete or unmatched model turn")
     if not any(row.get("event") == "turn_complete" for row in records):
         raise RuntimeError("native run has no completed model turn")
+    required_roles = {"submit_native_final_review": "skeptic",
+                      "freeze_native_final_protocol": "pi"}
+    for tool in required_tools:
+        role = required_roles.get(tool)
+        found = False
+        for request_index, request in enumerate(records):
+            pid, call_id = request.get("pid"), request.get("call_id")
+            if (request.get("event") != "tool_request" or request.get("actor") != "codex-model" or
+                    request.get("tool") != tool or request.get("role") != role or not call_id):
+                continue
+            if not _has_trace_guard(records, pid, role, request_index):
+                continue
+            for complete_index in range(request_index + 1, len(records)):
+                complete = records[complete_index]
+                if (complete.get("event") != "tool_complete" or complete.get("actor") != "omnigent-tool-dispatch" or
+                        complete.get("tool") != tool or complete.get("call_id") != call_id or
+                        complete.get("pid") != pid or complete.get("role") != role or
+                        str(complete.get("status", "")).lower() not in {"success", "toolcallstatus.success"} or
+                        not complete.get("structured_result_sha256")):
+                    continue
+                if any(later.get("event") == "turn_complete" and later.get("actor") == "codex-model" and
+                       later.get("pid") == pid and later.get("role") == role
+                       for later in records[complete_index + 1:]):
+                    found = True
+                    break
+            if found:
+                break
+        if not found:
+            raise RuntimeError(f"native finalization tool {tool} lacks a guarded successful turn trace")
+    if final_response is not None:
+        digest = hashlib.sha256(final_response.encode("utf-8")).hexdigest()
+        response_record_hash = hashlib.sha256(json.dumps(
+            {"response_sha256": digest, "response_chars": len(final_response)},
+            sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest()
+        freeze_completions = [i for i, row in enumerate(records)
+                              if row.get("event") == "tool_complete" and row.get("tool") == "freeze_native_final_protocol"
+                              and row.get("role") == "pi" and row.get("structured_result_sha256")]
+        if not any(any(later.get("event") == "turn_complete" and later.get("role") == "pi" and
+                       later.get("pid") == records[i].get("pid") and
+                       later.get("actor") == "codex-model" and
+                       later.get("result_sha256") == response_record_hash
+                       for later in records[i + 1:]) for i in freeze_completions):
+            raise RuntimeError("final PI response does not match the guarded freeze turn completion")
     return {"verified_executor_pids": sorted(used), "completed_turns": sum(ends.values())}
+
+
+def _has_trace_guard(records: list[dict[str, Any]], pid: int, role: str | None, before: int) -> bool:
+    from nova.adaptive_agent_tools import _valid_codex_config_overrides
+
+    for row in records[:before]:
+        details = row.get("details")
+        if (row.get("event") == "executor_guard_installed" and row.get("pid") == pid and
+                row.get("role") == role and isinstance(details, dict) and
+                details.get("native_tools_disabled") is True and details.get("web_search_disabled") is True and
+                details.get("skills") == "none" and _valid_codex_config_overrides(details.get("config_overrides")) and
+                str(details.get("host_binary", "")).endswith("codex-code-mode-host")):
+            return True
+    return False

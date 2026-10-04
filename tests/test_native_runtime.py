@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -77,6 +78,65 @@ def test_executor_trace_verifier_requires_matching_guard_per_process(tmp_path):
         assert "guard record" in str(exc)
     else:
         raise AssertionError("unguarded executor PID was accepted")
+
+
+def test_native_function_result_decoder_handles_bounded_sdk_envelopes():
+    from nova.native_adaptive_runtime import _decode_native_function_result
+
+    assert _decode_native_function_result({"result": "{'stage': 'reviewed', 'ok': True}"}) == {
+        "stage": "reviewed", "ok": True}
+    assert _decode_native_function_result({"result": '{"stage":"frozen","ok":true}'}) == {
+        "stage": "frozen", "ok": True}
+    assert _decode_native_function_result({
+        "content": [{"type": "text", "text": '{"stage":"reviewed"}'}], "isError": False,
+    }) == {"stage": "reviewed"}
+    assert _decode_native_function_result({"result": "__import__('os').system('true')"}) is None
+    assert _decode_native_function_result({"result": '{"stage": true, "x": null}'}) == {
+        "stage": True, "x": None}
+
+
+def test_final_trace_verifier_matches_real_turn_hash_and_provider_guard(tmp_path):
+    from nova.native_adaptive_runtime import verify_executor_trace
+    from nova.adaptive_agent_tools import _valid_codex_config_overrides
+
+    host = Path("/opt/codex-code-mode-host")
+    response = "Frozen, unexecuted."
+    digest = hashlib.sha256(response.encode()).hexdigest()
+    turn_hash = hashlib.sha256(json.dumps(
+        {"response_sha256": digest, "response_chars": len(response)},
+        sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+    rows = [{"event": "runner_bootstrap_installed", "pid": 10}]
+    for pid, role, tool, call_id in ((21, "skeptic", "submit_native_final_review", "review-1"),
+                                     (22, "pi", "freeze_native_final_protocol", "freeze-1")):
+        rows.extend([
+            {"event": "executor_guard_installed", "pid": pid, "role": role,
+             "details": {"native_tools_disabled": True, "web_search_disabled": True,
+                         "skills": "none", "config_overrides": [
+                             "features.code_mode_host=true", "features.code_mode=false",
+                             'web_search="disabled"', 'model_provider="openai"'],
+                         "host_binary": str(host)}},
+            {"event": "executor_turn_started", "pid": pid, "role": role},
+            {"event": "tool_request", "actor": "codex-model", "pid": pid, "role": role,
+             "tool": tool, "call_id": call_id},
+            {"event": "tool_complete", "actor": "omnigent-tool-dispatch", "pid": pid, "role": role,
+             "tool": tool, "call_id": call_id, "status": "success", "structured_result_sha256": "a" * 64},
+            {"event": "turn_complete", "actor": "codex-model", "pid": pid, "role": role,
+             "result_sha256": turn_hash if role == "pi" else "b" * 64},
+        ])
+    path = tmp_path / "trace.jsonl"
+    path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+    assert _valid_codex_config_overrides(rows[1]["details"]["config_overrides"])
+    assert verify_executor_trace(path, host,
+                                 required_tools=("submit_native_final_review", "freeze_native_final_protocol"),
+                                 final_response=response)["completed_turns"] == 2
+    try:
+        verify_executor_trace(path, host,
+                              required_tools=("submit_native_final_review", "freeze_native_final_protocol"),
+                              final_response="different PI response")
+    except RuntimeError as exc:
+        assert "does not match" in str(exc)
+    else:
+        raise AssertionError("mismatched final PI response was accepted")
 
 
 def test_spawned_sdk_bootstrap_guards_real_codex_executor_without_model_calls(tmp_path):

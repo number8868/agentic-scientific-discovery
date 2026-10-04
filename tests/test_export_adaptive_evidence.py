@@ -210,6 +210,7 @@ def test_native_export_uses_persisted_state_and_sanitizes_trusted_runtime_files(
     assert evidence["provider_attestation"] is None
     assert evidence["native_runtime_verification"]["guardrail_verification"] == "requested_unverified_not_effective"
     assert evidence["native_runtime_verification"]["model_tool_trace"] == "unavailable"
+    assert not (output / "native-finalization-evidence.json").exists()
     exported_manifest = json.loads((output / "native-runtime-manifest.json").read_text())
     assert (output / "native-runtime-manifest.json").read_bytes() == manifest_path.read_bytes()
     assert exported_manifest["model_override"] == "gpt-6-luna"
@@ -223,6 +224,100 @@ def test_native_export_uses_persisted_state_and_sanitizes_trusted_runtime_files(
     with pytest.raises(ValueError, match="output directory must be new or empty"):
         exporter.export_adaptive_evidence(db, "native-run", output)
     assert json.loads((output / "hashes.json").read_text()) == inventory
+
+
+def test_native_export_adds_optional_hash_checked_unexecuted_finalization_bundle(tmp_path, monkeypatch):
+    from nova.native_finalization_tools import _canonical
+
+    db, store, parent_spec, parent_result = _seed(tmp_path, "native-final", monkeypatch)
+    run_id = "native-final"
+    followup = ExperimentSpec(
+        1, "NOVA-final-threshold", "H1", parent_spec.dataset_sha256, Split.DISCOVERY,
+        Template.THRESHOLD_SENSITIVITY, parent_spec.groups, parent_spec.bandgap_method,
+        parent_spec.gap_window_ev, parent_spec.ehull_max_ev_atom, parent_spec.bootstrap_repeats,
+        parent_spec.seed, parent_spec.timeout_seconds, parent_result.result_id, parent_result.result_id,
+    )
+    followup_result = Result(
+        "result-final-threshold", followup.experiment_id, followup.sha256, followup.dataset_sha256,
+        "completed", "inconclusive", "start", "end", 10.0,
+    )
+    store.register_spec(followup)
+    store.save_result(followup_result)
+    store.append_event(run_id, "second_selection", actor="pi", mode=Mode.LIVE,
+                       payload_ref=followup.experiment_id)
+    store.append_event(run_id, "result", actor="runner", mode=Mode.LIVE,
+                       payload_ref=followup_result.result_id)
+
+    frozen_id = "NOVA-FINAL-0123456789abcdef"
+    holdout_id = "NOVA-HOLDOUT-0123456789abcdef"
+    holdout = ExperimentSpec(
+        1, holdout_id, "H1", parent_spec.dataset_sha256, Split.HOLDOUT,
+        Template.HOLDOUT_VALIDATION, parent_spec.groups, parent_spec.bandgap_method,
+        parent_spec.gap_window_ev, parent_spec.ehull_max_ev_atom, parent_spec.bootstrap_repeats,
+        parent_spec.seed, parent_spec.timeout_seconds, followup_result.result_id,
+        followup_result.result_id, frozen_id,
+    )
+    store.register_spec(holdout)
+    protocol = {
+        "schema_version": 1,
+        "hypothesis_id": "H1",
+        "dataset_sha256": parent_spec.dataset_sha256,
+        "main_result_id": parent_result.result_id,
+        "followup_result_id": followup_result.result_id,
+        "main_spec": parent_spec.to_dict(),
+        "followup_spec": followup.to_dict(),
+        "review_refs": [parent_result.result_id, followup_result.result_id],
+        "explanation": "Freeze the reviewed discovery protocol.",
+        "holdout_split": "holdout",
+        "holdout_template": "holdout_validation",
+    }
+    protocol_json = json.dumps(protocol, sort_keys=True, separators=(",", ":"))
+    protocol_sha = hashlib.sha256(protocol_json.encode()).hexdigest()
+    with sqlite3.connect(db) as conn:
+        conn.execute("INSERT INTO final_protocols VALUES (?,?,?,?,?)",
+                     (run_id, frozen_id, protocol_sha, protocol_json, holdout_id))
+        conn.execute("""CREATE TABLE native_adaptive_finalization_state (
+            run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL, followup_result_id TEXT NOT NULL,
+            status TEXT NOT NULL, review_json TEXT, review_sha256 TEXT, freeze_json TEXT, freeze_sha256 TEXT
+        )""")
+        review_packet = {"review": {"reason": "The snapshot bounds the scope."},
+                         "stage": "reviewed", "followup_result_id": followup_result.result_id}
+        freeze_packet = {"frozen_protocol_id": frozen_id, "protocol_sha256": protocol_sha,
+                         "holdout_experiment_id": holdout_id,
+                         "stage": "frozen_unexecuted", "explanation": "Freeze the reviewed discovery protocol."}
+        review_json, freeze_json = _canonical(review_packet), _canonical(freeze_packet)
+        conn.execute("INSERT INTO native_adaptive_finalization_state VALUES (?,?,?,?,?,?,?,?)", (
+            run_id, parent_result.result_id, followup_result.result_id, "frozen", review_json,
+            hashlib.sha256(review_json.encode()).hexdigest(), freeze_json,
+            hashlib.sha256(freeze_json.encode()).hexdigest()))
+        conn.execute("""CREATE TABLE native_finalization_supervisor_results (
+            run_id TEXT PRIMARY KEY, response_text TEXT NOT NULL, response_sha256 TEXT NOT NULL
+        )""")
+        pi_response = "The registered discovery protocol is frozen; holdout remains unexecuted."
+        response_sha = hashlib.sha256(pi_response.encode()).hexdigest()
+        conn.execute("INSERT INTO native_finalization_supervisor_results VALUES (?,?,?)",
+                     (run_id, pi_response, response_sha))
+    store.append_event(run_id, "final_protocol_frozen", actor="host", mode=Mode.LIVE,
+                       payload_ref=frozen_id)
+    store.append_event(run_id, "native_finalization_supervisor_response", actor="pi", mode=Mode.LIVE,
+                       payload_ref=f"sha256:{response_sha}")
+
+    output = exporter.export_adaptive_evidence(db, run_id, tmp_path / "runs" / "native-final-export")
+    evidence_path = output / "native-finalization-evidence.json"
+    assert evidence_path.is_file()
+    evidence = json.loads(evidence_path.read_text())
+    assert evidence["run_id"] == run_id
+    assert evidence["finalization_state"]["status"] == "frozen"
+    assert evidence["finalization_state"]["review"]["review"]["reason"] == "The snapshot bounds the scope."
+    assert evidence["final_pi_response"] == {
+        "response_text": pi_response, "response_sha256": response_sha}
+    assert evidence["final_protocol"]["protocol"] == protocol
+    assert evidence["holdout_spec"] == holdout.to_dict()
+    assert evidence["holdout_result_present"] is False
+    assert evidence["holdout_execution_performed_by_exporter"] is False
+    inventory = json.loads((output / "hashes.json").read_text())
+    assert "native-finalization-evidence.json" in inventory
+    assert hashlib.sha256(evidence_path.read_bytes()).hexdigest() == inventory["native-finalization-evidence.json"]
 
 
 def test_failed_native_runner_export_preserves_failure_without_supervisor_completion(tmp_path, monkeypatch):
