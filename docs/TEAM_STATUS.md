@@ -10,6 +10,9 @@ last confirmed stage and side-effect event refs. Diagnostics cannot overwrite
 existing feedback or replace the original child error. Offline mock injection
 covers failure/timeout, raw-message privacy and diagnostic write failure.
 Full regression: 386 passed, zero errors/failures/skips, 22.695 seconds.
+After integrating A PR #18 (main 22fd746), combined regression: 404 passed,
+zero errors/failures/skips, 23.272 seconds. Only TEAM_STATUS had a merge
+conflict; both teams' entries are retained. No runtime/model run was added.
 This improves diagnosability; it does not retrospectively explain native05's
 missing error message or establish clean native completion. Do not add retries
 or raise tool limits without cause evidence and offline regression.
