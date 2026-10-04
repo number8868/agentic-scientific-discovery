@@ -18,6 +18,14 @@ No generic method registry, shared enum or discovery allowlist extension is
 needed. Coding helpers are explicitly `gpt-6-luna` / `max`, separate from
 Omnigent experiment model settings.
 
+The pure A evidence builder and citation packet are now implemented and
+independently reviewed. All **12 focused synthetic tests pass on Linux**.
+Checks cover frozen provenance, exact parent OPT agreement, separate arm and
+method-change statuses, unknown comparator values, candidate guidance,
+rejection of nested full-audit rows, and timing-independent evidence hashes.
+The completed-record exporter is the remaining implementation piece; the
+builder does not itself read a database or execute a scientific experiment.
+
 The [independent interpretation audit](SCIENTIFIC_REVIEW_AUDIT.md) identifies
 the incorrect "missingness gap" wording in both the archived final Skeptic
 review and PI freeze explanation. Their original bytes remain preserved.
