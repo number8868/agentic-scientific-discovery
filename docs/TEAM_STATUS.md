@@ -1,5 +1,32 @@
 # Team status and handoff
 
+## Team A milestone 10 — scientific review integration in progress, 2026-10-03
+
+Refreshed a clean worktree: main remains `01f17db`, and B has merged A's
+PR #11 into `codex/b-adaptive-discovery` at `44bc563`. The new
+`codex/method-review-integration` branch starts from that exact team base.
+The formal native review/return/next-decision implementation is not yet in
+the fetched branch, so A is adding an independent scientific interface
+without editing B's orchestration or shared contracts.
+
+Two coding helpers are `gpt-6-luna` / `max`: one owns a pure compact method
+review input/schema/validator, and one owns its portable CLI and boundary
+tests. The parent independently reviews scientific scope and will run the
+complete Linux regression. See the [review interface](METHOD_REVIEW_HANDOFF.md).
+
+The intended deliverable validates exact candidate/arm references and
+declared facts, preserves null/unknown and separate statistical statuses,
+discloses host sampling and accepts only host-supplied advisory actions.
+It does not certify unrestricted rationale text or independent model role
+identity. No model call or new scientific computation is part of this stage.
+
+Refreshed read-only native metadata still shows `luna-pilot-06`, two Result
+events, one review and zero final-protocol records. Outcome rows were not
+read. Real holdout must still use the original native frozen run and existing
+single-attempt gate; that missing lineage cannot be manufactured from exports.
+
+---
+
 ## Team A milestone 9 — registered method evidence delivered, 2026-10-03
 
 Started with a clean working tree and main `01f17db`, then incorporated B's
