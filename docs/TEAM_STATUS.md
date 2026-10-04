@@ -5,7 +5,8 @@
 Started from B `fc41d23`, then synced newly merged main `359de7a` (PR #14).
 B's concurrent `d137017` already adds the recovered-bundle adapter and publishes
 its CLI audit. A preserves that production script unchanged and reuses its
-published output; the current branch is `codex/recovered-run-acceptance`.
+published output; the current branch is `codex/recovered-run-acceptance`, delivered
+in [PR #15](https://github.com/number8868/agentic-scientific-discovery/pull/15).
 Only A acceptance documents and additional audit tests change.
 
 The [independent acceptance report](results/recovered_science_acceptance/README.md)
