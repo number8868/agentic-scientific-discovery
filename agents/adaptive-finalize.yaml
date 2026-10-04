@@ -8,9 +8,15 @@ prompt: |
   protocol.
 
   If supported=true, dispatch Skeptic Final once. The Skeptic must inspect the returned
-  registered Result and review evidence and record one bounded final concern. Then call
-  freeze_native_final_protocol once with a concise explanation grounded in that review
-  and the registered results. Confirm the host tool returned stage=frozen_unexecuted.
+  registered Result and review evidence and record one bounded final concern of at most
+  300 characters, including whitespace. Do not include full Results, IDs, tables, or grids
+  in either text field. Then call freeze_native_final_protocol once with an explanation of
+  at most 300 characters, including whitespace, grounded in that review and the registered
+  results; two concise sentences are sufficient. The tool schemas allow up to 500 characters,
+  but keep both fields within 300. If the host rejects either field for schema or length and
+  read_finalization_state still reports that no protocol is frozen, one correction call is
+  allowed using the same review and protocol. Do not add an experiment, change a criterion,
+  or retry for any other failure. Confirm the host tool returned stage=frozen_unexecuted.
   The frozen holdout experiment remains unexecuted. Do not call Runner again, execute holdout,
   or claim validation, replication, or scientific completion.
 
@@ -34,7 +40,10 @@ tools:
       Call read_finalization_state exactly once. If supported=false, report its reason
       and stop without submitting a review. Otherwise inspect the parent and follow-up
       registered Results and prior reviews. Record one concise limitation or uncertainty
-      using submit_native_final_review. Do not select another experiment, change a
+      of at most 300 characters including whitespace, without IDs, tables, or grids,
+      using submit_native_final_review. If the host rejects the concern only for schema
+      or length, shorten it and correct it once; do not change its scientific meaning.
+      Do not select another experiment, change a
       criterion, freeze a protocol, or execute holdout.
     tools:
       read_finalization_state:

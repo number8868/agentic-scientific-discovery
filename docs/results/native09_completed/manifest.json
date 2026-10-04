@@ -1,0 +1,64 @@
+{
+  "exported_at": "2026-10-04T06:52:34.545724+00:00",
+  "files": {
+    "README.md": {
+      "count": 1,
+      "sha256": "b128cf83d63b21b132bb60b319218ebd1f64316a30a4d2caea56eb827f66fccb"
+    },
+    "events.jsonl": {
+      "count": 26,
+      "sha256": "cdb8ef736741a77770ec0026dae6d51d98c56f7472685c21596709625efa5e02"
+    },
+    "final_protocol.json": {
+      "count": 1,
+      "sha256": "6fb91c4794855133784adf1e9ccf0e18ce7a6447f629faded292561e32258c8f"
+    },
+    "native-holdout-result.json": {
+      "count": 1,
+      "sha256": "a7aec06435a33d5a9d722735a15908f7bdba2cc9d69e430669b5168ffad410ff"
+    },
+    "native-model-audit.jsonl": {
+      "count": 92,
+      "sha256": "9198ba67ceac69f03bc914f2a94ecccf5381111a9d90a891bb3b4db7378316b2"
+    },
+    "native-runtime-manifest.json": {
+      "count": 1,
+      "sha256": "257602fcddffd6f288293588e5881f80d535a9094e803dca407e499c8c2801cb"
+    },
+    "results.json": {
+      "count": 3,
+      "sha256": "5a79414648a42e79ab4141eb4c2c196bda39e6e57c96a74f1eeb325ba133a1a9"
+    },
+    "reviews.json": {
+      "count": 2,
+      "sha256": "bdb8ff105ea961bceafc07a2804658d29eb0b5b6df6ded649cc90b440a09ba32"
+    },
+    "science-artifacts.json": {
+      "count": 3,
+      "sha256": "9c5ac8b86acd9f7e43fae39c712598c4245a82899e14bc960b733d203bb593ee"
+    },
+    "science-artifacts/science-payload-2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70.json": {
+      "count": 1,
+      "sha256": "2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70"
+    },
+    "science-artifacts/science-payload-53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c.json": {
+      "count": 1,
+      "sha256": "53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c"
+    },
+    "science-artifacts/science-payload-ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4.json": {
+      "count": 1,
+      "sha256": "ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4"
+    },
+    "specs.json": {
+      "count": 3,
+      "sha256": "1dc42f98f4b26f545d807461f614960ab681fbb3c28c68b784ba4278cc7b0af2"
+    }
+  },
+  "mode": "live",
+  "native_final_protocol": {
+    "holdout_experiment_id": "NOVA-HOLDOUT-f4c48d7913f24919",
+    "protocol_sha256": "016efccbe5a473d4101a42ad7109cde5e8662feeae835109f235e40a594d16e5"
+  },
+  "run_id": "native-adaptive-live-09",
+  "schema_version": 1
+}

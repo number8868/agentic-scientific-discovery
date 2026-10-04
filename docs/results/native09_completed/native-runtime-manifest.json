@@ -1,0 +1,38 @@
+{
+  "base_yaml_sha256": "cbcb3e6f1f7c253597e05505360f4f351b0aa70f59a45f511c24451cbd4be63b",
+  "config_overrides": [
+    "features.code_mode_host=true",
+    "features.code_mode=false",
+    "web_search=\"disabled\""
+  ],
+  "effective_role_models": {
+    "holdout_runner": "gpt-6-luna",
+    "pi": "gpt-6-luna",
+    "planner": "gpt-6-luna",
+    "runner": "gpt-6-luna",
+    "skeptic": "gpt-6-luna",
+    "skeptic_final": "gpt-6-luna"
+  },
+  "execute_frozen_holdout": true,
+  "finalization_yaml_sha256": "c290dacef9261c2429d110efaf485e1baaa840dcce0f27bb3561fc11b161aa90",
+  "finalize_discovery": true,
+  "guarded_runtime_source_sha256": {
+    "codex_executor": "aa4ccd1220ae5a287411868d05c5e69c2d40d0db1907ee3889bdb76a350f49dd",
+    "harness": "2308a5e7701402b0a134c4009c2a98e739d805de3798202e4001ccfaf044bfd0",
+    "holdout_evidence_exporter": "5ad2317513fac5ba858924fc907409da1be9f0af8a7e8351538dc0f81c6742a4",
+    "native_finalization_tools": "0844a2cff83681943f9f8280ea32fa1b949f1fc3c0212024d03f707598fad0a8",
+    "native_holdout_tools": "b15838bbe8b9a52c91763155e6382bf198d7fa4b6a15daa5e4e8954f17acd762",
+    "runtime": "99890acc0d2bab323247929938b7e2a1344bf6e6e8dbb4c7007b795bead48945"
+  },
+  "guardrail_verification": "requested_unverified_not_effective",
+  "holdout_yaml_sha256": "863e26b0604afe115495894bb628c00ab11622f97f0afcd5d4572a6b0b11abd9",
+  "host_binary_env": "CODEX_CODE_MODE_HOST_PATH",
+  "model_override": "gpt-6-luna",
+  "native_tools_policy_requested": "disabled",
+  "omnigent_version": "0.16.0",
+  "run_id": "native-adaptive-live-09",
+  "schema_version": 1,
+  "selected_yaml_sha256": "f7b05d92fed3a90d62e396efcd7fd477767418edbd08ca063331f74118a983f4",
+  "skills": "none",
+  "web_search_policy_requested": "disabled"
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-dc9b40ba4d22c6f8",
+    "reason": "The positive discovery contrast (delta 0.001508) rests on only 3 oxide and 6 chalcogenide passes despite complete coverage. Its resampling interval [0.000111, 0.003222] excludes zero but approaches it, so effect magnitude remains uncertain and supported_in_snapshot should be interpreted as bounded discovery evidence, not established robustness or replication.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d"
+  },
+  {
+    "claim_refs": [
+      "nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"
+    ],
+    "concerns": [
+      {
+        "concern_type": "final_protocol",
+        "evidence_refs": [
+          "nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-0fcce1f550b846ed",
+    "reason": "The positive contrast persists across tested thresholds, but only 2-3 oxide and 5-8 chalcogenide compositions pass. Sparse events leave effect magnitude uncertain; sensitivity within the same discovery snapshot does not establish independent replication.",
+    "recommended_template": null,
+    "result_id": "nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"
+  }
+]
