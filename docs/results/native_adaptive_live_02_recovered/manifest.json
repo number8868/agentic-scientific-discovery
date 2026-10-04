@@ -1,0 +1,60 @@
+{
+  "exported_at": "2026-10-04T02:33:12.776219+00:00",
+  "files": {
+    "README.md": {
+      "count": 1,
+      "sha256": "571119be67e34f8dbb4bbd9fd748a015544e1915ef4a85fc81317cebf451dcb1"
+    },
+    "adaptive_evidence.json": {
+      "count": 1,
+      "sha256": "389fcbfd39c9a323c73ee46500e3b7e454a06ad5f948cd21db3250e71f773a9d"
+    },
+    "events.jsonl": {
+      "count": 21,
+      "sha256": "01858f6ad91b199362e868e651cedd138d2148e9691d24c3f8475fc130b7a503"
+    },
+    "host-recovery.json": {
+      "count": 1,
+      "sha256": "980c7ab7d9f1b73fb15473950493558d6a537a94ac8e4f130820fa746caf953b"
+    },
+    "native-model-audit.jsonl": {
+      "count": 65,
+      "sha256": "cdfa042dc2cacec2f7ab38921f6117351a606842d7f904c549332d0f70cbe3c8"
+    },
+    "native-runtime-manifest.json": {
+      "count": 1,
+      "sha256": "b80e405f0eed2a331add141eb9386bb43432ecd0e615ba3ddf46999760aaf82c"
+    },
+    "native-runtime-verification.json": {
+      "count": 1,
+      "sha256": "f973bc81dc57d33959b24488da13347d3f29efd5906cd3e180ad92488f0ce4cc"
+    },
+    "results.json": {
+      "count": 2,
+      "sha256": "511501c4edf46d0365a5d43015c2292028412bc30d2f154f15021de55e303111"
+    },
+    "reviews.json": {
+      "count": 1,
+      "sha256": "1451d79e8c0f14f058faf8df3806d680c9b6ea70f37447400adc2844618d7aa0"
+    },
+    "science-artifacts.json": {
+      "count": 2,
+      "sha256": "34780091eab6447b9c4f2ae449e9f88615c7130da14a9a532e1b5c329f646fb7"
+    },
+    "science-artifacts/science-payload-1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f.json": {
+      "count": 1,
+      "sha256": "1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f"
+    },
+    "science-artifacts/science-payload-72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8.json": {
+      "count": 1,
+      "sha256": "72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8"
+    },
+    "specs.json": {
+      "count": 2,
+      "sha256": "60bbc0be6df79df234bc4276f10a737795fb79bfbce15aee01770cf9b17ddd64"
+    }
+  },
+  "mode": "live",
+  "run_id": "native-adaptive-live-02",
+  "schema_version": 1
+}

@@ -304,8 +304,30 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
         persisted_failed = (native_state is not None and native_state["status"] == "failed") or any(
             event.event_type in {"native_adaptive_runner_failed", "native_adaptive_orchestration_failed"}
             for event in events)
-        native_status = (native_state["status"] if native_state is not None else
+        supervisor_event = any(
+            event.event_type == "native_adaptive_supervisor_returned" and event.actor == "host" and
+            event.payload_ref == parent.result_id for event in events)
+        response_recorded = (supervisor_response is not None and supervisor_event and
+                             supervisor_response.get("parent_result_id") == parent.result_id and
+                             isinstance(supervisor_response.get("response_text"), str) and
+                             supervisor_response.get("response_sha256") == hashlib.sha256(
+                                 supervisor_response["response_text"].encode("utf-8")).hexdigest())
+        recovery_event = any(
+            event.event_type == "native_adaptive_host_validation_recovered" and event.actor == "host" and
+            native_state is not None and event.payload_ref == native_state.get("selected_id")
+            for event in events)
+        recovered = bool(native_state is not None and native_state["status"] == "completed" and
+                         response_recorded and recovery_event)
+        native_status = ("completed_with_host_validation_recovery" if recovered else
+                         native_state["status"] if native_state is not None else
                          "failed_without_state" if persisted_failed else "state_not_persisted")
+        retrospective_witness_observed = any(
+            item.get("event") == "tool_result_decoded_retrospectively" and
+            item.get("actor") == "host-transport-verifier" for item in (native_trace or []))
+        observed_guard_pids = {item.get("pid") for item in (native_trace or [])
+                               if item.get("event") == "executor_guard_installed" and
+                               isinstance(item.get("pid"), int) and not isinstance(item.get("pid"), bool)}
+        observed_turns = sum(item.get("event") == "turn_complete" for item in (native_trace or []))
         native_verification = {
             "native_workflow_status": native_status,
             "guardrail_verification": "requested_unverified_not_effective",
@@ -314,8 +336,15 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
             "model_request_or_completion_observed": model_events_observed,
             "native_model_audit_scope": ("host_function_events_only" if native_trace and not model_events_observed
                                          else "unverified_or_unavailable"),
-            "supervisor_response_persisted": supervisor_response is not None,
-            "runner_feedback_validation": "failed" if persisted_failed and failure_detail else "not_recorded",
+            "supervisor_response_persisted": response_recorded,
+            "runner_feedback_validation": ("retrospective_transport_witness_recorded"
+                                           if recovered and retrospective_witness_observed else
+                                           "host_validation_recovery_not_independently_verified" if recovered else
+                                           "failed" if persisted_failed and failure_detail else "not_recorded"),
+            "prior_failure_observed": persisted_failed,
+            "retrospective_transport_witness_observed": retrospective_witness_observed,
+            "observed_executor_pid_count": len(observed_guard_pids),
+            "observed_turn_complete_count": observed_turns,
             "failure_detail": failure_detail if persisted_failed else None,
             "failure_detail_source": "operator_supplied_not_persisted" if persisted_failed and failure_detail else None,
         }

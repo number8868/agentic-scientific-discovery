@@ -306,3 +306,62 @@ def test_failed_native_runner_export_preserves_failure_without_supervisor_comple
     assert evidence["native_runtime_verification"]["run_owned_results_persisted"] == 2
     assert (output / "native-runtime-manifest.json").read_bytes() == manifest_path.read_bytes()
     assert evidence["provider_attestation"] is None
+
+
+def test_native_export_labels_host_validation_recovery_and_preserves_prior_failure(tmp_path, monkeypatch):
+    db, store, _spec, parent_result = _seed(
+        tmp_path, "native-recovered", monkeypatch, artifact=True)
+    selected_id = "NOVA-threshold"
+    packet = {"packet_type": "adaptive_discovery_followups",
+              "parent_result_id": parent_result.result_id, "selection": None}
+    review = {"parent_result_id": parent_result.result_id, "concern": "Snapshot limitation"}
+    selection = {"choice": "threshold_sensitivity", "selected_id": selected_id,
+                 "selected_kind": "experiment_id", "scope": "discovery_only"}
+    response = "The Runner returned the committed discovery Result."
+    with sqlite3.connect(db) as conn:
+        conn.executescript("""
+            CREATE TABLE native_adaptive_state (
+                run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL, packet_json TEXT NOT NULL,
+                review_json TEXT, selection_json TEXT, selected_id TEXT, selected_kind TEXT, status TEXT NOT NULL
+            );
+            CREATE TABLE native_adaptive_supervisor_results (
+                run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL,
+                response_text TEXT NOT NULL, response_sha256 TEXT NOT NULL
+            );
+        """)
+        conn.execute("INSERT INTO native_adaptive_state VALUES (?,?,?,?,?,?,?,?)", (
+            "native-recovered", parent_result.result_id, json.dumps(packet), json.dumps(review),
+            json.dumps(selection), selected_id, "experiment_id", "completed"))
+        conn.execute("INSERT INTO native_adaptive_supervisor_results VALUES (?,?,?,?)", (
+            "native-recovered", parent_result.result_id, response,
+            hashlib.sha256(response.encode()).hexdigest()))
+    store.append_event("native-recovered", "native_adaptive_runner_failed", actor="host", mode=Mode.LIVE,
+                       payload_ref=selected_id)
+    store.append_event("native-recovered", "native_adaptive_orchestration_failed", actor="host", mode=Mode.LIVE)
+    store.append_event("native-recovered", "native_adaptive_supervisor_returned", actor="host", mode=Mode.LIVE,
+                       payload_ref=parent_result.result_id)
+    store.append_event("native-recovered", "native_adaptive_host_validation_recovered", actor="host",
+                       mode=Mode.LIVE, payload_ref=selected_id)
+
+    trace = [{"event": "tool_result_decoded_retrospectively", "actor": "host-transport-verifier"}]
+    trace.extend({"event": "executor_guard_installed", "pid": pid} for pid in range(100, 104))
+    trace.extend({"event": "turn_complete", "pid": pid} for pid in range(5))
+    trace_path = db.parent / "native-model-audit.jsonl"
+    trace_path.write_text("".join(json.dumps(item) + "\n" for item in trace), encoding="utf-8")
+    trace_path.chmod(0o600)
+
+    output = exporter.export_adaptive_evidence(
+        db, "native-recovered", tmp_path / "runs" / "native-recovered-export")
+    evidence = json.loads((output / "adaptive_evidence.json").read_text())
+    verification = evidence["native_runtime_verification"]
+    assert verification["native_workflow_status"] == "completed_with_host_validation_recovery"
+    assert verification["supervisor_response_persisted"] is True
+    assert verification["prior_failure_observed"] is True
+    assert verification["runner_feedback_validation"] == "retrospective_transport_witness_recorded"
+    assert verification["retrospective_transport_witness_observed"] is True
+    assert verification["observed_executor_pid_count"] == 4
+    assert verification["observed_turn_complete_count"] == 5
+    assert any(item["event_type"] == "native_adaptive_orchestration_failed"
+               for item in evidence["run_events"])
+    assert verification["guardrail_verification"] == "requested_unverified_not_effective"
+    assert evidence["provider_attestation"] is None

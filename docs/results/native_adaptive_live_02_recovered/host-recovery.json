@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "native-adaptive-live-02",
+  "status": "completed_with_host_validation_recovery",
+  "original_cli_exit_code": 1,
+  "model_or_science_rerun": false,
+  "verified_executor_pids": [89009, 89112, 89227, 89338],
+  "completed_model_turns": 5,
+  "verification_scope": "recorded_executor_configuration_and_tool_turn_linkage_not_OS_confinement",
+  "provider_attestation": null,
+  "recovery_reason": "Accept the SDK-generated model_provider config and safely decode its Python dict repr tool transport; preserve original events and add an explicitly retrospective host witness.",
+  "runner_call_id": "call_JXDj0UIDRPtCOUy1w5YAHuLT",
+  "runner_wire_sha256": "3bf08077eb0ca78dbb6debcdfcbc74e0b701cc308ea23db28476071d91eb217d",
+  "runner_response_sha256": "d0cf7a88083539609b574b739e8e9b0700a593a94060df3d62cbdb53c221b03d",
+  "supervisor_response_sha256": "f8cc41e3eb2304171f9e6f628fddc508d38f7010c1c86e4173961b8ff8b380a0",
+  "primary_spec_id": "NOVA-df029d4d4f4bb31e",
+  "followup_spec_id": "NOVA-ad55feadb63b67b5",
+  "holdout_executed": false,
+  "clean_cli_success_demonstrated": false
+}

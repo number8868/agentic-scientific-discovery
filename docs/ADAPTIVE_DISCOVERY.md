@@ -42,6 +42,27 @@ run these commands merely to inspect the repository.
 
 ## Boundaries and remaining work
 
+The native multi-agent path (`agents/adaptive-live.yaml` and
+`scripts/run_native_adaptive.py`) now has a real discovery rehearsal:
+`native-adaptive-live-02`. PI, Planner, Skeptic, and Runner produced five completed
+model turns, two scientific Results, and a persisted PI final response. The
+original CLI exited 1 during host trace validation; a hash-bound, host-only
+transport recovery completed acceptance without another model or science run.
+This is **completed with host validation recovery**, not a clean CLI success.
+See `results/native_adaptive_live_02_recovered/`. The first failed attempt remains
+preserved in [the failure and evidence boundary](NATIVE_ADAPTIVE_BLOCKERS.md).
+Executor configuration and tool/turn linkage are recorded; they are not proof
+of OS-level confinement or provider model attestation.
+
+For a fresh native run, use a new database/run ID with `prepare_adaptive_run.py`,
+then `run_native_adaptive.py --enable-native-live --model gpt-6-luna
+--remaining-seconds 600`. Archive an existing live context deliberately first.
+Each teammate needs their own authenticated Codex CLI, pinned Omnigent environment,
+and matching code-mode host configured through `CODEX_CODE_MODE_HOST_PATH`.
+Model selection remains configurable; Luna is not a protocol requirement.
+The merged [registered-method evidence handoff](METHOD_EVIDENCE_HANDOFF.md)
+is a separate read-only, completed-artifact integration, not a native model run.
+
 Tests use mocked model/tool calls and synthetic rows; they establish engineering
 behavior, not scientific outcomes. The authenticated `adaptive-live-02` rehearsal
 also completed: the model received the real primary Result summary, chose
@@ -65,8 +86,9 @@ their separate 120-second hard bound. Keep this distinction in timing claims.
 
 The paired method path has no authorized holdout protocol. The legacy frozen
 family/threshold holdout gate must not be used to validate it. Remaining acceptance
-work includes native specialist integration and its own live evidence, separately frozen
-method holdout design with A, and an honest measured comparison with manual/rule
+work includes a fresh clean-CLI native acceptance run, initial hypothesis autonomy,
+final scientific review/freeze integration, separately frozen method holdout design
+with A, and an honest measured comparison with manual/rule
 selection and running all inexpensive tests. No speedup or novelty-first claim
 is established by this patch.
 
