@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from types import SimpleNamespace
 
 import pytest
@@ -172,3 +173,32 @@ def test_budget_is_clamped_to_total_timeout_before_feasibility(tmp_path, monkeyp
     )
     assert outcome["packet"]["remaining_seconds"] == runner.TOTAL_TIMEOUT_SECONDS == 720
     assert observed["remaining_seconds"] == 720
+
+
+def test_codex_executor_error_is_reported_safely():
+    from omnigent.inner.executor import ExecutorError
+
+    class FailedExecutor:
+        async def run_turn(self, **kwargs):
+            yield ExecutorError(message="provider denied sk-abcdefghijklmnopqrstuv", retryable=False)
+
+        async def interrupt_session(self, _session_id):
+            pass
+
+        async def close_session(self, _session_id):
+            pass
+
+        async def close(self):
+            pass
+
+    async def invoke():
+        with pytest.raises(RuntimeError, match=r"Codex decision call failed: provider denied \[redacted\]") as error:
+            await runner._ask_codex(
+                {"allowed_choices": ["stop"], "candidate_tests": [{"choice": "stop", "feasibility": True}],
+                 "parent_result_id": "result-parent"},
+                "gpt-6-luna", 5,
+                executor_factory=lambda **_kwargs: FailedExecutor(),
+            )
+        assert "sk-abcdefghijklmnopqrstuv" not in str(error.value)
+
+    asyncio.run(invoke())
