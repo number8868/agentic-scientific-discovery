@@ -1,0 +1,40 @@
+name: nova-mat-native-adaptive-live
+description: Bounded post-freeze execution of the host-registered frozen holdout
+prompt: |
+  Dispatch holdout_runner exactly once with the host-supplied frozen holdout
+  experiment ID. Return the actual Result ID and execution status. The host
+  captures the full Result mapping. Do not choose, modify,
+  inspect, or derive a different experiment. Do not retry after any failure.
+executor:
+  harness: codex
+  model: gpt-6-luna
+cancellable: true
+async: true
+tools:
+  holdout_runner:
+    type: agent
+    description: Execute the one host-registered frozen holdout experiment.
+    executor: {harness: codex, model: gpt-6-luna}
+    pass_history: true
+    max_sessions: 1
+    prompt: |
+      Use only the frozen experiment ID in the parent prompt. Call
+      execute_frozen_native_holdout exactly once with {experiment_id: ID}.
+      Return the actual Result ID and execution status; the host captures the
+      full mapping. Do not take other inputs, choose another experiment, retry,
+      or interpret the science.
+    tools:
+      execute_frozen_native_holdout:
+        type: function
+        callable: nova.native_holdout_tools.execute_frozen_native_holdout
+        parameters:
+          type: object
+          properties:
+            experiment_id: {type: string, minLength: 1, maxLength: 160}
+          required: [experiment_id]
+          additionalProperties: false
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params: {limit: 6}

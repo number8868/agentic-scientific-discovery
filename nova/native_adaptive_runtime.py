@@ -111,6 +111,36 @@ def _write_final_pi_response(trace_path: Path, *, pid: int, role: str,
     return path
 
 
+def _write_holdout_result_once(trace_path: Path, *, pid: int, call_id: str,
+                               result: dict[str, Any]) -> dict[str, Any]:
+    """Persist the host tool's actual Result mapping, bound to its native call."""
+    run_dir = trace_path.parent.resolve()
+    if (not run_dir.is_relative_to(RUNS_ROOT.resolve()) or trace_path.name != "native-model-audit.jsonl" or
+            trace_path.is_symlink() or not trace_path.is_file() or
+            not isinstance(result, dict) or len(call_id) > 120):
+        raise ValueError("holdout Result is outside the bounded run-owned evidence contract")
+    encoded = json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                         allow_nan=False, default=str).encode("utf-8")
+    if len(encoded) > 1_000_000:
+        raise ValueError("holdout Result exceeds the private evidence size bound")
+    digest = hashlib.sha256(encoded).hexdigest()
+    record = {"schema_version": 1, "pid": pid, "role": "holdout_runner",
+              "tool": "execute_frozen_native_holdout", "call_id": call_id,
+              "result_sha256": digest, "result": result}
+    body = json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                      allow_nan=False, default=str).encode("utf-8")
+    path = run_dir / "native-holdout-result.json"
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
+    try:
+        if os.write(fd, body) != len(body):
+            raise OSError("short write while storing native holdout Result")
+        os.fchmod(fd, 0o600)
+    finally:
+        os.close(fd)
+    return {"result_sha256": digest, "result_id": result.get("result_id"),
+            "execution_status": result.get("execution_status") or result.get("status")}
+
+
 def read_final_pi_response(trace_path: Path) -> dict[str, Any]:
     """Read and validate the unique private response file for this run trace."""
     run_dir = trace_path.parent.resolve()
@@ -141,6 +171,39 @@ def read_final_pi_response(trace_path: Path) -> dict[str, Any]:
             len(record["response_text"]) > 20_000 or record.get("response_chars") != len(record["response_text"]) or
             record.get("response_sha256") != hashlib.sha256(record["response_text"].encode("utf-8")).hexdigest()):
         raise RuntimeError("final PI response record failed integrity validation")
+    return record
+
+
+def read_native_holdout_result(trace_path: Path) -> dict[str, Any]:
+    """Read the single full Result captured from the successful host tool return."""
+    run_dir = trace_path.parent.resolve()
+    if (not run_dir.is_relative_to(RUNS_ROOT.resolve()) or trace_path.name != "native-model-audit.jsonl" or
+            trace_path.is_symlink() or not trace_path.is_file()):
+        raise RuntimeError("native holdout Result trace is outside the run evidence directory")
+    path = run_dir / "native-holdout-result.json"
+    try:
+        fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077 or info.st_size > 1_100_000:
+            raise ValueError
+        with os.fdopen(fd, "r", encoding="utf-8") as stream:
+            fd = -1
+            record = json.load(stream)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+        raise RuntimeError("native holdout Result record is missing or unsafe") from None
+    finally:
+        if "fd" in locals() and isinstance(fd, int) and fd >= 0:
+            os.close(fd)
+    if (not isinstance(record, dict) or set(record) != {"schema_version", "pid", "role", "tool", "call_id",
+            "result_sha256", "result"} or record.get("schema_version") != 1 or record.get("role") != "holdout_runner" or
+            record.get("tool") != "execute_frozen_native_holdout" or not isinstance(record.get("pid"), int) or
+            isinstance(record.get("pid"), bool) or not isinstance(record.get("call_id"), str) or
+            not isinstance(record.get("result"), dict)):
+        raise RuntimeError("native holdout Result record fields are invalid")
+    encoded = json.dumps(record["result"], sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                         allow_nan=False, default=str).encode("utf-8")
+    if record["result_sha256"] != hashlib.sha256(encoded).hexdigest():
+        raise RuntimeError("native holdout Result record failed integrity validation")
     return record
 
 
@@ -223,7 +286,7 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
         role = None
         if isinstance(agent_name, str):
             normalized = agent_name.strip().lower()
-            roles = {"planner", "skeptic", "runner"}
+            roles = {"planner", "skeptic", "runner", "holdout_runner"}
             role = "pi" if normalized == "nova-mat-native-adaptive-live" else normalized
             if role == "skeptic_final":
                 role = "skeptic"
@@ -268,12 +331,21 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
                     structured_result = _decode_native_runner_tool_result(event.result, registered_id)
                 elif event.name in {"record_adaptive_review", "submit_native_final_review", "freeze_native_final_protocol"}:
                     structured_result = _decode_native_function_result(event.result)
+                elif event.name == "execute_frozen_native_holdout":
+                    structured_result = _decode_native_function_result(event.result)
                 record_native_trace("tool_complete", actor="omnigent-tool-dispatch", tool=event.name,
                                     call_id=call_id,
                                     result=event.result, model=model, pid=os.getpid(),
                                     role=role,
                                     structured_result=structured_result,
                                     status=getattr(event.status, "value", str(event.status)))
+                if (event.name == "execute_frozen_native_holdout" and role == "holdout_runner" and
+                        structured_result is not None and call_id and
+                        str(getattr(event.status, "value", event.status)).lower() in
+                        {"success", "toolcallstatus.success"}):
+                    _write_holdout_result_once(Path(os.environ["NOVA_ADAPTIVE_TRACE_PATH"]),
+                                               pid=os.getpid(), call_id=call_id,
+                                               result=structured_result)
                 if (event.name == "freeze_native_final_protocol" and role == "pi" and
                         structured_result is not None and
                         str(getattr(event.status, "value", event.status)).lower() in
@@ -381,6 +453,7 @@ def launch_cli_with_guarded_runner(cli_module: Any, args: list[str], root: Path,
 
 def verify_executor_trace(path: Path, host_path: Path, *,
                           required_tools: tuple[str, ...] = (),
+                          expected_holdout_id: str | None = None,
                           final_response: str | None = None,
                           final_response_record: dict[str, Any] | None = None) -> dict[str, Any]:
     """Verify that every traced executor turn belongs to a guarded process."""
@@ -421,7 +494,8 @@ def verify_executor_trace(path: Path, host_path: Path, *,
         raise RuntimeError("native run has no completed model turn")
     required_roles = {"record_adaptive_review": "skeptic",
                       "submit_native_final_review": "skeptic",
-                      "freeze_native_final_protocol": "pi"}
+                      "freeze_native_final_protocol": "pi",
+                      "execute_frozen_native_holdout": "holdout_runner"}
     for tool in required_tools:
         role = required_roles.get(tool)
         found = False
@@ -429,6 +503,13 @@ def verify_executor_trace(path: Path, host_path: Path, *,
             pid, call_id = request.get("pid"), request.get("call_id")
             if (request.get("event") != "tool_request" or request.get("actor") != "codex-model" or
                     request.get("tool") != tool or request.get("role") != role or not call_id):
+                continue
+            if tool == "execute_frozen_native_holdout" and request.get("arg_names") != ["experiment_id"]:
+                continue
+            if (tool == "execute_frozen_native_holdout" and expected_holdout_id is not None and
+                    request.get("args_sha256") != hashlib.sha256(json.dumps(
+                        {"experiment_id": expected_holdout_id}, sort_keys=True, separators=(",", ":"),
+                        ensure_ascii=False, allow_nan=False, default=str).encode("utf-8")).hexdigest()):
                 continue
             if not _has_trace_guard(records, pid, role, request_index):
                 continue
@@ -449,6 +530,21 @@ def verify_executor_trace(path: Path, host_path: Path, *,
                 break
         if not found:
             raise RuntimeError(f"native finalization tool {tool} lacks a guarded successful turn trace")
+    if "execute_frozen_native_holdout" in required_tools:
+        result_record = read_native_holdout_result(path)
+        result = result_record["result"]
+        if (not isinstance(result.get("result_id"), str) or not result.get("result_id") or
+                not isinstance(result.get("execution_status"), str) or not result.get("execution_status")):
+            raise RuntimeError("native holdout host return omitted Result ID or execution status")
+        if expected_holdout_id is not None and result.get("experiment_id") != expected_holdout_id:
+            raise RuntimeError("native holdout host return differs from the frozen experiment ID")
+        if not any(row.get("event") == "tool_complete" and row.get("tool") == "execute_frozen_native_holdout" and
+                   row.get("role") == "holdout_runner" and row.get("call_id") == result_record["call_id"] and
+                   row.get("pid") == result_record["pid"] and
+                   row.get("structured_result_sha256") == result_record["result_sha256"] and
+                   str(row.get("status", "")).lower() in {"success", "toolcallstatus.success"}
+                   for row in records):
+            raise RuntimeError("native holdout Result is not bound to its guarded successful tool return")
     if final_response_record is not None and final_response is None:
         raise RuntimeError("final PI response record requires its exact response text")
     if final_response is not None:
