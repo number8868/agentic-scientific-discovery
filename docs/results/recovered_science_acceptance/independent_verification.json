@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "audit_type": "independent_recovered_discovery_evidence_acceptance",
+  "run_id": "native-adaptive-live-02",
+  "source_bundle": "docs/results/native_adaptive_live_02_recovered",
+  "source_commit": "be154a3",
+  "manifest_entries_checked": 13,
+  "hashes_inventory_entries_checked": 14,
+  "source_sha256": {
+    "README.md": "571119be67e34f8dbb4bbd9fd748a015544e1915ef4a85fc81317cebf451dcb1",
+    "adaptive_evidence.json": "389fcbfd39c9a323c73ee46500e3b7e454a06ad5f948cd21db3250e71f773a9d",
+    "events.jsonl": "01858f6ad91b199362e868e651cedd138d2148e9691d24c3f8475fc130b7a503",
+    "host-recovery.json": "980c7ab7d9f1b73fb15473950493558d6a537a94ac8e4f130820fa746caf953b",
+    "manifest.json": "fa41dc82ba8c836996ed77556d076e0c92bd1ad5a8a863638ec54b3cd7088e4b",
+    "native-model-audit.jsonl": "cdfa042dc2cacec2f7ab38921f6117351a606842d7f904c549332d0f70cbe3c8",
+    "native-runtime-manifest.json": "b80e405f0eed2a331add141eb9386bb43432ecd0e615ba3ddf46999760aaf82c",
+    "native-runtime-verification.json": "f973bc81dc57d33959b24488da13347d3f29efd5906cd3e180ad92488f0ce4cc",
+    "results.json": "511501c4edf46d0365a5d43015c2292028412bc30d2f154f15021de55e303111",
+    "reviews.json": "1451d79e8c0f14f058faf8df3806d680c9b6ea70f37447400adc2844618d7aa0",
+    "science-artifacts.json": "34780091eab6447b9c4f2ae449e9f88615c7130da14a9a532e1b5c329f646fb7",
+    "science-artifacts/science-payload-1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f.json": "1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f",
+    "science-artifacts/science-payload-72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8.json": "72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8",
+    "specs.json": "60bbc0be6df79df234bc4276f10a737795fb79bfbce15aee01770cf9b17ddd64"
+  },
+  "source_package_unchanged": true,
+  "registered_and_computation_hashes_independently_checked": [
+    {
+      "experiment_id": "NOVA-df029d4d4f4bb31e",
+      "template": "family_screen",
+      "registered_spec_sha256": "cb17ad0bdde83f0cdcb989b938ed517661160d5d1d1333f6e95871f6bae7e471",
+      "computation_spec_sha256": "f5eaf8c139baa0f7d0850dae9a39bc96657f426b4939cc4ffd8012819a721079",
+      "payload_sha256": "1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f",
+      "result_id": "nova-result-51bf0ea23425fde5f73d989a7dbb3eb8ab7562f0b717bca8c0cab81e03971307"
+    },
+    {
+      "experiment_id": "NOVA-ad55feadb63b67b5",
+      "template": "threshold_sensitivity",
+      "registered_spec_sha256": "bd385e0263e986b96bf4ba109ec38f062443b89db7e0b69cc73f0c2b6ad8e95e",
+      "computation_spec_sha256": "6bd6307e8d56b6ba209a1e14d999262dce9d17743b9001a350dddb74d7be213a",
+      "payload_sha256": "72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8",
+      "result_id": "nova-result-6f4d260124a90768f88f78214ac0cf91cff611340c310c44dc587c0a81df4582"
+    }
+  ],
+  "primary_scientific_fields_match_original": true,
+  "all_threshold_scientific_fields_match_historical": true,
+  "raw_dataset_authenticated_or_recomputed": false,
+  "bootstrap_resampling_reproduced": false,
+  "stored_review_field_references_resolve": true,
+  "packet_summary_matches_actual_parent": true,
+  "review_request_and_saved_review_hash_linkage_verified": true,
+  "accepted_choice_request_matches_saved_selection": true,
+  "choice_request_count": 2,
+  "accepted_host_commit_count": 1,
+  "first_choice_request_argument_and_error_text_available": false,
+  "review_prose_human_reading": "Sparse 3/6 pass counts, positive near-zero lower interval bound and bounded threshold recommendation are correct; complete coverage is not proof of robust general ordering",
+  "selection_prose_human_reading": "Threshold choice addresses the Skeptic concern; 60 seconds is a planning estimate; no proof of optimality versus the unselected method option",
+  "supervisor_prose_human_reading": "Supported status and positive three-point contrasts/intervals are correct; short response omits sparse/correlated scope caveats and does not register an explicit stop/freeze decision",
+  "model_trace_counts": {
+    "native_adaptive_trace_started": 1,
+    "runner_bootstrap_installed": 1,
+    "executor_guard_installed": 4,
+    "executor_turn_started": 5,
+    "tool_request": 21,
+    "tool_complete": 21,
+    "function_complete": 5,
+    "turn_complete": 5,
+    "tool_result_decoded_retrospectively": 1,
+    "supervisor_response_persisted": 1
+  },
+  "recorded_executor_roles": {
+    "89009": "pi",
+    "89112": "planner",
+    "89227": "skeptic",
+    "89338": "runner"
+  },
+  "recorded_guard_configuration_consistent": true,
+  "OS_confinement_verified": false,
+  "provider_model_identity_attested": false,
+  "paired_tool_call_ids_checked": 21,
+  "runner_response_sha256": "d0cf7a88083539609b574b739e8e9b0700a593a94060df3d62cbdb53c221b03d",
+  "runner_wire_sha256": "3bf08077eb0ca78dbb6debcdfcbc74e0b701cc308ea23db28476071d91eb217d",
+  "runner_response_contains_complete_frozen_grid": true,
+  "retrospective_transport_witness_not_model_event": true,
+  "supervisor_response_matches_completed_PI_turn_hash": true,
+  "native_workflow_status": "completed_with_host_validation_recovery",
+  "original_cli_exit_code": 1,
+  "clean_cli_success_demonstrated": false,
+  "initial_hypothesis_host_seeded": true,
+  "formal_post_result_review_or_stop_or_freeze_evidenced": false,
+  "method_selected_or_candidate_review_evidenced": false,
+  "threshold_points": [
+    {
+      "threshold_ev_atom": 0.025,
+      "delta": 0.0013220816543501486,
+      "resampling_interval": [
+        5.5457208498343666e-05,
+        0.002905362211664905
+      ],
+      "scientific_status": "supported_in_snapshot"
+    },
+    {
+      "threshold_ev_atom": 0.05,
+      "delta": 0.001508138314330796,
+      "resampling_interval": [
+        0.00011091441699668733,
+        0.003222018323127856
+      ],
+      "scientific_status": "supported_in_snapshot"
+    },
+    {
+      "threshold_ev_atom": 0.1,
+      "delta": 0.002141450537256699,
+      "resampling_interval": [
+        0.0004830277369579823,
+        0.003985929997536062
+      ],
+      "scientific_status": "supported_in_snapshot"
+    }
+  ],
+  "timing": {
+    "native_start_to_last_completed_turn_seconds": 191.293664,
+    "native_start_to_original_failure_seconds": 192.742208,
+    "native_start_to_recovered_completion_seconds": 708.706676,
+    "run_created_to_recovered_completion_seconds": 722.063728,
+    "scope": "Recorded cross-process markers; not isolated model latency or a matched benchmark; recovery span includes operator intervention"
+  },
+  "model_turn_usage_as_recorded": [
+    {
+      "role": "planner",
+      "pid": 89112,
+      "at": "2026-10-04T02:14:13.927036+00:00",
+      "usage": {
+        "context_tokens": 14885,
+        "input_tokens": 14835,
+        "output_tokens": 50,
+        "total_tokens": 14885
+      }
+    },
+    {
+      "role": "skeptic",
+      "pid": 89227,
+      "at": "2026-10-04T02:14:47.109275+00:00",
+      "usage": {
+        "cache_read_input_tokens": 14976,
+        "context_tokens": 17285,
+        "input_tokens": 17287,
+        "output_tokens": 169,
+        "total_tokens": 32432
+      }
+    },
+    {
+      "role": "pi",
+      "pid": 89009,
+      "at": "2026-10-04T02:16:39.911441+00:00",
+      "usage": {
+        "cache_read_input_tokens": 357888,
+        "context_tokens": 24546,
+        "input_tokens": 48005,
+        "output_tokens": 1021,
+        "total_tokens": 406914
+      }
+    },
+    {
+      "role": "runner",
+      "pid": 89338,
+      "at": "2026-10-04T02:16:48.636422+00:00",
+      "usage": {
+        "cache_read_input_tokens": 76672,
+        "context_tokens": 25238,
+        "input_tokens": 25979,
+        "output_tokens": 201,
+        "total_tokens": 102852
+      }
+    },
+    {
+      "role": "pi",
+      "pid": 89009,
+      "at": "2026-10-04T02:16:54.796371+00:00",
+      "usage": {
+        "cache_read_input_tokens": 48768,
+        "context_tokens": 26683,
+        "input_tokens": 2471,
+        "output_tokens": 242,
+        "total_tokens": 51481
+      }
+    }
+  ],
+  "usage_scope": "SDK-reported per-turn fields preserved without aggregation because total_tokens/context/cache semantics differ; no billing evidence",
+  "billed_model_cost_usd": null,
+  "matched_baseline_measured": false,
+  "speedup_demonstrated": false,
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "new_science_executions": 0,
+  "new_scientific_role_model_calls": 0,
+  "prepared_properties_read": false,
+  "holdout_outcomes_read": false,
+  "browser_verified": false
+}

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "stage": "A independent recovered-native discovery acceptance",
+  "base_commit": "359de7af977431442d4b7b9c5fea2e6bd54ceacb",
+  "concurrent_B_commit_reused": "d137017b9d35bdabe0c9f3341385755a2b0e035b",
+  "production_audit_script_unchanged_from_base": true,
+  "existing_B_audit_outputs_reused_without_duplicate_publication": true,
+  "linux_complete_regression": {
+    "tests": 362,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 45.274,
+    "junit_sha256": "039041432dd5e9de82e9b99bbbc77a76980c06445c239fb417d5840883a3defd",
+    "passed": 362,
+    "environment": "Ubuntu WSL; Python3.12.13; NumPy2.5.3; existing Linux virtual environment",
+    "command": "python -m pytest -q -o addopts= --junitxml=recovered-regression.xml",
+    "prepared_data_or_private_context_in_checkout": false
+  },
+  "pre_consolidation_linux_regression": {
+    "tests": 361,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 48.234,
+    "junit_sha256": "2b09f0c51b74a8477dcd258465e060064bca27d1d781d192057500b025cf5f86",
+    "passed": 361,
+    "base_commit": "fc41d23",
+    "scope": "Superseded by final check on new main"
+  },
+  "windows_focused_regression": {
+    "passed": 15,
+    "skipped": 10,
+    "failures": 0,
+    "scope": "tests/test_audit_discovery_bundle.py only; POSIX-mode cases are skipped here and exercised on Linux",
+    "temp_directory": "Fresh workspace-local pytest basetemp",
+    "initial_setup_issue": "First invocation could not enumerate D:/Temp/pytest-of-Herbert; test bodies did not run; fixed using writable workspace basetemp"
+  },
+  "additional_test_cases_over_latest_base": 10,
+  "direct_cli_replays": {
+    "recovered_bundle_passed": true,
+    "first_failed_bundle_passed": true,
+    "both_published_audit_and_manifest_pairs_reproduce_byte_for_byte": true,
+    "recovered_audit_sha256": "e97c45cdea063c5376c5b47cbf30b5d6ee661e367cb09c8b13ffe8ac535fc63a",
+    "recovered_manifest_sha256": "423bc04706b03360287bb280a0bb3cd58159336ad7dcffa02ed6316455f69f81",
+    "scope": "Reads published discovery records only; no scientific computation or authorization reconstruction"
+  },
+  "independent_verification_sha256": "ca6c626f75eb44ee999bd329f842327d2cff761a6a32537cf33f498c2b632984",
+  "independent_checks": {
+    "manifest_entries": 13,
+    "hash_inventory_entries": 14,
+    "paired_tool_call_ids": 21,
+    "recorded_executor_pids": 4,
+    "recorded_completed_model_turns": 5,
+    "registered_and_computation_hashes": true,
+    "historical_scientific_fields": true,
+    "Skeptic_references_and_request_hash": true,
+    "accepted_PI_choice_argument_hash": true,
+    "full_Runner_response_and_wire_hashes": true,
+    "final_PI_text_hash": true,
+    "OS_confinement_or_provider_model_attestation": false
+  },
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "worktree_source_sha256": {
+    "scripts/audit_discovery_bundle.py": "08a8c707d797f6a2e0e69976e24592eb22ead487064be97782528b0ff443bc08",
+    "tests/test_audit_discovery_bundle.py": "15d3dc56bf541a75ea56b00b427325e6979df2b783cee3aea0fd8d461a96f5ec"
+  },
+  "coding_helper": {
+    "task": "recovered_bundle_adapter",
+    "model": "gpt-6-luna",
+    "reasoning_effort": "max",
+    "final_scope": "Additional A tests; retain B adapter unchanged; preserve B metadata test with POSIX skip marker"
+  },
+  "Omnigent_scientific_role_configuration": {
+    "source": "B native-model-audit.jsonl",
+    "recorded_model": "gpt-6-luna",
+    "provider_attestation": null,
+    "separate_from_coding_helper_configuration": true
+  },
+  "draft_narration_words": 103,
+  "timed_rehearsal_or_recording": false,
+  "local_document_links_checked": 37,
+  "scope": {
+    "new_science_executions": 0,
+    "new_scientific_role_model_calls": 0,
+    "science_execution_counter_scope": "New real-data production experiments; synthetic pytest science-code calls are excluded",
+    "synthetic_tests_execute_scientific_code": true,
+    "prepared_properties_read": false,
+    "holdout_outcomes_read": false,
+    "browser_verified": false,
+    "frozen_dataset_authentication_or_bootstrap_reproduction": false,
+    "native_authorization_reconstructed": false,
+    "clean_CLI_success_demonstrated": false,
+    "formal_post_result_review_stop_or_freeze_demonstrated": false,
+    "matched_baseline_measured": false,
+    "billed_cost_known": false,
+    "speedup_demonstrated": false
+  }
+}

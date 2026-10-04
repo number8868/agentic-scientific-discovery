@@ -1,6 +1,30 @@
 # Scientific interpretation and citation handoff
 
-Latest addendum: A's [independent stored-result acceptance](results/science_closeout/README.md)
+## Recovered native discovery acceptance — 2026-10-03
+
+First inspected B integration `fc41d23`, then synced main `359de7a`. A
+independently checked the new
+`native-adaptive-live-02` published bundle at `be154a3`: all 13 manifest/14
+hash-inventory entries, exact historical science, four Skeptic references,
+the accepted PI request, full-grid Runner transport and final PI text hashes.
+The [acceptance report](results/recovered_science_acceptance/README.md)
+distinguishes recorded linkage and human scientific reading from runtime/provider
+attestation. Source package and frozen scientific bytes remain unchanged.
+
+This evidence advances the bounded discovery follow-up: a separately recorded
+Skeptic critique informed PI's choice, Runner returned the actual three-point
+grid, and PI summarized it. Two choice requests produced one accepted commit.
+Original CLI exit code was 1; the outcome is completed with host validation
+recovery, not clean launcher success. Initial hypothesis/primary were host
+seeded, and no formal post-result independent review, explicit stop/freeze,
+real holdout or method-candidate model review is present. PI's short final text
+is scientifically correct but needs sparse/correlated-snapshot caveats for
+standalone presentation. Preserve it unchanged and add A-authored scope wording
+in [the submission brief](SCIENCE_SUBMISSION_BRIEF.md).
+
+Earlier snapshots below remain historical assessments of their named runs.
+
+Earlier addendum: A's [independent stored-result acceptance](results/science_closeout/README.md)
 checks the published failed native run from B `fe02c2a`. Both persisted science
 Results and the fixed threshold grid match their historical evidence. The
 registered and minimized computation hashes each validate against their own
