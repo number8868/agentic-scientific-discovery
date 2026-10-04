@@ -1,5 +1,41 @@
 # Team status and handoff
 
+## Team A milestone 16 — actual attempt stopped at Codex startup; B handoff
+
+On `codex/postfreeze-live-acceptance`, based on main `433bdf5` after merged
+A PR #23, the [readiness record](results/postfreeze_live_readiness/README.md)
+captures a historical zero-call check-only pass: 458 raw-byte source copies,
+19 tested hashes, six protected hashes, seven review-source hashes, and all
+nine prepared metadata/hash checks. Seven manifest-authorized inputs were
+copied without decoding outcomes; their copies are read-only. Existing Linux
+Python 3.12.13, Omnigent 0.16.0 and Codex 0.160.0 are used. Canonical binaries
+are regular files. `PYTHONSAFEPATH=1` resolves the script/package name collision
+without changing shared runtime, frozen scientific source or dependency bytes.
+
+Automatic review first rejected the live request before process startup.
+After the user explicitly approved the project/aggregate inputs to OpenAI
+`gpt-6-luna`, A started one fresh run
+`postfreeze-20261004T062802Z-f7a0b41a`. The original 600-second native deadline
+and one-attempt marker apply; no historical context or deadline is reused.
+Preparation exited 0 in 3.697 seconds and persisted one host-seeded discovery
+`family_screen` Result. The native stage exited 1 in 76.576 seconds with
+`Codex app-server closed stdout`, before any registered tool request or completed
+model turn. Independent read-only SQLite checks show one discovery Spec/Result,
+zero frozen protocols, zero holdout claims and no holdout Result. Linux process
+checks show no remaining process bound to this snapshot. A has stopped and will
+not launch parallel validation; its marker remains `failed_once_no_retry`.
+
+The [startup handoff](B_NATIVE_STARTUP_ERROR.md) includes an initialize-only
+reproduction: the existing Windows-backed `CODEX_HOME` fails to initialize the
+Codex SQLite state runtime; changing only that field to a new empty Linux-local
+directory makes initialization succeed. No thread/turn/model was created and
+no credential was read/copied. This isolates the failing profile configuration,
+without establishing the underlying mount/state/permission cause or proving
+authenticated model execution. B can check its own authorized Linux profile
+and coordinate ownership of the next fresh controlled workflow. The old run,
+native06 and frozen science bytes remain unchanged. No completed workflow,
+scientific replication, latency benefit or cost benefit is claimed here.
+
 ## Team A milestone 15 — post-freeze adapter accepted offline
 
 On [A PR #23](https://github.com/number8868/agentic-scientific-discovery/pull/23),

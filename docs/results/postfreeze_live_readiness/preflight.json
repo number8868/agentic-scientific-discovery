@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "record_type": "linux_postfreeze_zero_call_preflight",
+  "source_base": "433bdf5",
+  "helper_sha256": "7c45005426255259e530ebd6e388a62455a4c312b64d13925f8ae7fbc83d189a",
+  "preflight_report_sha256": "aed4864231b66d946bbb30bc798dec4d06c767f0eebe0159b801a4243a76ed76",
+  "acceptance_reference": {
+    "merged_pr": 23,
+    "validation_json_sha256": "cfef844f11c12ca2a806fc153fa0b7a3a96d62a2f54ea63fd3718644aae320e4",
+    "source_review_json_sha256": "5ff4ca92c422e123f543dff33cbcad004e9810d8dd69bd89a113c99af34df9bd",
+    "linux_regression_tests": 424,
+    "linux_regression_passed": 424,
+    "linux_regression_failures": 0,
+    "linux_regression_errors": 0,
+    "linux_regression_skipped": 0,
+    "focused_native_acceptance_tests": 7,
+    "focused_native_acceptance_passed": 7,
+    "rerun_during_this_preflight": false
+  },
+  "source_snapshot": {
+    "working_byte_files": 458,
+    "acceptance_inventory_hashes_checked": 19,
+    "protected_source_hashes_checked": 6,
+    "source_review_hashes_checked": 7,
+    "frozen_pipeline_sha256": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "acceptance_test_sha256": "d455a333ea1187b6af18600b46b9533e41938afa0e4b4b59d741a3ff383836e8"
+  },
+  "prepared_inputs": {
+    "status": "ready",
+    "frozen_checks_passed": 9,
+    "manifest_authorized_files_copied": 7,
+    "copied_bytes": 326283021,
+    "copy_hashes_match_manifest": true,
+    "copied_files_mode": "0444",
+    "copied_directories_mode": "0555",
+    "original_data_modified": false,
+    "old_context_or_runs_used": false,
+    "outcome_rows_decoded": false
+  },
+  "environment": {
+    "platform": "Linux/WSL",
+    "python_version": "3.12.13",
+    "omnigent_version": "0.16.0",
+    "codex_cli_version": "0.160.0",
+    "codex_login_status": "logged_in",
+    "python_safe_path_enabled": true,
+    "codex_cli_sha256": "12eb3e81114588aca3b7998f4f19e8997b056aca08e57a7ca7c8a3ec8c652aad",
+    "codex_code_mode_host_sha256": "37cab1584302611e9936902219640ab5e7a79fcfccd2504c6e85ea8cb97d0e10",
+    "credential_values_read_copied_or_reset": false,
+    "standard_sdk_auth_refresh_may_occur_during_runtime": true
+  },
+  "native_configuration": {
+    "status": "configuration_validated",
+    "bootstrap_route_available": true,
+    "runtime_ready": false,
+    "live_execution_enabled": false,
+    "guardrail_verified": false,
+    "model_calls": 0,
+    "science_calls": 0,
+    "runtime_authorization_proven": false
+  },
+  "launch_gate": {
+    "initial_automatic_review": "rejected_before_process_start",
+    "initial_review_reason": "outbound content and destination were insufficiently explicit",
+    "process_started_after_initial_rejection": false,
+    "attempt_marker_created_by_preflight": false,
+    "model_or_science_calls_by_preflight_or_rejected_request": 0,
+    "scientific_result_created": false,
+    "user_explicitly_approved_bounded_openai_gpt_6_luna_call": true,
+    "approved_budget_seconds": 600,
+    "parent_live_attempt_status_at_recording": "pending_or_in_progress",
+    "live_outcome_included_in_this_record": false
+  }
+}
