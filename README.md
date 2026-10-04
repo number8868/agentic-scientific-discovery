@@ -7,6 +7,7 @@ Its agents propose registered tests, challenge sparse evidence, select and
 execute a follow-up, and freeze a protocol before one controlled holdout.
 Every decision links back to stored evidence.
 
+[Setup](docs/SETUP.md) ·
 [Evidence dashboard](https://nova-mat-scientific-demo.hy75252882.chatgpt.site/) ·
 [Completed native run](docs/results/native09_completed/README.md) ·
 [Independent scientific acceptance](docs/results/native09_science_acceptance/README.md) ·
@@ -85,17 +86,35 @@ These are computational snapshot screening outcomes, not new materials,
 synthesis, physical device performance or safety validation. No matched
 latency/cost benchmark or **10× speedup** has been established.
 
-## Try it without model calls
+## Setup
 
-Start with the dashboard and recorded evidence above. For local integration
-tests, use a dedicated environment:
+Start here for a new clone: **[complete Setup guide](docs/SETUP.md)** covers
+Python 3.12, GitHub access, environment installation, local website preview,
+Codex authentication, compatible code-mode host, frozen data and troubleshooting.
 
 ```bash
-python3 -m venv .venv-dev
-.venv-dev/bin/python -m pip install -e '.[dev]'
-.venv-dev/bin/python scripts/run_fixture_demo.py
-.venv-dev/bin/python -m pytest
+git clone https://github.com/number8868/agentic-scientific-discovery.git
+cd agentic-scientific-discovery
+python3.12 -m venv .venv-fixture
+.venv-fixture/bin/python -m pip install 'pytest==9.1.1'
+.venv-fixture/bin/python scripts/run_fixture_demo.py
+.venv-fixture/bin/python -m pytest tests/test_contracts.py tests/test_runtime.py tests/test_storage.py tests/test_fixture_engine.py
 ```
+
+This synthetic, no-model/no-data route was checked in a fresh Python 3.12.13
+environment: fixture exit 0 and **17 core tests passed**. It does not run the
+scientific/native suite. For the full environment, follow the Setup guide.
+
+Preview the checked-in evidence website without npm or a build step:
+
+```bash
+.venv-fixture/bin/python -m http.server 8000 --bind 127.0.0.1 --directory web/demo
+```
+
+Open http://127.0.0.1:8000; stop with Ctrl+C. This serves static recorded
+evidence, not a live scientific/model backend.
+
+## Verification scope
 
 The fixture is synthetic and distinct from native09. Its numbers are not
 scientific evidence. The completed run report records **426 passed** in its
@@ -112,7 +131,8 @@ Data and credentials are not bundled in a clone. See the
 [environment notes](docs/OPEN_SOURCE_OMNIGENT.md) and
 [post-freeze handoff](docs/B_SUBMISSION_HANDOFF.md).
 
-After provisioning that environment, check readiness and prepare a new run:
+Provision that environment with the [full Setup instructions](docs/SETUP.md#4-scientific--native-environment),
+including data and compatible host checks, before preparing a new run:
 
 ```bash
 .venv-omnigent/bin/python scripts/check_prepared_data.py
