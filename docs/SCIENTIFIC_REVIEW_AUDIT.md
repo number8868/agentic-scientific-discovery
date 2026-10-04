@@ -49,6 +49,27 @@ Source values and independently checked comparisons are in the
 handoff should export precise references to named arms and individual
 candidates while retaining the canonical parent Result's identity.
 
+## Latest adaptive decision evidence
+
+After syncing B's `22506ef`, independently checked every listed file hash in
+the failed run 01 and completed run 02 bundles (8 and 9 files respectively).
+Run 02's recorded choice is `threshold_sensitivity`; its reason cites the
+actual parent Result, delta approximately 0.00151, complete coverage and
+positive resampling interval. Those values agree with the saved parent
+summary. The next-threshold-check recommendation is within discovery scope.
+
+This supports one evidence-informed model choice gating host execution. It
+does not show that a model selected the method audit or reviewed candidate
+JIDs. The saved Skeptic event reuses the choice rationale through a host
+call, so it is not an independent Skeptic model review. Run 01 remains a
+failed decision attempt; its inspection packet is explicitly reconstructed.
+See B's [bounded live-run verification](ADAPTIVE_LIVE_VERIFICATION.md).
+
+A's [completed registered method export](results/registered_method_integration/README.md)
+now supplies 29 exact method references, plus parent and selection references,
+for that next review. Its own selection provenance is explicitly absent:
+the integration check called the host gate directly and made no model call.
+
 ## Holdout readiness boundary
 
 The real frozen input metadata and byte-hash readiness check passes. A

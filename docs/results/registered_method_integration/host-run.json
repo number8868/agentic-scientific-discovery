@@ -1,0 +1,39 @@
+{
+  "arm_statuses": {
+    "mbj_paired": "inconclusive",
+    "opt_all": "supported_in_snapshot",
+    "opt_paired": "inconclusive"
+  },
+  "audit_id": "NOVA-METHOD-eae6c2c6b239297ef3dc503c",
+  "cached_request_returned_identical_output_without_new_events": true,
+  "candidate_counts": {
+    "insufficient_evidence": 0,
+    "mbj_only": 10,
+    "mbj_pass_opt_unknown": 0,
+    "neither_passes": 2021,
+    "no_current_pass_incomplete_evidence": 8775,
+    "opt_only": 3,
+    "opt_pass_mbj_unknown": 6,
+    "passes_both_methods": 0
+  },
+  "holdout_executed": false,
+  "method_registration_worker_validation_persistence_seconds": 3.4836948989999996,
+  "method_science_seconds": 0.8296547870000026,
+  "method_timing_seconds": {
+    "computation": 0.3490058410000003,
+    "prepared_data_validation": 0.4805105779999934,
+    "protocol_validation": 9.28930000014816e-05,
+    "total": 0.8296547870000026
+  },
+  "method_worker_starts": 1,
+  "n_eligible": 10815,
+  "n_shortlisted": 19,
+  "new_model_calls": 0,
+  "paired_change_status": "direction_positive",
+  "parent_experiment_id": "NOVA-a8112a3d38cc173a",
+  "parent_result_id": "nova-result-98324977135fd7591e967da489426d1749db26b9906d15f5fe049af8c81e9856",
+  "parent_science_seconds": 0.6143736300000011,
+  "run_id": "a-method-integration-01",
+  "selection_source": "human_host_integration_verification",
+  "timing_scope": "Controlled science integration only; not model-workflow latency or an acceleration benchmark"
+}

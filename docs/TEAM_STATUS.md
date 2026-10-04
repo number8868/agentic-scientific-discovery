@@ -1,40 +1,52 @@
 # Team status and handoff
 
-## Team A milestone 9 — adaptive method handoff in progress, 2026-10-03
+## Team A milestone 9 — registered method evidence delivered, 2026-10-03
 
-Refreshed main at `01f17db` with a clean working tree. During implementation,
-fetched B's new `codex/b-adaptive-discovery` commit `e90f689` and fast-forwarded
-it into A's `codex/method-result-integration` branch before making overlapping
-code changes. B already owns registered method requests, atomic execution and
-the threshold/method/stop choice. The combined **261-test Linux baseline
-passes** in an isolated tracked-code checkout with no real prepared data or
-private runtime context, using the existing Linux Python 3.12.13 environment.
+Started with a clean working tree and main `01f17db`, then incorporated B's
+`e90f689` registered-method/adaptive host and latest `22506ef` live evidence.
+A's PR [#11](https://github.com/number8868/agentic-scientific-discovery/pull/11)
+is stacked on `codex/b-adaptive-discovery` to keep the scientific integration
+separate from B's orchestration diff. Retarget to main after B merges.
+Coding helpers used **`gpt-6-luna` / `max`**, independently of Omnigent
+experiment model settings.
 
-A's next change is a checksummed, shortlist-only export of completed registered
-method evidence, with precise citation references. It will retain B's rich
-method record and link its canonical parent Result; three arm statuses and a
-separate method-change estimand must not become one ambiguous Result status.
-No generic method registry, shared enum or discovery allowlist extension is
-needed. Coding helpers are explicitly `gpt-6-luna` / `max`, separate from
-Omnigent experiment model settings.
+Delivered a pure scientific evidence builder, 29 hash-bound method citations
+for the real shortlist, and a read-only completed-audit exporter/CLI. The
+canonical parent family Result and payload remain linked to the separately
+registered method record. All three arm statuses and the distinct
+method-change estimand stay explicit; missing MBJ stays unknown. No shared
+contract, registry, generic executor, live/holdout bridge or frozen scientific
+source was modified by A. See the [A/B interface](METHOD_EVIDENCE_HANDOFF.md).
 
-The pure A evidence builder and citation packet are now implemented and
-independently reviewed. All **12 focused synthetic tests pass on Linux**.
-Checks cover frozen provenance, exact parent OPT agreement, separate arm and
-method-change statuses, unknown comparator values, candidate guidance,
-rejection of nested full-audit rows, and timing-independent evidence hashes.
-The completed-record exporter is the remaining implementation piece; the
-builder does not itself read a database or execute a scientific experiment.
+The final combined suite passes **280 Linux tests** in an isolated checkout
+without prepared data or private run context, using the existing Python
+3.12.13 environment. The 16 new A tests cover frozen provenance, exact parent
+agreement, candidate guidance, no full-row export, timing-independent hashes,
+read-only source storage, no experiment calls, Unicode selection provenance,
+and rejecting holdout metadata before reading its outcome. Windows focused
+integration also passes 25 tests. See the [verification record](results/registered_method_integration/validation.json).
 
-The [independent interpretation audit](SCIENTIFIC_REVIEW_AUDIT.md) identifies
-the incorrect "missingness gap" wording in both the archived final Skeptic
-review and PI freeze explanation. Their original bytes remain preserved.
-Frozen real-data metadata/byte checks and B's published `luna-pilot-07`
-portable export checker pass. Read-only local runtime metadata identifies
-`luna-pilot-06` with no final freeze; it cannot authorize real holdout execution.
-No new model call or holdout result is claimed. Method evidence export,
-synthetic verification and a real registered discovery integration remain in
-progress in this milestone.
+The separate [real discovery integration](results/registered_method_integration/README.md)
+used one registered method worker and exactly reproduced all published
+aggregates and all 19 shortlisted records: 0 both-pass, 3 OPT-only, 10 MBJ-only
+and 6 MBJ-unknown. Both paired family comparisons remain inconclusive. Export
+checksums and citation pointers pass, and the source database/events are
+unchanged. This was a human host integration choice with zero model calls;
+its component timings are not a workflow speed comparison.
+
+The [scientific language audit](SCIENTIFIC_REVIEW_AUDIT.md) corrects the old
+Skeptic/PI "missingness gap" interpretation while preserving their original
+records. B's new real trace supports one model choice of threshold sensitivity
+gating host execution; it does not show a method choice, independent Skeptic
+turn or complete multi-agent loop. Those steps, consumption of the new
+citations, and measured model latency/cost against rule/run-all baselines
+remain B's next integration work.
+
+Frozen input byte checks and the published `luna-pilot-07` portable checker
+pass. The accessible native `luna-pilot-06` runtime has no final freeze; no
+real holdout was attempted. B must invoke the existing single-attempt gate
+from the native frozen family/threshold run. This method extension does not
+change or authorize that protocol. No browser verification was performed.
 
 ---
 
