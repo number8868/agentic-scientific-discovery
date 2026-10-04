@@ -18,6 +18,7 @@ from scripts import audit_discovery_bundle as audit
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "docs" / "results" / "native_adaptive_live_01_failed"
+RECOVERED_FIXTURE = ROOT / "docs" / "results" / "native_adaptive_live_02_recovered"
 
 
 def _canonical(value) -> bytes:
@@ -31,6 +32,9 @@ def _write_json(path: Path, value) -> None:
 
 
 def _count(name: str, raw: bytes) -> int:
+    if name == "README.md":
+        raw.decode("utf-8")
+        return 1
     if name.endswith(".jsonl"):
         return len(raw.decode("utf-8").splitlines())
     value = json.loads(raw.decode("utf-8"))
@@ -50,10 +54,10 @@ def _refresh_manifest(package: Path, names: tuple[str, ...]) -> None:
     _write_json(manifest_path, manifest)
 
 
-def _copy_fixture(tmp_path: Path) -> Path:
+def _copy_fixture(tmp_path: Path, fixture: Path = FIXTURE) -> Path:
     tmp_path.mkdir(parents=True, exist_ok=True)
     package = tmp_path / "evidence"
-    shutil.copytree(FIXTURE, package)
+    shutil.copytree(fixture, package)
     return package
 
 
@@ -192,6 +196,109 @@ def test_real_bundle_passes_bridge_with_distinct_registered_and_computation_hash
 
 
 @pytest.mark.skipif(os.name == "nt", reason="the existing bridge private-file check requires POSIX mode bits")
+def test_recovered_bundle_passes_bridge_without_changing_sources_or_running_science(
+        output_dir: Path, monkeypatch):
+    before = {path.relative_to(RECOVERED_FIXTURE): path.read_bytes()
+              for path in RECOVERED_FIXTURE.rglob("*") if path.is_file()}
+    calls = {"artifact_validator": 0}
+    original_validator = holdout_bridge._artifact_payload
+
+    def count_validator(*args, **kwargs):
+        calls["artifact_validator"] += 1
+        return original_validator(*args, **kwargs)
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("audit must not execute science")
+
+    monkeypatch.setattr(holdout_bridge, "_artifact_payload", count_validator)
+    monkeypatch.setattr(executor, "execute", forbidden)
+    monkeypatch.setattr(executor, "execute_holdout", forbidden, raising=False)
+    monkeypatch.setattr(executor, "_run_science_template", forbidden)
+    monkeypatch.setattr(family_screen, "run_experiment", forbidden)
+    monkeypatch.setattr(threshold_sensitivity, "run_experiment", forbidden)
+
+    assert audit.main(["--evidence-dir", str(RECOVERED_FIXTURE), "--output", str(output_dir)]) == 0
+    assert calls["artifact_validator"] == 2
+    assert {path.relative_to(RECOVERED_FIXTURE): path.read_bytes()
+            for path in RECOVERED_FIXTURE.rglob("*") if path.is_file()} == before
+
+    report = json.loads((output_dir / "audit.json").read_text(encoding="utf-8"))
+    assert [item["role"] for item in report["results"]] == ["family_screen", "threshold_sensitivity"]
+    for item in report["results"]:
+        assert item["registered_spec_sha256"] != item["expected_computation_spec_sha256"]
+        assert item["payload_sha256"]
+    assert {"README.md", "host-recovery.json"} <= set(report["source_sha256"])
+    for name in ("README.md", "host-recovery.json"):
+        assert report["source_sha256"][name] == hashlib.sha256(before[Path(name)]).hexdigest()
+    scope = report["validation_scope"]
+    assert scope["new_model_calls"] == 0
+    assert scope["new_science_executions"] == 0
+    assert scope["holdout_outcomes_read"] is False
+    assert scope["native_completion_verified"] is False
+    assert scope["model_role_identity_verified"] is False
+    assert scope["prose_semantics_verified"] is False
+
+
+@pytest.mark.parametrize("name", ["README.md", "host-recovery.json"])
+def test_recovered_bundle_rejects_files_that_no_longer_match_manifest(
+        name: str, tmp_path: Path, output_dir: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    path = package / name
+    path.write_bytes(path.read_bytes() + b" ")
+    assert _assert_rejected(package, output_dir) == "package file digest does not match manifest"
+
+
+def test_signed_multiline_readme_uses_one_opaque_inventory_item(tmp_path: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    prose = "Recovered portable evidence.\n\nThis text is hashed without semantic checks.\n".encode("utf-8")
+    (package / "README.md").write_bytes(prose)
+    _refresh_manifest(package, ("README.md",))
+
+    manifest, _, source_hashes = audit._read_manifest(package)
+    audit._verify_manifest_inventory(package, manifest, source_hashes)
+    assert manifest["files"]["README.md"]["count"] == 1
+    assert source_hashes["README.md"] == hashlib.sha256(prose).hexdigest()
+
+    manifest["files"]["README.md"]["count"] = 2
+    _write_json(package / "manifest.json", manifest)
+    resigned, _, resigned_hashes = audit._read_manifest(package)
+    with pytest.raises(audit.AuditError, match="package file count does not match manifest"):
+        audit._verify_manifest_inventory(package, resigned, resigned_hashes)
+
+
+def test_resigned_invalid_utf8_readme_is_rejected(tmp_path: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    raw = b"\xff"
+    (package / "README.md").write_bytes(raw)
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"]["README.md"] = {"sha256": hashlib.sha256(raw).hexdigest(), "count": 1}
+    _write_json(manifest_path, manifest)
+    manifest, _, source_hashes = audit._read_manifest(package)
+    with pytest.raises(audit.AuditError, match="package metadata file is not valid UTF-8"):
+        audit._verify_manifest_inventory(package, manifest, source_hashes)
+
+
+def test_resigned_invalid_strict_json_recovery_metadata_is_rejected(tmp_path: Path, output_dir: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    (package / "host-recovery.json").write_bytes(b'{"state":"recovered","state":"invalid"}\n')
+    _refresh_manifest(package, ("host-recovery.json",))
+    assert "invalid strict JSON" in _assert_rejected(package, output_dir)
+
+
+def test_manifest_rejects_unlisted_opaque_file_type(tmp_path: Path, output_dir: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    name = "operator-notes.txt"
+    raw = b"unlisted opaque prose\n"
+    (package / name).write_bytes(raw)
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["files"][name] = {"sha256": hashlib.sha256(raw).hexdigest(), "count": 1}
+    _write_json(manifest_path, manifest)
+    assert "unsupported package path" in _assert_rejected(package, output_dir)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="the existing bridge private-file check requires POSIX mode bits")
 @pytest.mark.parametrize("field", ["registered_spec_sha256", "computation_spec_sha256"])
 def test_resigned_payload_with_changed_contract_hash_is_rejected(
         field: str, tmp_path: Path, output_dir: Path, monkeypatch):
@@ -323,6 +430,7 @@ def test_missing_payload_and_manifest_path_traversal_are_rejected(tmp_path: Path
     assert "unsupported package path" in _assert_rejected(package, output_dir)
 
 
+@pytest.mark.skipif(os.name == "nt", reason="the existing bridge private-file check requires POSIX mode bits")
 def test_optional_native_metadata_is_allowlisted_but_still_checked(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(audit, "ROOT", tmp_path)
     package = _copy_fixture(tmp_path)
@@ -366,8 +474,10 @@ def test_optional_native_metadata_is_allowlisted_but_still_checked(tmp_path: Pat
     assert "unsafe" in _assert_rejected(linked, tmp_path / "runs" / "linked-audit")
 
 
-def test_holdout_spec_is_rejected_before_outcome_files_are_read(tmp_path: Path, output_dir: Path, monkeypatch):
-    package = _copy_fixture(tmp_path)
+@pytest.mark.parametrize("fixture", [FIXTURE, RECOVERED_FIXTURE], ids=["failed", "recovered"])
+def test_holdout_spec_is_rejected_before_outcome_files_are_read(
+        fixture: Path, tmp_path: Path, output_dir: Path, monkeypatch):
+    package = _copy_fixture(tmp_path, fixture)
     specs_path = package / "specs.json"
     specs = json.loads(specs_path.read_text(encoding="utf-8"))
     specs[0]["split"] = "holdout"
@@ -384,6 +494,15 @@ def test_holdout_spec_is_rejected_before_outcome_files_are_read(tmp_path: Path, 
     monkeypatch.setattr(audit, "_read_relative", spy)
     assert "holdout" in _assert_rejected(package, output_dir)
     assert reads == ["manifest.json", "specs.json"]
+
+
+@pytest.mark.parametrize("raw", [b"[]\n", b"null\n"], ids=["array", "null"])
+def test_resigned_non_object_recovery_metadata_is_rejected(
+        raw: bytes, tmp_path: Path, output_dir: Path):
+    package = _copy_fixture(tmp_path, RECOVERED_FIXTURE)
+    (package / "host-recovery.json").write_bytes(raw)
+    _refresh_manifest(package, ("host-recovery.json",))
+    assert _assert_rejected(package, output_dir) == "package metadata file is invalid"
 
 
 @pytest.mark.parametrize("raw", [b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":1e999}'])

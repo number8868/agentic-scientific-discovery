@@ -64,9 +64,17 @@ groups rather than always warming the adaptive arm last.
 
 ## Acceptance and interpretation
 
-A scientific component can succeed while the workflow fails. The latest
+A scientific component can succeed while the workflow fails. The first
 native attempt persisted two valid scientific Results and then failed
-feedback; its workflow is a failure. Keep cancellation, timeout, invalid
+feedback; that run remains a failure. The separately recorded
+[recovered native run 02](results/recovered_science_acceptance/README.md)
+has five completed model turns, full threshold feedback and a PI summary,
+but its original CLI exit code is 1 and host acceptance was recovered later.
+Keep that recovered outcome separate from a clean success and include its
+additional choice request and operator/recovery time in any accounting.
+Recorded cross-process spans and individual SDK usage fields are available;
+they are not matched benchmark measurements or billed cost.
+Keep cancellation, timeout, invalid
 review, missing model usage, packaging failure and legal stop as distinct
 outcomes. Preserve failed attempts and their spent time/cost. A legal stop
 must not count as a completed diagnostic or be used to win a diagnostic-time

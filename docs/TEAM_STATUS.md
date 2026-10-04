@@ -1,5 +1,53 @@
 # Team status and handoff
 
+## Team A milestone 12 — recovered native discovery accepted with limits, 2026-10-03
+
+Started from B `fc41d23`, then synced newly merged main `359de7a` (PR #14).
+B's concurrent `d137017` already adds the recovered-bundle adapter and publishes
+its CLI audit. A preserves that production script unchanged and reuses its
+published output; the current branch is `codex/recovered-run-acceptance`.
+Only A acceptance documents and additional audit tests change.
+
+The [independent acceptance report](results/recovered_science_acceptance/README.md)
+checks all 13 manifest entries/14 hash-inventory entries, both registered and
+computation identities, exact historical science, four Skeptic field references,
+the accepted PI request and full three-point Runner response/transport hashes.
+All 21 recorded request/completion call IDs match their role/PID/tool linkage;
+four executor processes complete five recorded turns. The saved PI text also
+matches its completed model-turn response metadata hash. This advances the
+bounded evidence-driven follow-up; it does not attest the remote model/provider
+or OS confinement.
+
+Keep status `completed_with_host_validation_recovery`, original CLI exit 1,
+two PI choice requests/one accepted commit and the retrospective host witness.
+Initial hypothesis/primary were host seeded. PI's short final summary is correct
+but lacks sparse/correlated-snapshot caveats and does not register post-result
+independent review, explicit stop or final protocol freeze. There is no native
+method-candidate model review. Historical failed run 01 remains untouched.
+
+Final full Linux regression on latest main plus A tests: **362 passed, zero
+skips**, 45.28 seconds, in a clean source checkout without prepared data/private
+context. The preceding check before B consolidation passed 361 tests. Coding
+helper `gpt-6-luna` / `max` reports Windows focused **15 passed / 10 POSIX skips**;
+every skipped case runs on Linux. Both recovered and failed published CLI
+audit/manifest pairs reproduce byte-for-byte. See
+[the validation record](results/recovered_science_acceptance/validation.json).
+Six protected scientific source/protocol/dependency digests remain unchanged.
+
+The [submission draft](SCIENCE_SUBMISSION_BRIEF.md) now separates recovered
+workflow evidence from independently computed method evidence; its narration
+is 103 words and remains unrecorded/untimed. The baseline plan preserves raw
+SDK usage and cross-process timing boundaries, with billed cost unknown and
+no matched comparison. No new scientific-role model call or real-data scientific execution,
+prepared-property/holdout read or browser validation occurred in this A stage.
+
+Next B deliverables: clean-CLI acceptance, actual final scientific review and
+continue/stop/freeze path, legal comparison runs and complete time/usage/cost
+collection. A can audit those actual artifacts; real holdout still needs the
+original valid frozen family/threshold lineage and single-attempt gate.
+
+---
+
 ## B integration update — native discovery run 02
 
 PR #13 science-closeout is integrated on B `fc41d23`; its acceptance of failed
