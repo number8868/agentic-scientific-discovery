@@ -4,7 +4,7 @@
 
 Started from main `c6cea09` (A PR #15 and B PR #16), then integrated B's
 concurrent PR #17 at `7da9673`, preserving both teams' status sections. Branch:
-`codex/finalization-science-acceptance`. The existing A portable discovery
+[`codex/finalization-science-acceptance` (PR #18)](https://github.com/number8868/agentic-scientific-discovery/pull/18). The existing A portable discovery
 audit now optionally checks B's frozen finalization sidecar: exact original
 OPT family/threshold parameters, canonical protocol/stage hashes, both
 Result/review/event chains and the derived unexecuted holdout Spec. Null,
