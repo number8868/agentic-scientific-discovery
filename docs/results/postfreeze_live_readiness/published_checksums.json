@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "algorithm": "SHA-256",
+  "files": {
+    "README.md": "17369d73b8d132170a82ec55f51f4c167994e345bd6e38c2c623dd70d2804eaa",
+    "preflight.json": "5b4598b324971d3f96480cead6fde1c51a6999eb071506a2fcd2b93e9a73f126"
+  }
+}
