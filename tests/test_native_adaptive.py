@@ -88,7 +88,7 @@ def test_runtime_manifest_records_effective_models_before_dispatch(tmp_path):
 
 def test_finalization_cli_reply_is_persisted_when_host_verification_fails(tmp_path):
     db_path = tmp_path / "run.sqlite"
-    transcript = "The final review reply captured from the CLI."
+    transcript = "  The exact final review reply.\n"
 
     def failed_verification():
         raise ValueError("final response hash mismatch")

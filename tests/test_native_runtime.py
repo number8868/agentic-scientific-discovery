@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -191,8 +192,13 @@ def test_final_trace_verifier_binds_exact_finalization_text_after_retry_turn(tmp
     path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
     required = ("record_adaptive_review", "submit_native_final_review",
                 "freeze_native_final_protocol")
+    response_record = {"schema_version": 1, "pid": 22, "role": "pi",
+                       "freeze_call_id": "freeze-retry-2", "response_text": final_response,
+                       "response_sha256": hashlib.sha256(final_response.encode()).hexdigest(),
+                       "response_chars": len(final_response)}
     assert verify_executor_trace(path, host, required_tools=required,
-                                 final_response=final_response)["completed_turns"] == 4
+                                 final_response=final_response,
+                                 final_response_record=response_record)["completed_turns"] == 4
 
     for invalid_response in (
         "First discovery session reply.\n\n" + final_response,
@@ -200,11 +206,49 @@ def test_final_trace_verifier_binds_exact_finalization_text_after_retry_turn(tmp
     ):
         try:
             verify_executor_trace(path, host, required_tools=required,
-                                  final_response=invalid_response)
+                                  final_response=invalid_response,
+                                  final_response_record=response_record)
         except RuntimeError as exc:
             assert "does not match" in str(exc)
         else:
             raise AssertionError("aggregated or changed final PI response was accepted")
+
+    for bad_record in ({**response_record, "pid": 23},
+                       {**response_record, "freeze_call_id": "missing-freeze"}):
+        try:
+            verify_executor_trace(path, host, required_tools=required,
+                                  final_response=final_response, final_response_record=bad_record)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("response record without the matching guarded freeze was accepted")
+
+
+def test_final_pi_response_record_preserves_raw_text_and_rejects_tampering(tmp_path, monkeypatch):
+    from nova import native_adaptive_runtime as runtime
+
+    run_dir = tmp_path / "run-owned"
+    run_dir.mkdir()
+    trace = run_dir / "native-model-audit.jsonl"
+    trace.write_text("{}\n", encoding="utf-8")
+    trace.chmod(0o600)
+    monkeypatch.setattr(runtime, "RUNS_ROOT", tmp_path)
+    raw = "  Exact TurnComplete response.\n"
+    runtime._write_final_pi_response(trace, pid=42, role="pi", freeze_call_id="freeze-1", response=raw)
+    record = runtime.read_final_pi_response(trace)
+    assert record["response_text"] == raw
+    assert record["response_chars"] == len(raw)
+    assert record["response_sha256"] == hashlib.sha256(raw.encode()).hexdigest()
+    with pytest.raises(FileExistsError):
+        runtime._write_final_pi_response(trace, pid=42, role="pi", freeze_call_id="freeze-1", response=raw)
+
+    record_path = run_dir / "native-final-pi-response.json"
+    tampered = json.loads(record_path.read_text(encoding="utf-8"))
+    tampered["response_text"] = "changed"
+    record_path.write_text(json.dumps(tampered), encoding="utf-8")
+    record_path.chmod(0o600)
+    with pytest.raises(RuntimeError, match="integrity"):
+        runtime.read_final_pi_response(trace)
 
 
 def test_spawned_sdk_bootstrap_guards_real_codex_executor_without_model_calls(tmp_path):

@@ -211,7 +211,7 @@ def _record(event_type: str, payload_ref: str | None = None) -> None:
 def _record_finalization_response(database: Path, run_id: str, transcript: str) -> str:
     """Persist the bounded final PI reply separately from the adaptive response.
 
-    This records the CLI's captured text only. It does not establish that the
+    This records the guarded TurnComplete response. It does not establish that the
     executor trace or final response hash has been verified, or that the run
     completed successfully.
     """
@@ -220,7 +220,6 @@ def _record_finalization_response(database: Path, run_id: str, transcript: str) 
 
     if not transcript.strip() or len(transcript) > 20_000:
         raise ValueError("native finalization PI response must contain 1-20000 characters")
-    transcript = transcript.strip()
     digest = hashlib.sha256(transcript.encode("utf-8")).hexdigest()
     store = Storage(database).initialize()
     if any(event.event_type == "native_finalization_supervisor_response" and event.actor == "pi"
@@ -407,6 +406,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     record_supervisor_response(transcript)
 
     finalization_transcript = ""
+    finalization_response_record = None
     finalization_response_sha256 = None
     finalization_status = None
     if finalize_discovery:
@@ -429,22 +429,27 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
             if not isinstance(followup_result_id, str) or not followup_result_id:
                 raise RuntimeError("native finalization has no bound follow-up Result ID")
             try:
-                finalization_transcript = _run_omnigent_cli_session(
+                finalization_display = _run_omnigent_cli_session(
                     cli_module, finalization_document, prompt=finalization_document["prompt"],
                     model=model, codex_host=codex_host, prefix="nova-native-finalize-")
             except BaseException:
                 _record("native_adaptive_orchestration_failed")
                 raise
-            if not finalization_transcript:
+            if not finalization_display:
                 raise RuntimeError("Omnigent finalization CLI returned no PI response")
-            print(finalization_transcript, flush=True)
-            from nova.native_adaptive_runtime import verify_executor_trace
+            print("Omnigent CLI display (not used as the PI reply):", flush=True)
+            print(finalization_display, flush=True)
+            from nova.native_adaptive_runtime import read_final_pi_response, verify_executor_trace
+            finalization_response_record = read_final_pi_response(audit_path)
+            finalization_transcript = finalization_response_record["response_text"]
             finalization_response_sha256 = _capture_finalization_response_before_verification(
                 db, run_id, finalization_transcript,
                 lambda: verify_executor_trace(
                     audit_path, codex_host,
                     required_tools=("record_adaptive_review", "submit_native_final_review",
                                     "freeze_native_final_protocol"),
+                    final_response=finalization_transcript,
+                    final_response_record=finalization_response_record,
                 ),
             )
             from nova.contracts import Mode
@@ -468,7 +473,9 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                             "freeze_native_final_protocol") if finalization_transcript else ()
     executor_verification = verify_executor_trace(audit_path, codex_host,
                                                  required_tools=required_final_tools,
-                                                 final_response=finalization_transcript or None)
+                                                 final_response=finalization_transcript or None,
+                                                 final_response_record=(finalization_response_record
+                                                                        if finalization_transcript else None))
     # A concise manifest event intentionally records no prompt, credentials,
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.

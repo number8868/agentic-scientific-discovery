@@ -12,11 +12,13 @@ import importlib.metadata
 import json
 import os
 import runpy
+import stat
 import sys
 from pathlib import Path
 from typing import Any
 
 SDK_PIN = "0.16.0"
+RUNS_ROOT = Path(__file__).resolve().parents[1] / "runs"
 HOST_PATH_ENV = "CODEX_CODE_MODE_HOST_PATH"
 CONFIG_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false", 'web_search="disabled"')
 
@@ -30,6 +32,66 @@ def _trace(event: str, **fields: Any) -> None:
     role = fields.pop("role", None)
     record_native_trace(event, actor="native-adaptive-runtime", model=model, status=status,
                         pid=pid, role=role, details=fields)
+
+
+def _write_final_pi_response(trace_path: Path, *, pid: int, role: str,
+                             freeze_call_id: str, response: str) -> Path:
+    """Write the exact post-freeze TurnComplete response once beside its trace."""
+    run_dir = trace_path.parent.resolve()
+    runs_root = RUNS_ROOT.resolve()
+    if (not run_dir.is_relative_to(runs_root) or trace_path.name != "native-model-audit.jsonl" or
+            trace_path.is_symlink() or not trace_path.is_file()):
+        raise ValueError("final PI response trace is outside the run-owned evidence directory")
+    if (pid < 1 or role != "pi" or not freeze_call_id or len(freeze_call_id) > 120 or
+            not isinstance(response, str) or not response.strip() or len(response) > 20_000):
+        raise ValueError("final PI response record fields are invalid")
+    record = {"schema_version": 1, "pid": pid, "role": role,
+              "freeze_call_id": freeze_call_id, "response_text": response,
+              "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
+              "response_chars": len(response)}
+    path = run_dir / "native-final-pi-response.json"
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
+    try:
+        body = json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        if os.write(fd, body) != len(body):
+            raise OSError("short write while storing final PI response")
+        os.fchmod(fd, 0o600)
+    finally:
+        os.close(fd)
+    return path
+
+
+def read_final_pi_response(trace_path: Path) -> dict[str, Any]:
+    """Read and validate the unique private response file for this run trace."""
+    run_dir = trace_path.parent.resolve()
+    runs_root = RUNS_ROOT.resolve()
+    if (not run_dir.is_relative_to(runs_root) or trace_path.name != "native-model-audit.jsonl" or
+            trace_path.is_symlink() or not trace_path.is_file()):
+        raise RuntimeError("final PI response trace is outside the run-owned evidence directory")
+    path = run_dir / "native-final-pi-response.json"
+    try:
+        fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077 or info.st_size > 100_000:
+            raise ValueError
+        with os.fdopen(fd, "r", encoding="utf-8") as stream:
+            fd = -1
+            record = json.load(stream)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+        raise RuntimeError("final PI response record is missing or unsafe") from None
+    finally:
+        if "fd" in locals() and isinstance(fd, int) and fd >= 0:
+            os.close(fd)
+    if (not isinstance(record, dict) or set(record) != {"schema_version", "pid", "role", "freeze_call_id",
+            "response_text", "response_sha256", "response_chars"} or record.get("schema_version") != 1 or
+            isinstance(record.get("pid"), bool) or not isinstance(record.get("pid"), int) or
+            record.get("pid") < 1 or record.get("role") != "pi" or
+            not isinstance(record.get("freeze_call_id"), str) or not record["freeze_call_id"] or
+            not isinstance(record.get("response_text"), str) or not record["response_text"].strip() or
+            len(record["response_text"]) > 20_000 or record.get("response_chars") != len(record["response_text"]) or
+            record.get("response_sha256") != hashlib.sha256(record["response_text"].encode("utf-8")).hexdigest()):
+        raise RuntimeError("final PI response record failed integrity validation")
+    return record
 
 
 def _decode_native_function_result(value: Any) -> dict[str, Any] | None:
@@ -131,6 +193,7 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
         _trace("executor_turn_started", agent=getattr(self, "_agent_name", None), model=model,
                pid=os.getpid(), role=role)
         runner_ids: dict[str, str] = {}
+        successful_freeze_call_id: str | None = None
         async for event in original_turn(self, *args, **kwargs):
             if isinstance(event, ToolCallRequest):
                 md = event.metadata if isinstance(event.metadata, dict) else {}
@@ -161,6 +224,11 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
                                     role=role,
                                     structured_result=structured_result,
                                     status=getattr(event.status, "value", str(event.status)))
+                if (event.name == "freeze_native_final_protocol" and role == "pi" and
+                        structured_result is not None and
+                        str(getattr(event.status, "value", event.status)).lower() in
+                        {"success", "toolcallstatus.success"} and call_id):
+                    successful_freeze_call_id = call_id
             elif isinstance(event, TurnComplete):
                 response = event.response or ""
                 record_native_trace("turn_complete", actor="codex-model", model=model, pid=os.getpid(),
@@ -169,6 +237,11 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
                                             "response_chars": len(response)},
                                     usage=dict(event.usage) if isinstance(event.usage, dict) else None,
                                     status="completed")
+                if successful_freeze_call_id is not None:
+                    trace_path = Path(os.environ["NOVA_ADAPTIVE_TRACE_PATH"])
+                    _write_final_pi_response(trace_path, pid=os.getpid(), role=role or "",
+                                             freeze_call_id=successful_freeze_call_id,
+                                             response=response)
             elif isinstance(event, ExecutorError):
                 record_native_trace("turn_failed", actor="codex-model", model=model, pid=os.getpid(),
                                     role=role, status="error")
@@ -258,7 +331,8 @@ def launch_cli_with_guarded_runner(cli_module: Any, args: list[str], root: Path,
 
 def verify_executor_trace(path: Path, host_path: Path, *,
                           required_tools: tuple[str, ...] = (),
-                          final_response: str | None = None) -> dict[str, Any]:
+                          final_response: str | None = None,
+                          final_response_record: dict[str, Any] | None = None) -> dict[str, Any]:
     """Verify that every traced executor turn belongs to a guarded process."""
     from nova.adaptive_agent_tools import _valid_codex_config_overrides
 
@@ -325,6 +399,8 @@ def verify_executor_trace(path: Path, host_path: Path, *,
                 break
         if not found:
             raise RuntimeError(f"native finalization tool {tool} lacks a guarded successful turn trace")
+    if final_response_record is not None and final_response is None:
+        raise RuntimeError("final PI response record requires its exact response text")
     if final_response is not None:
         digest = hashlib.sha256(final_response.encode("utf-8")).hexdigest()
         response_record_hash = hashlib.sha256(json.dumps(
@@ -333,9 +409,32 @@ def verify_executor_trace(path: Path, host_path: Path, *,
         freeze_completions = [i for i, row in enumerate(records)
                               if row.get("event") == "tool_complete" and row.get("tool") == "freeze_native_final_protocol"
                               and row.get("role") == "pi" and row.get("structured_result_sha256")]
+        if final_response_record is not None:
+            record = final_response_record
+            if (record.get("schema_version") != 1 or record.get("role") != "pi" or
+                    record.get("response_text") != final_response or
+                    not isinstance(record.get("pid"), int) or isinstance(record.get("pid"), bool) or
+                    record.get("response_chars") != len(final_response) or
+                    record.get("response_sha256") != hashlib.sha256(final_response.encode("utf-8")).hexdigest() or
+                    not isinstance(record.get("freeze_call_id"), str) or not record["freeze_call_id"]):
+                raise RuntimeError("final PI response record does not match the captured response")
+            freeze_completions = [i for i in freeze_completions
+                                  if records[i].get("pid") == record["pid"] and
+                                  records[i].get("call_id") == record.get("freeze_call_id") and
+                                  records[i].get("actor") == "omnigent-tool-dispatch" and
+                                  str(records[i].get("status", "")).lower() in
+                                  {"success", "toolcallstatus.success"} and
+                                  any(request.get("event") == "tool_request" and
+                                      request.get("actor") == "codex-model" and
+                                      request.get("tool") == "freeze_native_final_protocol" and
+                                      request.get("call_id") == record.get("freeze_call_id") and
+                                      request.get("pid") == record["pid"] and request.get("role") == "pi" and
+                                      _has_trace_guard(records, record["pid"], "pi", request_index)
+                                      for request_index, request in enumerate(records[:i]))]
         if not any(any(later.get("event") == "turn_complete" and later.get("role") == "pi" and
                        later.get("pid") == records[i].get("pid") and
                        later.get("actor") == "codex-model" and
+                       (final_response_record is None or later.get("pid") == final_response_record["pid"]) and
                        later.get("result_sha256") == response_record_hash
                        for later in records[i + 1:]) for i in freeze_completions):
             raise RuntimeError("final PI response does not match the guarded freeze turn completion")
