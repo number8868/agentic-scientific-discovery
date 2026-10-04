@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "algorithm": "SHA256",
+  "files": {
+    "candidates.csv": "0cbd32481fc1ca0d67c757f70e72299eef7f12643163a69a7d13ad1277fd4d2d",
+    "comparison.png": "cd03501cc6a18e1c340977aa7eb92d8284f40d2b3a2d21336f9ba84ae59df13d",
+    "independent_verification.json": "a0fbcce09eba456e146e0c2f9681dd1f46981a18f996f87691020caea47181c2",
+    "raw_and_bootstrap_verification.json": "e57b6d34eb9b40c7a2ea3b0cad8951eed7582c454c87f86179b581325bcefacd",
+    "README.md": "4d7431f9e1c8d3ee5e064c7408b35bc861a053b6dad0e2e0b99472703ccd4c11",
+    "report.html": "542bbd18b07597e73a50531a2496d5deaffcbdd422cc0a806991ba0feea50d0f",
+    "report.md": "21395f54f689ba530ab4e908491648bf143d435064eea9d71d3d15d4e12221ba",
+    "result.json": "06f4d1851779854b2e26351c251f67a28626c418b1e5c8b57fcb78adab5f40a1",
+    "validation.json": "40c561fe9174082fa04ccee4ab456ef74d4cead765a3de193df1ab78eaddd104"
+  },
+  "local_full_audit": {
+    "published": false,
+    "rows": 10815,
+    "sha256": "6b6a20822ea007daa847820d8ec2b4d5841b6aabdb5766a5e62fcde284db01d9",
+    "relative_run_path": "runs/paired-method-audit-01/audit_rows.csv"
+  }
+}

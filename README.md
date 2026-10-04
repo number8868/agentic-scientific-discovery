@@ -37,6 +37,8 @@ pass.
 
 ## Team A: first real-data milestone
 
+The latest [paired OPT/MBJ audit](docs/results/paired_method_audit/README.md) produces a 19-row candidate evidence list: 13 paired method disagreements, 6 OPT passes without MBJ, and no observed both-method passes. It separates paired-subset selection from method changes and reproduces the original OPT result. This is a standalone, human-selected exploratory analysis; live method-choice integration remains separate. See the [reproduction guide](docs/METHOD_AUDIT.md), [candidate CSV](docs/results/paired_method_audit/candidates.csv) and [comparison figure](docs/results/paired_method_audit/comparison.png).
+
 The standalone JARVIS discovery `family_screen` is now implemented and verified. See [science-engine setup and results](docs/A_SCIENCE_ENGINE.md), [team status and handoff](docs/TEAM_STATUS.md), and the recorded evidence in [docs/results](docs/results).
 
 Team B subsequently published `luna-pilot-07`: its [portable check](docs/results/omnigent_complete_verification.md) passes with two discovery Results, two reviews, a final freeze and an unexecuted holdout Spec. This is still the fixed-role SDK host rather than verified YAML root-to-child orchestration. The requested model route is `gpt-5.6-luna`, not provider-attested backend identity. The final review's “missingness gap” phrase misidentifies the screening pass-rate endpoint; preserve the original record but use the actual numerical results for scientific interpretation.

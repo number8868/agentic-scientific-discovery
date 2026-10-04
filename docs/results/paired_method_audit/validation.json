@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "passed_with_browser_verification_unavailable",
+  "team_main_commit": "7796f6b",
+  "integrated_source_commit": "52b5554",
+  "protocol_registration_commit": "647816f",
+  "scientific_source_commit": "5d3bd35",
+  "tests": {
+    "tests": 217,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 217,
+    "science_added": 14,
+    "reports_added": 7,
+    "environment": "Ubuntu WSL, isolated git-archive source copy with installed Linux venv; no prepared data or private live context",
+    "pytest_summary_elapsed_seconds": 36.18,
+    "junit_sha256": "7ccf10b7a4342b9f576ccf0f750febaed4c9122f75bb38fb2676132ed709d120"
+  },
+  "real_run": {
+    "directory": "runs/paired-method-audit-01",
+    "split": "discovery",
+    "environment": {
+      "python": "3.14.5",
+      "numpy": "2.5.3",
+      "platform": "Windows"
+    },
+    "independent_arithmetic_rows": 10815,
+    "raw_source_candidates_checked": 19,
+    "joint_paired_bootstrap_independently_matched": true,
+    "new_scientific_model_calls": 0,
+    "holdout_outcomes_examined": false
+  },
+  "presentation": {
+    "png_visual_inspection": "passed",
+    "html_export_tests": "passed",
+    "browser_rendering_and_interaction_verified": false,
+    "browser_attempt": "Installed stable Tabbit launcher returned exit 1 without diagnostics, with PowerShell and CMD invocation; no alternate browser backend used."
+  },
+  "limits": [
+    "Exploratory, human-selected method audit",
+    "No registered live method-choice integration",
+    "No new DFT, autonomous choice, speedup, material performance or first-of-kind claim"
+  ]
+}

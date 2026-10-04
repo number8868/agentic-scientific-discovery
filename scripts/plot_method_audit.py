@@ -56,7 +56,10 @@ def plot_result(result_path: Path, output_path: Path) -> None:
             low, high = [value * 100 for value in arm["resampling_interval"]]
             differences.vlines(index, low, high, color="#293c4b")
             differences.hlines([low, high], index - .045, index + .045, color="#293c4b")
-            differences.annotate(f"{estimate:.4f} pp\n[{low:.4f}, {high:.4f}]", (index, high),
+            status = arm["scientific_status"].replace("_", " ")
+            if not arm["quality_flags"]["endpoint_non_degenerate"]:
+                status += " (degenerate endpoint)"
+            differences.annotate(f"{estimate:.4f} pp\n[{low:.4f}, {high:.4f}]\n{status}", (index, high),
                                  xytext=(0, 8), textcoords="offset points", ha="center", fontsize=9)
     differences.axhline(0, color="#777", linestyle="--", linewidth=.8)
     differences.set_ylabel("Chalcogenide − oxide (percentage points)")

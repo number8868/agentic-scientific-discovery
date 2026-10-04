@@ -8,6 +8,8 @@ The researcher-facing output is a candidate evidence list with JID, composition,
 
 This iteration is a standalone scientific executor and report. Shared live registries, B's Planner/PI choice mechanisms and YAML prompts need a separate integration before this can be advertised as an agent-selectable live alternative. PR #9's holdout code is independent; this exploratory protocol does not change its frozen primary/follow-up choices.
 
+The [recorded real result and verification](results/paired_method_audit/README.md) are now available: 19 shortlisted representatives, with 0 observed both-method passes, 13 paired method disagreements and 6 OPT passes lacking MBJ. Original OPT results reproduce exactly. Both paired family-screen comparisons are `inconclusive` under the frozen rules. The paired method-change contrast is reported separately and must not be interpreted as replication.
+
 ## Reproduce the registered audit
 
 Use the same [prepared-data release and science environment](A_DATA_HANDOFF.md). The local manifest, original source, representative CSV, parent protocol and dependency specifications must match the frozen hashes. The executor takes no scientific parameter overrides. The new protocol's byte SHA256 is `ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03`, registered in commit `647816f` before the new outcomes.

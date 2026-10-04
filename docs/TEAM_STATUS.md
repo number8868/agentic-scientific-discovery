@@ -1,5 +1,17 @@
 # Team status and handoff
 
+## Team A milestone 8 — paired-method comparison and candidate evidence, 2026-10-03
+
+The user selected a concrete methods audit and candidate list from the novelty handoff. Registered the exploratory extension at `647816f` before new outcomes, then implemented the standalone executor/report. The core and report coding helpers were configured as `gpt-6-luna` / `xhigh`; the scientific execution itself made no new model calls. Synced teammate's merge of PR #9 at main `7796f6b` without conflict; the new combined Linux suite passes **217 tests** (including 14 new science and 7 new report tests).
+
+The real [paired-method result and evidence package](results/paired_method_audit/README.md) covers 10,815 eligible discovery representatives. All OPT reproduces 3/7,657 oxide and 6/3,158 chalcogenide passes exactly. Paired OPT is 1/1,230 and 2/804; paired MBJ is 0/1,230 and 10/804. Both paired family comparisons are `inconclusive`: the OPT interval includes zero, and the MBJ oxide endpoint is degenerate despite a positive bootstrap interval. Paired coverage is 16.06% and 25.46%, so generalization beyond the paired subset is limited.
+
+The 19-row shortlist contains **0 both-method passes, 3 OPT-only passes, 10 MBJ-only passes and 6 OPT passes with MBJ unknown**. The 13 paired candidate decisions disagree. Each row supplies JID/formula, both gaps, stability, criteria and next validation. All 10,815 audit rows were independently checked; all 19 candidate records were also matched to original source fields, and the joint-pair bootstrap was independently reproduced. Complete local row data and live/private files remain outside Git. Scientific validation/computation took 0.9493 seconds on this Windows host; this is not a complete-workflow speed comparison.
+
+See [reproduction and claim boundaries](METHOD_AUDIT.md). B's next integration is a registered, feasible method alternative with recorded choose/stop decisions and an honest rule/run-all baseline. Existing live enums/registry/YAML remain unchanged in this tranche. The method audit does not reopen the prior frozen choices, execute holdout, perform new DFT, prove model autonomy, or establish new materials. Preserve the original pilot and its interpretation caveats. The full challenge wording in the handoff is teammate-reported; this iteration did not independently reopen the original PDF.
+
+---
+
 ## Team A milestone 7 — frozen holdout interface verified with synthetic data, 2026-10-03
 
 Synced main `51d45d9`, including B's `luna-pilot-07` complete fixed-role SDK protocol export. Its portable structural checker passes: two discovery Results, two native reviews, final freeze and an unexecuted holdout Spec. This does not establish YAML root-to-child orchestration. Preserve the original final review, but do not repeat its incorrect “missingness gap” wording for the screening pass-rate endpoint.

@@ -1,0 +1,20 @@
+{
+  "verified_at": "2026-10-04T00:19:54.167807+00:00",
+  "status": "passed",
+  "candidate_records_checked": 19,
+  "checks": [
+    "all 19 shortlisted JIDs are eligible discovery representatives",
+    "each candidate OPT, MBJ and hull matches original source record by JID",
+    "joint paired bootstrap intervals independently reconstructed",
+    "every original output checksum matches",
+    "recorded scientific source hashes match current files"
+  ],
+  "raw_source_sha256": "9dacb55ac8371c7c2bf0332933b55c98e9cca6201e92eb9d6fcd03aab0975907",
+  "result_sha256": "06f4d1851779854b2e26351c251f67a28626c418b1e5c8b57fcb78adab5f40a1",
+  "environment": {
+    "python": "3.14.5",
+    "numpy": "2.5.3",
+    "platform": "Windows"
+  },
+  "scope": "Source properties examined only for discovery candidate JIDs; no holdout outcomes calculated or displayed."
+}
