@@ -88,7 +88,7 @@ def test_runtime_manifest_records_effective_models_before_dispatch(tmp_path):
 
 def test_finalization_cli_reply_is_persisted_when_host_verification_fails(tmp_path):
     db_path = tmp_path / "run.sqlite"
-    transcript = "The final review reply captured from the CLI."
+    transcript = "  The exact final review reply.\n"
 
     def failed_verification():
         raise ValueError("final response hash mismatch")
@@ -125,6 +125,136 @@ def test_live_launcher_stops_on_runtime_preflight_before_context(monkeypatch):
     monkeypatch.setattr(live_bridge, "_read_context", forbidden_context)
     with pytest.raises(RuntimeError, match="runtime preflight rejected"):
         launcher.run_native_adaptive(model="gpt-6-luna", remaining_seconds=600)
+
+
+def _prepare_mock_parent_failure(monkeypatch, tmp_path, fake_process):
+    from nova import adaptive_agent_tools, live_bridge
+    from nova.contracts import Mode
+    from nova.storage import Storage
+
+    run_id = "mock-failure-run"
+    run_dir = tmp_path / "runs" / run_id
+    run_dir.mkdir(parents=True)
+    database = run_dir / "run.sqlite"
+    database.touch()
+    store = Storage(database).initialize()
+    store.append_event(run_id, "native_adaptive_runner_result_returned", actor="runner",
+                       mode=Mode.LIVE, payload_ref="nova-result-" + "a" * 64)
+    monkeypatch.setattr(launcher, "ROOT", tmp_path)
+    monkeypatch.setattr(launcher, "check_only", lambda **_kwargs: {"runtime_ready": True})
+    monkeypatch.setattr(launcher, "_require_runtime_ready", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(live_bridge, "_read_context", lambda: (database, run_id))
+    monkeypatch.setattr(adaptive_agent_tools, "_parent",
+                        lambda: (database, run_id, store, object(), object()))
+    monkeypatch.setattr(adaptive_agent_tools, "_assert_fresh_followup", lambda *_args: None)
+    monkeypatch.setattr(launcher.subprocess, "Popen", lambda *_args, **_kwargs: fake_process)
+    return database, run_id, store
+
+
+def test_parent_nonzero_child_writes_bounded_private_failure_feedback(monkeypatch, tmp_path):
+    class FailedProcess:
+        pid = 12345
+        returncode = 17
+        store = None
+        run_id = None
+
+        def communicate(self, timeout=None):
+            if self.store is not None:
+                from nova.contracts import Mode
+                self.store.append_event(self.run_id, "native_adaptive_runner_result_returned", actor="runner",
+                                        mode=Mode.LIVE, payload_ref="nova-result-" + "b" * 64)
+                self.store = None
+            return "child output with api_key=private-example\n", None
+
+    process = FailedProcess()
+    database, run_id, store = _prepare_mock_parent_failure(monkeypatch, tmp_path, process)
+    process.store = store
+    process.run_id = run_id
+    with pytest.raises(RuntimeError, match="exited with status 17"):
+        launcher.run_native_adaptive(model="gpt-6-luna", remaining_seconds=600,
+                                     enable_native_live=True)
+
+    artifact = database.parent / "failure-feedback.json"
+    feedback = json.loads(artifact.read_text(encoding="utf-8"))
+    assert feedback["schema_version"] == 1
+    assert feedback["run_id"] == run_id
+    assert feedback["outcome"] == "failed"
+    assert feedback["reason_category"] == "child_nonzero"
+    assert feedback["original_exit_code"] == 17
+    assert feedback["timeout"] is False
+    assert feedback["last_confirmed_stage"] == "runner_result_returned"
+    assert feedback["final_protocol_frozen"] is False
+    assert feedback["holdout_execution_attestation"] == "not_attested"
+    assert feedback["scientific_tool_side_effects"]["events"] == [
+        {"event": "native_adaptive_runner_result_returned", "payload_ref": "nova-result-" + "a" * 64},
+        {"event": "native_adaptive_runner_result_returned", "payload_ref": "nova-result-" + "b" * 64},
+    ]
+    assert "api_key=private-example" not in artifact.read_text(encoding="utf-8")
+    assert artifact.stat().st_mode & 0o777 == 0o600
+    capture = database.parent / "terminal-capture.txt"
+    assert capture.read_text(encoding="utf-8") == "child output with api_key=private-example\n"
+    assert capture.stat().st_mode & 0o777 == 0o600
+    assert feedback["terminal_output_chars"] == len(capture.read_text(encoding="utf-8"))
+    assert feedback["terminal_capture_file"] == "terminal-capture.txt"
+
+
+def test_parent_timeout_preserves_final_communicate_output_and_original_error(monkeypatch, tmp_path):
+    import subprocess
+
+    class TimedOutProcess:
+        pid = 23456
+        returncode = None
+        calls = 0
+
+        def communicate(self, timeout=None):
+            self.calls += 1
+            if self.calls == 1:
+                raise subprocess.TimeoutExpired("mock-child", timeout, output="first partial")
+            return "complete output from final communicate", None
+
+        def wait(self, timeout=None):
+            self.returncode = -15
+            return self.returncode
+
+        def terminate(self):
+            self.returncode = -15
+
+        def kill(self):
+            self.returncode = -9
+
+    process = TimedOutProcess()
+    if launcher.os.name == "posix":
+        monkeypatch.setattr(launcher.os, "killpg", lambda *_args, **_kwargs: None)
+    database, run_id, _store = _prepare_mock_parent_failure(monkeypatch, tmp_path, process)
+    with pytest.raises(TimeoutError, match="whole-run deadline"):
+        launcher.run_native_adaptive(model="gpt-6-luna", remaining_seconds=600,
+                                     enable_native_live=True)
+
+    feedback = json.loads((database.parent / "failure-feedback.json").read_text(encoding="utf-8"))
+    assert feedback["run_id"] == run_id
+    assert feedback["outcome"] == "failed"
+    assert feedback["reason_category"] == "workflow_deadline"
+    assert feedback["original_exit_code"] is None
+    assert feedback["timeout"] is True
+    assert (database.parent / "terminal-capture.txt").read_text(encoding="utf-8") == \
+        "complete output from final communicate"
+    assert feedback["terminal_output_chars"] == len("complete output from final communicate")
+
+
+def test_failure_feedback_write_error_does_not_mask_child_error(monkeypatch, tmp_path):
+    class FailedProcess:
+        pid = 34567
+        returncode = 23
+
+        def communicate(self, timeout=None):
+            return "child failed", None
+
+    _database, _run_id, _store = _prepare_mock_parent_failure(monkeypatch, tmp_path, FailedProcess())
+    monkeypatch.setattr(launcher, "_write_failure_feedback",
+                        lambda *_args, **_kwargs: (_ for _ in ()).throw(OSError("feedback disk error")))
+    with pytest.raises(RuntimeError, match="exited with status 23"):
+        launcher.run_native_adaptive(model="gpt-6-luna", remaining_seconds=600,
+                                     enable_native_live=True)
 
 
 def test_trusted_native_child_requires_parent_marker_and_absolute_deadline(monkeypatch):

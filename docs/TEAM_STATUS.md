@@ -1,5 +1,40 @@
 # Team status and handoff
 
+## B failure-feedback closeout
+
+No additional live model/science workflow ran after native05. Failed executor
+messages now receive bounded private 0600 diagnostics; public trace contains
+only category, message SHA and retryable flag. Parent nonzero/timeout paths
+preserve private bounded terminal output plus a safe run-owned failure summary,
+last confirmed stage and side-effect event refs. Diagnostics cannot overwrite
+existing feedback or replace the original child error. Offline mock injection
+covers failure/timeout, raw-message privacy and diagnostic write failure.
+Full regression: 386 passed, zero errors/failures/skips, 22.695 seconds.
+After integrating A PR #18 (main 22fd746), combined regression: 404 passed,
+zero errors/failures/skips, 23.272 seconds. Only TEAM_STATUS had a merge
+conflict; both teams' entries are retained. No runtime/model run was added.
+This improves diagnosability; it does not retrospectively explain native05's
+missing error message or establish clean native completion. Do not add retries
+or raise tool limits without cause evidence and offline regression.
+
+## B run 05 update — structured reply fix implemented, Runner feedback failed
+
+PR #17 is merged. B now records exact post-freeze guarded PI TurnComplete text
+in a private run-owned file and uses that text rather than CLI display for
+strong PID/call-ID/hash verification. Whitespace is preserved. Full regression
+on 7e83952: 382 tests, zero errors/failures/skips, 22.623 seconds.
+
+Fresh native run 05 returned an actual discovery Result but its Runner model
+turn failed. PI also reported exhaustion of the 16-call session policy. Host
+correctly rejected missing successful Runner feedback; original CLI exit 1 is
+preserved. Finalization was not reached, so the new reply capture has not yet
+passed live acceptance. No holdout was executed, no A scientific code changed,
+and no clean workflow success is claimed. Scientific artifact audit passes,
+not native acceptance. See [run 05 evidence](results/native_adaptive_live_05_runner_turn_failed/README.md)
+and [B submission handoff](B_SUBMISSION_HANDOFF.md).
+
+---
+
 ## Team A milestone 13 — native frozen science accepted, runtime gate retained
 
 Started from main `c6cea09` (A PR #15 and B PR #16), then integrated B's

@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -191,8 +192,13 @@ def test_final_trace_verifier_binds_exact_finalization_text_after_retry_turn(tmp
     path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
     required = ("record_adaptive_review", "submit_native_final_review",
                 "freeze_native_final_protocol")
+    response_record = {"schema_version": 1, "pid": 22, "role": "pi",
+                       "freeze_call_id": "freeze-retry-2", "response_text": final_response,
+                       "response_sha256": hashlib.sha256(final_response.encode()).hexdigest(),
+                       "response_chars": len(final_response)}
     assert verify_executor_trace(path, host, required_tools=required,
-                                 final_response=final_response)["completed_turns"] == 4
+                                 final_response=final_response,
+                                 final_response_record=response_record)["completed_turns"] == 4
 
     for invalid_response in (
         "First discovery session reply.\n\n" + final_response,
@@ -200,11 +206,92 @@ def test_final_trace_verifier_binds_exact_finalization_text_after_retry_turn(tmp
     ):
         try:
             verify_executor_trace(path, host, required_tools=required,
-                                  final_response=invalid_response)
+                                  final_response=invalid_response,
+                                  final_response_record=response_record)
         except RuntimeError as exc:
             assert "does not match" in str(exc)
         else:
             raise AssertionError("aggregated or changed final PI response was accepted")
+
+    for bad_record in ({**response_record, "pid": 23},
+                       {**response_record, "freeze_call_id": "missing-freeze"}):
+        try:
+            verify_executor_trace(path, host, required_tools=required,
+                                  final_response=final_response, final_response_record=bad_record)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("response record without the matching guarded freeze was accepted")
+
+
+def test_final_pi_response_record_preserves_raw_text_and_rejects_tampering(tmp_path, monkeypatch):
+    from nova import native_adaptive_runtime as runtime
+
+    run_dir = tmp_path / "run-owned"
+    run_dir.mkdir()
+    trace = run_dir / "native-model-audit.jsonl"
+    trace.write_text("{}\n", encoding="utf-8")
+    trace.chmod(0o600)
+    monkeypatch.setattr(runtime, "RUNS_ROOT", tmp_path)
+    raw = "  Exact TurnComplete response.\n"
+    runtime._write_final_pi_response(trace, pid=42, role="pi", freeze_call_id="freeze-1", response=raw)
+    record = runtime.read_final_pi_response(trace)
+    assert record["response_text"] == raw
+    assert record["response_chars"] == len(raw)
+    assert record["response_sha256"] == hashlib.sha256(raw.encode()).hexdigest()
+    with pytest.raises(FileExistsError):
+        runtime._write_final_pi_response(trace, pid=42, role="pi", freeze_call_id="freeze-1", response=raw)
+
+    record_path = run_dir / "native-final-pi-response.json"
+    tampered = json.loads(record_path.read_text(encoding="utf-8"))
+    tampered["response_text"] = "changed"
+    record_path.write_text(json.dumps(tampered), encoding="utf-8")
+    record_path.chmod(0o600)
+    with pytest.raises(RuntimeError, match="integrity"):
+        runtime.read_final_pi_response(trace)
+
+
+def test_executor_error_is_private_bounded_and_still_fails_trace_verification(tmp_path, monkeypatch):
+    from nova import adaptive_agent_tools, native_adaptive_runtime as runtime
+    from omnigent.inner.executor import ExecutorError
+
+    run_dir = tmp_path / "runs" / "run-error"
+    run_dir.mkdir(parents=True)
+    trace = run_dir / "native-model-audit.jsonl"
+    host = Path("/opt/codex-code-mode-host")
+    trace.write_text("\n".join(json.dumps(row) for row in (
+        {"event": "runner_bootstrap_installed", "pid": 1},
+        {"event": "executor_guard_installed", "pid": 42, "role": "runner",
+         "details": {"native_tools_disabled": True, "web_search_disabled": True, "skills": "none",
+                     "config_overrides": ["features.code_mode_host=true", "features.code_mode=false",
+                                          'web_search="disabled"'], "host_binary": str(host)}},
+        {"event": "executor_turn_started", "pid": 42, "role": "runner"},
+    )) + "\n", encoding="utf-8")
+    trace.chmod(0o600)
+    monkeypatch.setattr(runtime, "RUNS_ROOT", tmp_path / "runs")
+    monkeypatch.setattr(adaptive_agent_tools, "ROOT", tmp_path)
+    monkeypatch.setenv("NOVA_ADAPTIVE_TRACE_PATH", str(trace))
+    message = "Provider turn failed with diagnostic token sk-sensitive-fixture"
+    error = ExecutorError(message=message, retryable=True, usage={"input_tokens": 19})
+
+    runtime._trace_executor_failure(trace, pid=42, role="runner", model="fixture", error=error)
+
+    private_path = run_dir / "native-executor-errors.jsonl"
+    assert private_path.stat().st_mode & 0o777 == 0o600
+    private = json.loads(private_path.read_text(encoding="utf-8"))
+    assert private["message"] == message
+    assert private["full_message_sha256"] == hashlib.sha256(message.encode()).hexdigest()
+    assert private["retryable"] is True
+    assert private["usage"] == {"input_tokens": 19}
+    public_line = trace.read_text(encoding="utf-8")
+    assert message not in public_line and "sk-sensitive-fixture" not in public_line
+    public = json.loads(public_line.splitlines()[-1])
+    assert public["event"] == "turn_failed" and public["status"] == "error"
+    assert public["details"] == {"error_category": "executor_error",
+                                 "error_message_sha256": hashlib.sha256(message.encode()).hexdigest(),
+                                 "retryable": True}
+    with pytest.raises(RuntimeError, match="failed model turn"):
+        runtime.verify_executor_trace(trace, host)
 
 
 def test_spawned_sdk_bootstrap_guards_real_codex_executor_without_model_calls(tmp_path):

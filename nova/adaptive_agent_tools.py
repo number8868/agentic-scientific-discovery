@@ -77,7 +77,8 @@ def record_native_trace(event: str, *, actor: str, tool: str | None = None,
     if role is not None and (not isinstance(role, str) or len(role) > 120):
         raise ValueError("native trace role is invalid")
     allowed_details = {"agent", "native_tools_disabled", "web_search_disabled", "skills",
-                       "config_overrides", "omnigent_version", "harness_module", "host_binary"}
+                       "config_overrides", "omnigent_version", "harness_module", "host_binary",
+                       "error_category", "error_message_sha256", "retryable"}
     safe_details: dict[str, Any] | None = None
     if details is not None:
         if not isinstance(details, Mapping) or set(details) - allowed_details:
@@ -87,6 +88,15 @@ def record_native_trace(event: str, *, actor: str, tool: str | None = None,
             if key in {"native_tools_disabled", "web_search_disabled"}:
                 if not isinstance(value, bool):
                     raise ValueError("native trace guard details must be boolean")
+            elif key == "retryable":
+                if not isinstance(value, bool):
+                    raise ValueError("native trace retryable detail must be boolean")
+            elif key == "error_message_sha256":
+                if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+                    raise ValueError("native trace error hash detail is invalid")
+            elif key == "error_category":
+                if value != "executor_error":
+                    raise ValueError("native trace error category is invalid")
             elif key == "config_overrides":
                 if (not isinstance(value, list) or len(value) > 8 or
                         any(not isinstance(item, str) or len(item) > 120 for item in value)):

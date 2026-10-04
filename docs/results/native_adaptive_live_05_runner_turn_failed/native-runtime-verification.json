@@ -1,0 +1,17 @@
+{
+  "failure_detail": "Original CLI exit 1: completed Runner tool but failed Runner model turn; finalization not entered; PI reported session tool-call limit.",
+  "failure_detail_source": "operator_supplied_not_persisted",
+  "guardrail_enforcement": "unverified",
+  "guardrail_verification": "requested_unverified_not_effective",
+  "model_request_or_completion_observed": true,
+  "model_tool_trace": "present_unverified",
+  "native_model_audit_scope": "unverified_or_unavailable",
+  "native_workflow_status": "failed_after_discovery_completion",
+  "observed_executor_pid_count": 4,
+  "observed_turn_complete_count": 4,
+  "prior_failure_observed": true,
+  "retrospective_transport_witness_observed": false,
+  "run_owned_results_persisted": 2,
+  "runner_feedback_validation": "failed",
+  "supervisor_response_persisted": false
+}

@@ -15,6 +15,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import subprocess
@@ -34,10 +35,43 @@ DEFAULT_MODEL = "gpt-6-luna"
 CONFIG_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false", 'web_search="disabled"')
 HOST_PATH_ENV = "CODEX_CODE_MODE_HOST_PATH"
 RUN_TIMEOUT_SECONDS = 720
+MAX_FAILURE_EVENT_REFS = 64
+MAX_TERMINAL_CAPTURE_BYTES = 16 * 1024
+_FAILURE_REASONS = frozenset({"child_nonzero", "workflow_deadline"})
+_SAFE_EVENT_REF = re.compile(
+    r"^(?:NOVA-(?:[0-9a-f]{16}|FINAL-[0-9a-f]{16}|HOLDOUT-[0-9a-f]{16})|"
+    r"nova-result-[0-9a-f]{64}|sha256:[0-9a-f]{64})$"
+)
 CHILD_MARKER = "NOVA_ADAPTIVE_TRUSTED_CHILD"
 PARENT_PID_ENV = "NOVA_ADAPTIVE_PARENT_PID"
 RUNTIME_BLOCKER = ("Omnigent Codex executes in a per-conversation harness process; live dispatch requires "
                    "the pinned guarded harness bootstrap and executor trace in that process")
+
+_FAILURE_STAGE_EVENTS = {
+    "native_adaptive_orchestration_started": "orchestration_started",
+    "native_adaptive_options_registered": "planner_options_registered",
+    "native_adaptive_review_submitted": "skeptic_review_submitted",
+    "native_adaptive_choice_committed": "pi_choice_committed",
+    "native_adaptive_choice_failed": "pi_choice_failed",
+    "native_adaptive_runner_started": "runner_started",
+    "native_adaptive_runner_result_returned": "runner_result_returned",
+    "native_adaptive_runner_failed": "runner_failed",
+    "native_adaptive_supervisor_returned": "supervisor_returned",
+    "native_adaptive_final_review_submitted": "final_review_submitted",
+    "native_adaptive_final_review_failed": "final_review_failed",
+    "native_adaptive_final_protocol_frozen": "final_protocol_frozen",
+    "native_adaptive_final_protocol_freeze_failed": "final_protocol_freeze_failed",
+    "result": "result_recorded",
+    "holdout_running": "holdout_running",
+    "holdout_result": "holdout_result_recorded",
+    "holdout_failed": "holdout_failed",
+}
+_FAILURE_SIDE_EFFECT_EVENTS = frozenset({
+    "native_adaptive_runner_started", "native_adaptive_runner_result_returned",
+    "native_adaptive_runner_failed", "result", "holdout_running", "holdout_result",
+    "holdout_failed",
+})
+_HOLDOUT_EXECUTION_EVENTS = frozenset({"holdout_running", "holdout_result", "holdout_failed"})
 
 
 def _load_yaml(path: Path = AGENT) -> dict[str, Any]:
@@ -211,7 +245,7 @@ def _record(event_type: str, payload_ref: str | None = None) -> None:
 def _record_finalization_response(database: Path, run_id: str, transcript: str) -> str:
     """Persist the bounded final PI reply separately from the adaptive response.
 
-    This records the CLI's captured text only. It does not establish that the
+    This records the guarded TurnComplete response. It does not establish that the
     executor trace or final response hash has been verified, or that the run
     completed successfully.
     """
@@ -220,7 +254,6 @@ def _record_finalization_response(database: Path, run_id: str, transcript: str) 
 
     if not transcript.strip() or len(transcript) > 20_000:
         raise ValueError("native finalization PI response must contain 1-20000 characters")
-    transcript = transcript.strip()
     digest = hashlib.sha256(transcript.encode("utf-8")).hexdigest()
     store = Storage(database).initialize()
     if any(event.event_type == "native_finalization_supervisor_response" and event.actor == "pi"
@@ -336,6 +369,123 @@ def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
     return path
 
 
+def _failure_event_summary(database: Path, run_id: str) -> dict[str, Any]:
+    """Summarize canonical run events without reading Specs, Results, or protocols."""
+    from nova.storage import Storage
+
+    events = Storage(database).list_events(run_id)
+    relevant = [event for event in events if event.event_type in _FAILURE_STAGE_EVENTS]
+    side_effects = [event for event in events if event.event_type in _FAILURE_SIDE_EFFECT_EVENTS]
+    holdout_events = [event for event in relevant if event.event_type in _HOLDOUT_EXECUTION_EVENTS]
+    bounded_refs = [
+        {"event": event.event_type,
+         "payload_ref": (event.payload_ref if isinstance(event.payload_ref, str) and
+                         _SAFE_EVENT_REF.fullmatch(event.payload_ref) else "redacted")}
+        for event in side_effects[-MAX_FAILURE_EVENT_REFS:]
+    ]
+    last_confirmed_stage = _FAILURE_STAGE_EVENTS[relevant[-1].event_type] if relevant else "unknown"
+    return {
+        "last_confirmed_stage": last_confirmed_stage,
+        "scientific_tool_side_effects": {
+            "observed_run_event_count": len(side_effects),
+            "events": bounded_refs,
+            "truncated": len(side_effects) > MAX_FAILURE_EVENT_REFS,
+        },
+        "final_protocol_frozen": any(
+            event.event_type == "native_adaptive_final_protocol_frozen" for event in events
+        ),
+        # Event absence is not evidence that no other execution occurred.
+        "holdout_execution_attestation": "observed" if holdout_events else "not_attested",
+        "holdout_events": [
+            {"event": event.event_type,
+             "payload_ref": (event.payload_ref if isinstance(event.payload_ref, str) and
+                             _SAFE_EVENT_REF.fullmatch(event.payload_ref) else "redacted")}
+            for event in holdout_events[-MAX_FAILURE_EVENT_REFS:]
+        ],
+    }
+
+
+def _write_failure_feedback(database: Path, run_id: str, *, reason_category: str,
+                            original_exit_code: int | None, timeout: bool,
+                            terminal_output: str | bytes | None) -> None:
+    """Best-effort, private parent-side failure handoff; never inspect result payloads."""
+    import os
+
+    run_dir = database.parent.resolve(strict=True)
+    runs_root = (ROOT / "runs").resolve(strict=True)
+    if (database.is_symlink() or not run_dir.is_dir() or run_dir == runs_root or
+            not run_dir.is_relative_to(runs_root)):
+        raise ValueError("failure feedback requires the bound run database directory")
+    if reason_category not in _FAILURE_REASONS:
+        raise ValueError("failure reason category is not allowlisted")
+    artifact_path = run_dir / "failure-feedback.json"
+    if artifact_path.exists():
+        raise FileExistsError("failure feedback already exists for this run directory")
+
+    output_bytes: bytes | None
+    if terminal_output is None:
+        output_bytes = None
+        output_chars = None
+        output_sha256 = None
+    elif isinstance(terminal_output, bytes):
+        output_bytes = terminal_output
+        output_chars = len(terminal_output.decode("utf-8", errors="replace"))
+        output_sha256 = hashlib.sha256(terminal_output).hexdigest()
+    else:
+        output_bytes = terminal_output.encode("utf-8", errors="replace")
+        output_chars = len(terminal_output)
+        output_sha256 = hashlib.sha256(output_bytes).hexdigest()
+
+    capture_name = None
+    capture_truncated = False
+    if output_bytes is not None and output_bytes:
+        capture_path = run_dir / "terminal-capture.txt"
+        captured = output_bytes[:MAX_TERMINAL_CAPTURE_BYTES]
+        capture_truncated = len(output_bytes) > len(captured)
+        fd = os.open(capture_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
+                     getattr(os, "O_NOFOLLOW", 0), 0o600)
+        try:
+            os.fchmod(fd, 0o600)
+            with os.fdopen(fd, "wb", closefd=False) as stream:
+                stream.write(captured)
+        finally:
+            os.close(fd)
+        capture_name = capture_path.name
+
+    summary = {
+        "schema": "nova.native_failure_feedback",
+        "schema_version": 1,
+        "run_id": run_id,
+        **_failure_event_summary(database, run_id),
+        "original_exit_code": original_exit_code,
+        "timeout": timeout,
+        "outcome": "failed",
+        "reason_category": reason_category,
+        "terminal_output_sha256": output_sha256,
+        "terminal_output_chars": output_chars,
+        "terminal_capture_file": capture_name,
+        "terminal_capture_truncated": capture_truncated,
+        "safe_next_action": "Inspect bounded event refs and private capture; use mock/offline diagnosis before any newly authorized run. Never retry this run in place.",
+    }
+    encoded = json.dumps(summary, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
+    fd = os.open(artifact_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
+                 getattr(os, "O_NOFOLLOW", 0), 0o600)
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "wb", closefd=False) as stream:
+            stream.write(encoded)
+    finally:
+        os.close(fd)
+
+
+def _best_effort_failure_feedback(database: Path, run_id: str, **kwargs: Any) -> None:
+    """Do not let diagnostic artifact failures replace the original child error."""
+    try:
+        _write_failure_feedback(database, run_id, **kwargs)
+    except Exception:
+        return
+
+
 def _run_omnigent_cli_session(cli_module: Any, document: dict[str, Any], *, prompt: str,
                               model: str | None, codex_host: Path, prefix: str) -> str:
     import yaml
@@ -407,6 +557,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     record_supervisor_response(transcript)
 
     finalization_transcript = ""
+    finalization_response_record = None
     finalization_response_sha256 = None
     finalization_status = None
     if finalize_discovery:
@@ -429,22 +580,27 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
             if not isinstance(followup_result_id, str) or not followup_result_id:
                 raise RuntimeError("native finalization has no bound follow-up Result ID")
             try:
-                finalization_transcript = _run_omnigent_cli_session(
+                finalization_display = _run_omnigent_cli_session(
                     cli_module, finalization_document, prompt=finalization_document["prompt"],
                     model=model, codex_host=codex_host, prefix="nova-native-finalize-")
             except BaseException:
                 _record("native_adaptive_orchestration_failed")
                 raise
-            if not finalization_transcript:
+            if not finalization_display:
                 raise RuntimeError("Omnigent finalization CLI returned no PI response")
-            print(finalization_transcript, flush=True)
-            from nova.native_adaptive_runtime import verify_executor_trace
+            print("Omnigent CLI display (not used as the PI reply):", flush=True)
+            print(finalization_display, flush=True)
+            from nova.native_adaptive_runtime import read_final_pi_response, verify_executor_trace
+            finalization_response_record = read_final_pi_response(audit_path)
+            finalization_transcript = finalization_response_record["response_text"]
             finalization_response_sha256 = _capture_finalization_response_before_verification(
                 db, run_id, finalization_transcript,
                 lambda: verify_executor_trace(
                     audit_path, codex_host,
                     required_tools=("record_adaptive_review", "submit_native_final_review",
                                     "freeze_native_final_protocol"),
+                    final_response=finalization_transcript,
+                    final_response_record=finalization_response_record,
                 ),
             )
             from nova.contracts import Mode
@@ -468,7 +624,9 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                             "freeze_native_final_protocol") if finalization_transcript else ()
     executor_verification = verify_executor_trace(audit_path, codex_host,
                                                  required_tools=required_final_tools,
-                                                 final_response=finalization_transcript or None)
+                                                 final_response=finalization_transcript or None,
+                                                 final_response_record=(finalization_response_record
+                                                                        if finalization_transcript else None))
     # A concise manifest event intentionally records no prompt, credentials,
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.
@@ -529,7 +687,8 @@ def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 
                                start_new_session=(os.name == "posix"))
     try:
         output, _ = process.communicate(timeout=max(0.001, deadline - time.monotonic()))
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as timeout_error:
+        captured_output = timeout_error.output
         if os.name == "posix":
             try:
                 os.killpg(process.pid, signal.SIGTERM)
@@ -549,15 +708,34 @@ def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 
                 process.kill()
             process.wait(timeout=2)
         try:
-            process.communicate(timeout=2)
-        except subprocess.TimeoutExpired:
+            completed_output, _ = process.communicate(timeout=2)
+            if completed_output is not None:
+                captured_output = completed_output
+        except subprocess.TimeoutExpired as final_timeout:
+            if final_timeout.output is not None:
+                captured_output = final_timeout.output
+        except Exception:
             pass
-        _record("native_adaptive_orchestration_failed")
+        try:
+            _record("native_adaptive_orchestration_failed")
+        except Exception:
+            pass
+        _best_effort_failure_feedback(database, checked_run,
+                                      reason_category="workflow_deadline",
+                                      original_exit_code=None, timeout=True,
+                                      terminal_output=captured_output)
         raise TimeoutError("native adaptive workflow exceeded its whole-run deadline") from None
     if output:
         print(output, end="" if output.endswith("\n") else "\n")
     if process.returncode != 0:
-        _record("native_adaptive_orchestration_failed")
+        try:
+            _record("native_adaptive_orchestration_failed")
+        except Exception:
+            pass
+        _best_effort_failure_feedback(database, checked_run,
+                                      reason_category="child_nonzero",
+                                      original_exit_code=process.returncode, timeout=False,
+                                      terminal_output=output)
         raise RuntimeError(f"Omnigent native adaptive CLI exited with status {process.returncode}")
     return 0
 
