@@ -1,5 +1,26 @@
 # Team status and handoff
 
+## B post-freeze handoff — implementation ready for review, not live acceptance
+
+Based on merged A PR #21 (`12b89c0`), B adds a default-disabled
+`--execute-frozen-holdout` option: a distinct native holdout Runner receives
+only the registered frozen ID, within the fresh workflow's original shared
+deadline. A's science/gate modules are unchanged. Parent approval cannot be
+enabled by an ambient marker; guarded freeze/PI response, run/database binding,
+bounded process group, worker deadline, succeeded claim and Result event are
+checked. Export reads persisted science and never invokes the experiment again.
+Exceptions propagate to nonzero exit; partial Results and failure feedback are
+preserved, with no retry. Root review corrected swallowed exceptions, protocol
+hash-column confusion, and a direct-child check incompatible with SDK descendants.
+
+Final offline regression: **417 passed, zero failures/skips**, 23.02 seconds.
+Configuration-only preflight also passes with zero model/science calls. No new
+real workflow or holdout was executed; native06 remains expired and untouched.
+The scoped adapter uses private A hooks and requires A review before a real
+attempt. See [execution contract and remaining acceptance](B_POST_FREEZE_HANDOFF.md).
+Actual controlled holdout, matched baseline measurement and recording/submission
+are still pending; mock tests do not establish scientific improvement.
+
 ## Team A milestone 14 — native06 science accepted, holdout conditions reviewed
 
 Started from main `903579c` after B PR #20 on

@@ -30,6 +30,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 AGENT = ROOT / "agents" / "adaptive-live.yaml"
 AGENT_FINALIZE = ROOT / "agents" / "adaptive-finalize.yaml"
+AGENT_HOLDOUT = ROOT / "agents" / "adaptive-holdout.yaml"
 SDK_PIN = "0.16.0"
 DEFAULT_MODEL = "gpt-6-luna"
 CONFIG_OVERRIDES = ("features.code_mode_host=true", "features.code_mode=false", 'web_search="disabled"')
@@ -44,6 +45,8 @@ _SAFE_EVENT_REF = re.compile(
 )
 CHILD_MARKER = "NOVA_ADAPTIVE_TRUSTED_CHILD"
 PARENT_PID_ENV = "NOVA_ADAPTIVE_PARENT_PID"
+HOLDOUT_APPROVAL_ENV = "NOVA_NATIVE_HOLDOUT_APPROVED"
+OWNER_PID_ENV = "NOVA_ADAPTIVE_OWNER_PID"
 RUNTIME_BLOCKER = ("Omnigent Codex executes in a per-conversation harness process; live dispatch requires "
                    "the pinned guarded harness bootstrap and executor trace in that process")
 
@@ -65,13 +68,16 @@ _FAILURE_STAGE_EVENTS = {
     "holdout_running": "holdout_running",
     "holdout_result": "holdout_result_recorded",
     "holdout_failed": "holdout_failed",
+    "native_adaptive_holdout_failed": "holdout_failed_or_partial",
 }
 _FAILURE_SIDE_EFFECT_EVENTS = frozenset({
     "native_adaptive_runner_started", "native_adaptive_runner_result_returned",
     "native_adaptive_runner_failed", "result", "holdout_running", "holdout_result",
     "holdout_failed",
+    "native_adaptive_holdout_failed",
 })
-_HOLDOUT_EXECUTION_EVENTS = frozenset({"holdout_running", "holdout_result", "holdout_failed"})
+_HOLDOUT_EXECUTION_EVENTS = frozenset({"holdout_running", "holdout_result", "holdout_failed",
+                                       "native_adaptive_holdout_failed"})
 
 
 def _load_yaml(path: Path = AGENT) -> dict[str, Any]:
@@ -176,6 +182,36 @@ def _finalization_yaml() -> dict[str, Any]:
     return fragment
 
 
+def _holdout_yaml() -> dict[str, Any]:
+    """Validate the isolated post-freeze Runner's parsed role and one-ID tool."""
+    from omnigent.inner.loader import load_agent_def_from_path
+
+    fragment = _load_yaml(AGENT_HOLDOUT)
+    parsed = load_agent_def_from_path(str(AGENT_HOLDOUT))
+    tools = fragment.get("tools")
+    if (fragment.get("name") != _load_yaml().get("name") or not isinstance(tools, dict) or
+            set(tools) != {"holdout_runner"}):
+        raise ValueError("holdout YAML must retain PI identity and expose only holdout_runner")
+    runner = tools["holdout_runner"]
+    if runner.get("type") != "agent":
+        raise ValueError("frozen holdout executor must be a distinct agent role")
+    functions = runner.get("tools")
+    expected = {"execute_frozen_native_holdout": "nova.native_holdout_tools.execute_frozen_native_holdout"}
+    if (not isinstance(functions, dict) or
+            {key: value.get("callable") for key, value in functions.items()} != expected or
+            any(value.get("type") != "function" for value in functions.values())):
+        raise ValueError("holdout Runner function allowlist differs from the one-ID host contract")
+    schema = functions["execute_frozen_native_holdout"].get("parameters")
+    if (not isinstance(schema, dict) or schema.get("required") != ["experiment_id"] or
+            schema.get("additionalProperties") is not False or
+            set(schema.get("properties", {})) != {"experiment_id"} or
+            schema["properties"]["experiment_id"].get("type") != "string"):
+        raise ValueError("holdout tool schema must accept only one experiment_id string")
+    if not getattr(parsed, "tools", None):
+        raise ValueError("Omnigent parsed no tools from the holdout YAML")
+    return fragment
+
+
 def _codex_binaries(*, require_host: bool) -> tuple[Path | None, Path | None]:
     codex = shutil.which("codex")
     if not codex:
@@ -191,7 +227,7 @@ def _codex_binaries(*, require_host: bool) -> tuple[Path | None, Path | None]:
     return Path(codex).resolve(), host.resolve()
 
 
-def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
+def check_only(*, finalize_discovery: bool = False, execute_frozen_holdout: bool = False) -> dict[str, Any]:
     version = importlib.metadata.version("omnigent")
     if version != SDK_PIN:
         raise RuntimeError(f"native security bootstrap is pinned to omnigent=={SDK_PIN}, found {version}")
@@ -200,6 +236,11 @@ def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
     if finalize_discovery:
         _finalization_yaml()
         _check_async_dispatch_surface(AGENT_FINALIZE)
+    if execute_frozen_holdout:
+        if not finalize_discovery:
+            raise ValueError("--execute-frozen-holdout requires --finalize-discovery")
+        _holdout_yaml()
+        _check_async_dispatch_surface(AGENT_HOLDOUT)
     codex, host = _codex_binaries(require_host=False)
     route_available = False
     if host is not None:
@@ -213,9 +254,11 @@ def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
             "live_execution_enabled": False, "guardrail_verified": False,
             "guardrail_status": "requested_unverified_not_effective", "runtime_blocker": RUNTIME_BLOCKER,
             "omnigent_version": version,
-            "agent_yaml": ([str(AGENT.relative_to(ROOT)), str(AGENT_FINALIZE.relative_to(ROOT))]
+            "agent_yaml": ([str(AGENT.relative_to(ROOT)), str(AGENT_FINALIZE.relative_to(ROOT))] +
+                           ([str(AGENT_HOLDOUT.relative_to(ROOT))] if execute_frozen_holdout else [])
                            if finalize_discovery else str(AGENT.relative_to(ROOT))),
             "finalize_discovery": finalize_discovery,
+            "execute_frozen_holdout": execute_frozen_holdout,
             "async_dispatch_surface": async_dispatch_surface,
             "codex_cli": str(codex) if codex else None,
             "codex_code_mode_host": str(host) if host else None, "native_agent_tools": True,
@@ -342,7 +385,8 @@ def _create_native_audit(database: Path, run_id: str, model: str | None) -> Path
 
 def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
                              document: dict[str, Any], *, finalize_discovery: bool = False,
-                             finalization_document: dict[str, Any] | None = None) -> Path:
+                             finalization_document: dict[str, Any] | None = None,
+                             holdout_document: dict[str, Any] | None = None) -> Path:
     """Persist the effective, non-secret role configuration before dispatch."""
     run_dir = database.parent.resolve()
     path = run_dir / "native-runtime-manifest.json"
@@ -352,6 +396,10 @@ def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
             roles[name] = item.get("executor", {}).get("model")
     if finalization_document:
         for name, item in finalization_document.get("tools", {}).items():
+            if isinstance(item, dict) and item.get("type") == "agent":
+                roles[name] = item.get("executor", {}).get("model")
+    if holdout_document:
+        for name, item in holdout_document.get("tools", {}).items():
             if isinstance(item, dict) and item.get("type") == "agent":
                 roles[name] = item.get("executor", {}).get("model")
     from nova import native_adaptive_runtime, native_adaptive_harness
@@ -372,12 +420,25 @@ def _create_runtime_manifest(database: Path, run_id: str, model: str | None,
         source_hashes["native_finalization_tools"] = hashlib.sha256(
             Path(native_finalization_tools.__file__).read_bytes()).hexdigest()
         finalization_sha = hashlib.sha256(finalization_bytes).hexdigest()
+    holdout_sha = None
+    if holdout_document is not None:
+        holdout_bytes = yaml.safe_dump(holdout_document, sort_keys=False).encode()
+        selected_yaml += b"\0" + holdout_bytes
+        holdout_sha = hashlib.sha256(holdout_bytes).hexdigest()
+        from nova import native_holdout_tools
+        from scripts import export_native_holdout_evidence
+        source_hashes["native_holdout_tools"] = hashlib.sha256(
+            Path(native_holdout_tools.__file__).read_bytes()).hexdigest()
+        source_hashes["holdout_evidence_exporter"] = hashlib.sha256(
+            Path(export_native_holdout_evidence.__file__).read_bytes()).hexdigest()
     manifest = {"schema_version": 1, "run_id": run_id, "omnigent_version": SDK_PIN,
                 "model_override": model, "effective_role_models": roles,
                 "finalize_discovery": finalize_discovery,
                 "selected_yaml_sha256": hashlib.sha256(selected_yaml).hexdigest(),
                 "base_yaml_sha256": hashlib.sha256(AGENT.read_bytes()).hexdigest(),
                 "finalization_yaml_sha256": finalization_sha,
+                "execute_frozen_holdout": holdout_document is not None,
+                "holdout_yaml_sha256": holdout_sha,
                 "native_tools_policy_requested": "disabled",
                 "web_search_policy_requested": "disabled",
                 "guardrail_verification": "requested_unverified_not_effective",
@@ -531,14 +592,22 @@ def _run_omnigent_cli_session(cli_module: Any, document: dict[str, Any], *, prom
 
 def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: float = 600,
                                enable_native_live: bool = False,
-                               finalize_discovery: bool = False) -> int:
+                               finalize_discovery: bool = False,
+                               execute_frozen_holdout: bool = False) -> int:
+    if execute_frozen_holdout:
+        if not finalize_discovery or not enable_native_live or os.environ.get(HOLDOUT_APPROVAL_ENV) != "1":
+            raise RuntimeError("frozen holdout requires trusted opt-in, finalization, and native live")
     actual_remaining = _require_trusted_child()
+    # Omnigent sessions/tools run in descendants of this child. Bind host calls
+    # to this owner's process group instead of requiring an incorrect direct parent.
+    os.environ[OWNER_PID_ENV] = str(os.getpid())
     if model is not None and (not model or len(model) > 120):
         raise ValueError("model must be a nonempty configurable model name")
     if (isinstance(remaining_seconds, bool) or not isinstance(remaining_seconds, (int, float)) or
             not math.isfinite(float(remaining_seconds)) or remaining_seconds <= 0 or remaining_seconds > RUN_TIMEOUT_SECONDS):
         raise ValueError(f"remaining_seconds must be in (0,{RUN_TIMEOUT_SECONDS}]")
-    checked = check_only(finalize_discovery=finalize_discovery)
+    checked = check_only(finalize_discovery=finalize_discovery,
+                         execute_frozen_holdout=execute_frozen_holdout)
     if enable_native_live:
         _require_runtime_ready(checked, enable_native_live=True)
     else:
@@ -556,10 +625,12 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     _assert_fresh_followup(db, run_id, store)
     rendered = _model_yaml(_load_yaml(), model)
     finalization_document = _model_yaml(_finalization_yaml(), model) if finalize_discovery else None
+    holdout_document = _model_yaml(_holdout_yaml(), model) if execute_frozen_holdout else None
     codex_host = Path(checked["codex_code_mode_host"])
     audit_path = _create_native_audit(db, run_id, model)
     _create_runtime_manifest(db, run_id, model, rendered, finalize_discovery=finalize_discovery,
-                             finalization_document=finalization_document)
+                             finalization_document=finalization_document,
+                             holdout_document=holdout_document)
     os.environ["NOVA_ADAPTIVE_TRACE_PATH"] = str(audit_path)
     os.environ["NOVA_ADAPTIVE_REMAINING_SECONDS"] = str(actual_remaining)
     import omnigent.cli as cli_module
@@ -585,6 +656,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     finalization_response_record = None
     finalization_response_sha256 = None
     finalization_status = None
+    holdout_execution: dict[str, Any] | None = None
     if finalize_discovery:
         from nova.native_finalization_tools import read_finalization_state
 
@@ -644,7 +716,6 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
             finalization_status = {"status": "frozen_unexecuted",
                                    "holdout_experiment_id": final_protocol["holdout_experiment_id"],
                                    "protocol_sha256": final_protocol["protocol_sha256"]}
-    from nova.native_adaptive_runtime import verify_executor_trace
     required_final_tools = ("record_adaptive_review", "submit_native_final_review",
                             "freeze_native_final_protocol") if finalization_transcript else ()
     executor_verification = verify_executor_trace(audit_path, codex_host,
@@ -652,6 +723,76 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                                                  final_response=finalization_transcript or None,
                                                  final_response_record=(finalization_response_record
                                                                         if finalization_transcript else None))
+    if execute_frozen_holdout and finalization_status and finalization_status.get("status") == "frozen_unexecuted":
+        from nova.native_finalization_tools import read_finalization_state
+
+        state = read_finalization_state()
+        protocol = state.get("final_protocol") if isinstance(state, dict) else None
+        holdout_id = protocol.get("holdout_experiment_id") if isinstance(protocol, dict) else None
+        if (state.get("supported") is not True or state.get("stage") != "frozen_unexecuted" or
+                holdout_id != finalization_status["holdout_experiment_id"]):
+            raise RuntimeError("frozen holdout host state changed before post-freeze dispatch")
+        holdout_prompt = ("The host verified frozen holdout experiment ID is " + holdout_id +
+                          ". Dispatch holdout_runner once with this ID only, return the actual Result mapping, "
+                          "and make no scientific interpretation.")
+        try:
+            _run_omnigent_cli_session(cli_module, holdout_document, prompt=holdout_prompt,
+                                      model=model, codex_host=codex_host, prefix="nova-native-holdout-")
+            holdout_trace = verify_executor_trace(audit_path, codex_host,
+                                                  required_tools=("execute_frozen_native_holdout",),
+                                                  expected_holdout_id=holdout_id)
+            from nova.native_adaptive_runtime import read_native_holdout_result
+            result_record = read_native_holdout_result(audit_path)
+            result = result_record["result"]
+            if result.get("experiment_id") != holdout_id:
+                raise RuntimeError("native holdout Result does not belong to the frozen ID")
+            from scripts.export_native_holdout_evidence import export_native_holdout_evidence
+            evidence_dir = export_native_holdout_evidence(db, run_id, result["result_id"],
+                                                          float(os.environ["NOVA_ADAPTIVE_BUDGET_DEADLINE"]))
+            holdout_execution = {"status": result.get("execution_status") or result.get("status"),
+                                 "experiment_id": holdout_id, "result_id": result["result_id"],
+                                 "records": result.get("records", result.get("groups_summary")),
+                                 "result_sha256": result_record["result_sha256"],
+                                 "evidence_directory": str(evidence_dir), "executor_trace": holdout_trace}
+            finalization_status = {**finalization_status, "status": "holdout_result_returned"}
+        except Exception as exc:
+            # A successful science Result can survive an export or trace failure.
+            # Keep its private record and report the uncertainty without retrying.
+            try:
+                from nova.contracts import Mode
+                from nova.storage import Storage
+                Storage(db).initialize().append_event(run_id, "native_adaptive_holdout_failed", actor="host",
+                                                      mode=Mode.LIVE, payload_ref=holdout_id)
+            except Exception:
+                pass
+            partial_result = None
+            try:
+                from nova.native_adaptive_runtime import read_native_holdout_result
+                partial_result = read_native_holdout_result(audit_path)["result"]
+            except Exception:
+                pass
+            holdout_execution = {"status": "failed_or_partial", "experiment_id": holdout_id,
+                                 "result_id": partial_result.get("result_id") if partial_result else None,
+                                 "records": partial_result.get("records", partial_result.get("groups_summary",
+                                         "unknown_or_partial")) if partial_result else "unknown_or_partial",
+                                 "result_sha256": (hashlib.sha256(json.dumps(
+                                     partial_result, sort_keys=True, separators=(",", ":"),
+                                     ensure_ascii=False, allow_nan=False, default=str).encode()).hexdigest()
+                                     if partial_result else None),
+                                 "failure_category": type(exc).__name__}
+            finalization_status = {**finalization_status, "status": "holdout_failed_or_partial"}
+            print(json.dumps({"status": "holdout_failed_or_partial", "run_id": run_id,
+                              "finalization": finalization_status,
+                              "holdout_execution": holdout_execution}, sort_keys=True), flush=True)
+            raise
+    elif execute_frozen_holdout:
+        holdout_execution = {"status": "not_supported", "result_id": None,
+                             "records": "unknown_or_partial"}
+        finalization_status = {**(finalization_status or {}), "status": "holdout_not_supported"}
+        print(json.dumps({"status": "holdout_not_supported", "run_id": run_id,
+                          "finalization": finalization_status,
+                          "holdout_execution": holdout_execution}, sort_keys=True), flush=True)
+        raise RuntimeError("frozen holdout opt-in cannot proceed because finalization was not supported")
     # A concise manifest event intentionally records no prompt, credentials,
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.
@@ -660,6 +801,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                       "omnigent_version": checked["omnigent_version"],
                       "guardrail_verified": True,
                       "finalization": finalization_status,
+                      "holdout_execution": holdout_execution,
                       "finalization_response_sha256": finalization_response_sha256,
                       **executor_verification}
     if finalization_status and finalization_status["status"] == "not_supported":
@@ -670,14 +812,18 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
 
 def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 600,
                         enable_native_live: bool = False,
-                        finalize_discovery: bool = False) -> int:
+                        finalize_discovery: bool = False,
+                        execute_frozen_holdout: bool = False) -> int:
     """Run the isolated native CLI child under one hard whole-run deadline."""
     if model is not None and (not model or len(model) > 120):
         raise ValueError("model must be a nonempty configurable model name")
     if (isinstance(remaining_seconds, bool) or not isinstance(remaining_seconds, (int, float)) or
             not math.isfinite(float(remaining_seconds)) or not 0 < remaining_seconds <= RUN_TIMEOUT_SECONDS):
         raise ValueError(f"remaining_seconds must be in (0,{RUN_TIMEOUT_SECONDS}]")
-    checked = check_only(finalize_discovery=finalize_discovery)
+    if execute_frozen_holdout and (not finalize_discovery or not enable_native_live):
+        raise ValueError("--execute-frozen-holdout requires --finalize-discovery and --enable-native-live")
+    checked = check_only(finalize_discovery=finalize_discovery,
+                         execute_frozen_holdout=execute_frozen_holdout)
     if enable_native_live:
         _require_runtime_ready(checked, enable_native_live=True)
     else:
@@ -693,9 +839,13 @@ def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 
     _record("native_adaptive_orchestration_started")
     deadline = time.monotonic() + min(float(remaining_seconds), RUN_TIMEOUT_SECONDS)
     child_env = dict(os.environ)
+    child_env.pop(HOLDOUT_APPROVAL_ENV, None)
+    child_env.pop(OWNER_PID_ENV, None)
     child_env["NOVA_ADAPTIVE_BUDGET_DEADLINE"] = str(deadline)
     child_env["NOVA_ADAPTIVE_REMAINING_SECONDS"] = str(float(remaining_seconds))
     child_env[CHILD_MARKER] = "1"
+    if execute_frozen_holdout:
+        child_env[HOLDOUT_APPROVAL_ENV] = "1"
     child_env[PARENT_PID_ENV] = str(os.getpid())
     child_env["NOVA_ADAPTIVE_EXPECTED_RUN_ID"] = checked_run
     child_env["NOVA_ADAPTIVE_EXPECTED_DATABASE"] = str(checked_db.resolve())
@@ -707,6 +857,8 @@ def run_native_adaptive(*, model: str | None = None, remaining_seconds: float = 
         command.append("--enable-native-live")
     if finalize_discovery:
         command.append("--finalize-discovery")
+    if execute_frozen_holdout:
+        command.append("--execute-frozen-holdout")
     process = subprocess.Popen(command, cwd=ROOT, env=child_env, stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT, text=True,
                                start_new_session=(os.name == "posix"))
@@ -774,18 +926,23 @@ def main(argv: list[str] | None = None) -> int:
                         help="authorize native model and science dispatch through the guarded Omnigent harness")
     parser.add_argument("--finalize-discovery", action="store_true",
                         help="after the adaptive Runner response, perform bounded final review and protocol freeze")
+    parser.add_argument("--execute-frozen-holdout", action="store_true",
+                        help="opt in to one bounded post-freeze holdout attempt; requires finalization and live mode")
     parser.add_argument("--_trusted-child", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.check_only:
-        print(json.dumps(check_only(finalize_discovery=args.finalize_discovery), sort_keys=True))
+        print(json.dumps(check_only(finalize_discovery=args.finalize_discovery,
+                                    execute_frozen_holdout=args.execute_frozen_holdout), sort_keys=True))
         return 0
     if args._trusted_child:
         return _run_native_adaptive_child(model=args.model, remaining_seconds=args.remaining_seconds,
                                           enable_native_live=args.enable_native_live,
-                                          finalize_discovery=args.finalize_discovery)
+                                          finalize_discovery=args.finalize_discovery,
+                                          execute_frozen_holdout=args.execute_frozen_holdout)
     return run_native_adaptive(model=args.model, remaining_seconds=args.remaining_seconds,
                                enable_native_live=args.enable_native_live,
-                               finalize_discovery=args.finalize_discovery)
+                               finalize_discovery=args.finalize_discovery,
+                               execute_frozen_holdout=args.execute_frozen_holdout)
 
 
 if __name__ == "__main__":

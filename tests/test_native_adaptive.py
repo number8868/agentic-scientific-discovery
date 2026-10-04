@@ -257,6 +257,101 @@ def test_failure_feedback_write_error_does_not_mask_child_error(monkeypatch, tmp
                                      enable_native_live=True)
 
 
+def test_holdout_opt_in_marker_is_set_only_by_explicit_parent_flag(monkeypatch, tmp_path):
+    import os
+
+    class SuccessfulProcess:
+        pid = 45678
+        returncode = 0
+
+        def communicate(self, timeout=None):
+            return "", None
+
+    monkeypatch.setenv(launcher.HOLDOUT_APPROVAL_ENV, "1")
+    captured = []
+
+    def popen(command, **kwargs):
+        captured.append((command, kwargs["env"]))
+        return SuccessfulProcess()
+
+    _prepare_mock_parent_failure(monkeypatch, tmp_path, SuccessfulProcess())
+    monkeypatch.setattr(launcher.subprocess, "Popen", popen)
+    launcher.run_native_adaptive(enable_native_live=True, finalize_discovery=True)
+    assert launcher.HOLDOUT_APPROVAL_ENV not in captured[-1][1]
+    assert "--execute-frozen-holdout" not in captured[-1][0]
+
+    explicit_root = tmp_path / "explicit"
+    explicit_root.mkdir()
+    _prepare_mock_parent_failure(monkeypatch, explicit_root, SuccessfulProcess())
+    monkeypatch.setattr(launcher.subprocess, "Popen", popen)
+    launcher.run_native_adaptive(enable_native_live=True, finalize_discovery=True,
+                                 execute_frozen_holdout=True)
+    assert captured[-1][1][launcher.HOLDOUT_APPROVAL_ENV] == "1"
+    assert "--execute-frozen-holdout" in captured[-1][0]
+
+
+def test_holdout_opt_in_requires_finalize_and_live_without_context_access(monkeypatch):
+    from nova import live_bridge
+
+    def forbidden_context():
+        raise AssertionError("invalid holdout flags must fail before context access")
+
+    monkeypatch.setattr(live_bridge, "_read_context", forbidden_context)
+    with pytest.raises(ValueError, match="requires --finalize-discovery and --enable-native-live"):
+        launcher.run_native_adaptive(execute_frozen_holdout=True)
+
+
+def test_holdout_export_uses_protocol_sql_hash_and_succeeded_claim(monkeypatch, tmp_path):
+    import hashlib
+    import json
+    import sqlite3
+    from nova.contracts import Event, ExperimentSpec, Mode, Result, Split, Template
+    from nova.storage import Storage
+    from scripts import export_native_holdout_evidence as exporter
+
+    run_id = "export-holdout-regression"
+    run_dir = tmp_path / "runs" / run_id
+    run_dir.mkdir(parents=True)
+    database = run_dir / "run.sqlite"
+    database.touch()
+    store = Storage(database).initialize()
+    spec = ExperimentSpec(1, "NOVA-HOLDOUT-fixture", "hypothesis-fixture", "a" * 64,
+                          Split.HOLDOUT, Template.HOLDOUT_VALIDATION, ("oxide",), "PBE",
+                          (0.0, 1.0), 0.1, 0, 17, 30,
+                          parent_result_id="parent-result", review_id="parent-result",
+                          frozen_protocol_id="NOVA-FINAL-fixture")
+    protocol = {"dataset_sha256": spec.dataset_sha256, "holdout_experiment_id": spec.experiment_id}
+    protocol_sha = hashlib.sha256(json.dumps(protocol, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    store.save_final_protocol(run_id, "NOVA-FINAL-fixture", protocol_sha, protocol, spec,
+                              Event(run_id, 1, "freeze-event", "final_protocol_frozen", "host",
+                                    "2026-10-04T00:00:00+00:00", 0, Mode.LIVE, "NOVA-FINAL-fixture"))
+    result = Result("nova-result-" + "b" * 64, spec.experiment_id, spec.sha256, spec.dataset_sha256,
+                    "completed", "inconclusive", "2026-10-04T00:00:00+00:00",
+                    "2026-10-04T00:00:01+00:00", 1.0)
+    store.save_result(result)
+    store.append_event(run_id, "holdout_result", actor="runner", mode=Mode.LIVE,
+                       payload_ref=result.result_id)
+    with sqlite3.connect(database) as db:
+        db.execute("CREATE TABLE holdout_bridge_claims (run_id TEXT, holdout_experiment_id TEXT, "
+                   "frozen_protocol_id TEXT, protocol_sha256 TEXT, spec_sha256 TEXT, state TEXT, result_id TEXT)")
+        db.execute("INSERT INTO holdout_bridge_claims VALUES (?,?,?,?,?,?,?)",
+                   (run_id, spec.experiment_id, "NOVA-FINAL-fixture", protocol_sha, spec.sha256,
+                    "succeeded", result.result_id))
+    monkeypatch.setattr(exporter, "ROOT", tmp_path)
+    monkeypatch.setattr("nova.live_bridge._read_context", lambda: (database, run_id))
+    monkeypatch.setattr("nova.experiments.executor.export_science_artifacts", lambda *_args: None)
+    with pytest.raises(TimeoutError, match="shared workflow deadline"):
+        exporter.export_native_holdout_evidence(database, run_id, result.result_id, time.monotonic() - 1)
+    assert store.list_results() == [result]
+    output = exporter.export_native_holdout_evidence(database, run_id, result.result_id, time.monotonic() + 30)
+    manifest = json.loads((output / "manifest.json").read_text())
+    assert json.loads((output / "final_protocol.json").read_text()) == protocol
+    assert manifest["native_final_protocol"] == {"protocol_sha256": protocol_sha,
+                                                  "holdout_experiment_id": spec.experiment_id}
+    assert any(item["experiment_id"] == spec.experiment_id
+               for item in json.loads((output / "specs.json").read_text()))
+
+
 def test_trusted_native_child_requires_parent_marker_and_absolute_deadline(monkeypatch):
     monkeypatch.delenv(launcher.CHILD_MARKER, raising=False)
     monkeypatch.delenv(launcher.PARENT_PID_ENV, raising=False)
