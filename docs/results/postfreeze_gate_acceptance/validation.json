@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "stage": "post-freeze gate synthetic integration acceptance",
+  "recorded_at_utc": "2026-10-04T05:49:57.725165+00:00",
+  "linux_regression": {
+    "junit_sha256": "1c1e296acbdc062f174912b2fb7a7fdf3dad244a4c1cdc1b130cc9500d10042b",
+    "junit_filename": "postfreeze-regression.xml",
+    "tests": 424,
+    "passed": 424,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 46.044,
+    "time_basis": "root testsuites aggregate or nested suite times",
+    "case_counts_by_required_module": {
+      "test_native_holdout_acceptance": 7,
+      "test_native_holdout": 9,
+      "test_holdout_bridge": 18
+    },
+    "test_count_was_extracted_from_junit": true,
+    "pass_count_was_not_compared_to_a_fixed_whitelist": true,
+    "environment": "Linux/WSL; existing project virtual environment"
+  },
+  "initial_full_regression": {
+    "junit_sha256": "146c2d02151740cb92b602d5e53cdb25a0b592eea8b6bab7d6d38e1536a6e03f",
+    "junit_filename": "postfreeze-regression-initial.xml",
+    "tests": 424,
+    "passed": 422,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 55.332,
+    "failed_testcases": [
+      {
+        "classname": "tests.test_live_config",
+        "name": "test_launcher_check_only_does_not_start_omnigent"
+      },
+      {
+        "classname": "tests.test_live_config",
+        "name": "test_launcher_forces_bounded_environment"
+      }
+    ],
+    "environment_issue": "The first source-only snapshot lacked the .venv-omnigent/bin/python symlink expected by tests/test_live_config.py.",
+    "correction": "The existing Linux virtual environment was linked into the source-only checkout; no dependencies were installed and no B or A source code changed.",
+    "source_changes_between_initial_and_final_runs": false
+  },
+  "focused_native_holdout_acceptance": {
+    "junit_sha256": "0283d32e2cb791e049769b8946274993f677ccbb0b8fe6baed77a26cdeef4d39",
+    "junit_filename": "postfreeze-focused.xml",
+    "tests": 7,
+    "passed": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 1.058,
+    "case_counts_by_module": {
+      "test_native_holdout_acceptance": 7
+    }
+  },
+  "tested_checkout": {
+    "kind": "source-only Linux checkout",
+    "top_level_data_present": false,
+    "top_level_nova_context_present": false,
+    "existing_linux_venv_alias_is_symlink": true,
+    "existing_linux_venv_alias_resolves": true,
+    "files_compared": 19,
+    "all_bytes_match_tested_checkout": true,
+    "working_sha256": {
+      "docs/B_POST_FREEZE_HANDOFF.md": "a77e38693a6a1d119d143ed7907c488aee1855c24cacf8639d026ef3d8ed4c5f",
+      "nova/native_adaptive_runtime.py": "275965b7f80959be06d9f5dca0c20823af9aefb1762524a543dea81e48b777ed",
+      "nova/native_holdout_tools.py": "1d77bb4c9b0f740b338662bc978eb6356ee8bfaa09bb9b3ba06f612f5357fbe2",
+      "nova/native_finalization_tools.py": "301872bb4f31d52c6d7c1f4afa6cfa9473de408bcfc5d1401ee259f4b3043865",
+      "nova/adaptive_agent_tools.py": "5574f6f9e23b1baac8187b35e02548b3ad802debd00713d09b279abfb11c9551",
+      "nova/native_adaptive_harness.py": "bb7d2cb65b3442647ea0344b1a2bd441dbe2912b1d6cb1cff9690a9c154c263d",
+      "scripts/run_native_adaptive.py": "e9d1ac216a0982823bd9f1491aaa276e4eb792a5cb8075464014d65006cd2a2d",
+      "scripts/export_native_holdout_evidence.py": "7ae013f69d3c5092b5996a7e6bd879a02b44db880a891c1ad8150e2582e49ff3",
+      "agents/adaptive-live.yaml": "3d494c7a817b84119e650874d782681f5572339677025cdec411b95fbea8a7f7",
+      "agents/adaptive-finalize.yaml": "7689c1cc986738599ac9c41b43fbf5efa3f24109da5f30ae262d2c63f4fe14e6",
+      "agents/adaptive-holdout.yaml": "f5b63568b8dd3b7f40935e63c35e82aa6f2d3aa8589f69265fcd5a628b7948bf",
+      "nova/holdout_bridge.py": "4a7dbf2852cd0a21ece1f9d54c2a03834156126fdd8a93db9af67074abfeca3b",
+      "nova/process_control.py": "03e4d91e82293f5d6a20657feeba1b815d6869b0582e56893979a501f917e22b",
+      "nova/experiments/holdout_validation.py": "0476df45a41c7aa48840050f7b81af7e071808b7c48bb1a5d67785a46f2ae420",
+      "nova/experiments/executor.py": "c05ce11730967ccf325552c2e8a7a66698390f05b9591368ff4f553ab6e7ac48",
+      "tests/test_native_holdout_acceptance.py": "d455a333ea1187b6af18600b46b9533e41938afa0e4b4b59d741a3ff383836e8",
+      "tests/test_native_holdout.py": "acfda7ea69c90d1f727b5d3ebc32f7e4d036ed7e173420351010ac7f5d10a44c",
+      "tests/test_holdout_bridge.py": "fb3d8e46221339ae310c0bdb74a6401f7628cfb72f22cb0482421f5ad1e5bd8a",
+      "tests/test_live_config.py": "89c715690bee24fe81be9ee08af894d0022b30ea6d2ea7267500345c3d1f8da5"
+    },
+    "checkout_sha256": {
+      "docs/B_POST_FREEZE_HANDOFF.md": "a77e38693a6a1d119d143ed7907c488aee1855c24cacf8639d026ef3d8ed4c5f",
+      "nova/native_adaptive_runtime.py": "275965b7f80959be06d9f5dca0c20823af9aefb1762524a543dea81e48b777ed",
+      "nova/native_holdout_tools.py": "1d77bb4c9b0f740b338662bc978eb6356ee8bfaa09bb9b3ba06f612f5357fbe2",
+      "nova/native_finalization_tools.py": "301872bb4f31d52c6d7c1f4afa6cfa9473de408bcfc5d1401ee259f4b3043865",
+      "nova/adaptive_agent_tools.py": "5574f6f9e23b1baac8187b35e02548b3ad802debd00713d09b279abfb11c9551",
+      "nova/native_adaptive_harness.py": "bb7d2cb65b3442647ea0344b1a2bd441dbe2912b1d6cb1cff9690a9c154c263d",
+      "scripts/run_native_adaptive.py": "e9d1ac216a0982823bd9f1491aaa276e4eb792a5cb8075464014d65006cd2a2d",
+      "scripts/export_native_holdout_evidence.py": "7ae013f69d3c5092b5996a7e6bd879a02b44db880a891c1ad8150e2582e49ff3",
+      "agents/adaptive-live.yaml": "3d494c7a817b84119e650874d782681f5572339677025cdec411b95fbea8a7f7",
+      "agents/adaptive-finalize.yaml": "7689c1cc986738599ac9c41b43fbf5efa3f24109da5f30ae262d2c63f4fe14e6",
+      "agents/adaptive-holdout.yaml": "f5b63568b8dd3b7f40935e63c35e82aa6f2d3aa8589f69265fcd5a628b7948bf",
+      "nova/holdout_bridge.py": "4a7dbf2852cd0a21ece1f9d54c2a03834156126fdd8a93db9af67074abfeca3b",
+      "nova/process_control.py": "03e4d91e82293f5d6a20657feeba1b815d6869b0582e56893979a501f917e22b",
+      "nova/experiments/holdout_validation.py": "0476df45a41c7aa48840050f7b81af7e071808b7c48bb1a5d67785a46f2ae420",
+      "nova/experiments/executor.py": "c05ce11730967ccf325552c2e8a7a66698390f05b9591368ff4f553ab6e7ac48",
+      "tests/test_native_holdout_acceptance.py": "d455a333ea1187b6af18600b46b9533e41938afa0e4b4b59d741a3ff383836e8",
+      "tests/test_native_holdout.py": "acfda7ea69c90d1f727b5d3ebc32f7e4d036ed7e173420351010ac7f5d10a44c",
+      "tests/test_holdout_bridge.py": "fb3d8e46221339ae310c0bdb74a6401f7628cfb72f22cb0482421f5ad1e5bd8a",
+      "tests/test_live_config.py": "89c715690bee24fe81be9ee08af894d0022b30ea6d2ea7267500345c3d1f8da5"
+    }
+  },
+  "protected_sources": {
+    "source_count": 6,
+    "matches_native06_acceptance_hashes": true,
+    "sha256": {
+      "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+      "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+      "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+      "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+      "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+      "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+    }
+  },
+  "source_review": {
+    "review_status": "complete_no_blocking_source_defect_found_in_scope",
+    "review_kind": "source_only_static_interface_review",
+    "tests_executed_by_reviewer": false,
+    "live_science_or_model_calls_by_reviewer": false,
+    "reviewed_source_hashes_match_workspace": 7,
+    "sha256": "5ff4ca92c422e123f543dff33cbcad004e9810d8dd69bd89a113c99af34df9bd"
+  },
+  "environment_preflight": {
+    "report_sha256": "8a7a9ba68710c4049b82555600833afb7b0968766d0420914a8e0119d25a302a",
+    "prepared_data_hash_preflight": {
+      "status": "passed",
+      "manifest_status": "ready",
+      "verified_file_count": 9,
+      "hashes": {
+        "protocol_sha256": "9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+        "representative_compositions_csv_sha256": "d7184816ea97e4daa860b1a93a387b56a82280d3758eb2f658fbfa7ab021fb50",
+        "source_zip_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+        "split_assignment_sha256": "96c9c210f77698d47bfdb68f9b3ad65673766a879785a6c7d983d7ee3777a58c"
+      },
+      "read_boundary": "manifest/reference metadata and streaming SHA-256 only; CSV rows and holdout outcomes were not read"
+    },
+    "check_only": {
+      "status": "passed",
+      "arguments": [
+        "--check-only",
+        "--finalize-discovery",
+        "--execute-frozen-holdout"
+      ],
+      "bootstrap_route_available": true,
+      "guardrail_status": "requested_unverified_not_effective",
+      "guardrail_verified": false,
+      "runtime_ready": false,
+      "live_execution_enabled": false,
+      "model_calls": false,
+      "science_calls": false,
+      "interpretation": "route availability is a check-only result; guardrails remain unverified and live execution is disabled"
+    }
+  },
+  "scope": {
+    "command_scope": "offline synthetic and mocked regression; no live native workflow",
+    "model_calls": 0,
+    "real_science_calls": 0,
+    "real_science_call_definition": "live or real-data science execution; synthetic fixture execution is reported separately",
+    "synthetic_fixture_science_code_may_execute": true,
+    "holdout_outcomes_read": false,
+    "private_context_or_sqlite_opened_by_recorder": false,
+    "prepared_or_raw_data_opened_by_recorder": false,
+    "live_holdout_authorized_or_performed": false
+  },
+  "publication_checksum_policy": "hash every file currently published under docs/results/postfreeze_gate_acceptance except published_checksums.json itself; includes README, validation, source review, and any sanitized preflight report placed there"
+}
