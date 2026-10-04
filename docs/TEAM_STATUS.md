@@ -1,5 +1,34 @@
 # Team status and handoff
 
+## Team A milestone 11 — independent scientific closeout, in progress
+
+Synced a clean worktree to B `9cda56f`, which merges A's PR #12 and includes
+the preserved failed native attempt at `fe02c2a`. Main remains `01f17db`.
+A's new branch is `codex/science-closeout`; no B orchestration, shared contract,
+frozen science file, historical result or private run state is changed.
+
+The [independent acceptance report](results/science_closeout/README.md)
+verifies all 11 manifest entries and 12 source hash-inventory entries, both
+registered and computation hashes and content-addressed Result IDs. Primary
+facts and every frozen threshold point exactly match earlier published
+science; arithmetic and stored review references pass. This is stored-evidence
+comparison without a new science/model call, prepared-data read or holdout
+outcome read. The native run remains failed; absent model traces, effective
+runtime guards and supervisor return are not repaired or certified by A.
+
+Delivered [scientific submission wording](SCIENCE_SUBMISSION_BRIEF.md),
+including exact claim/evidence boundaries and three representative-JID
+examples, and a [fixed-rule/run-all comparison plan](BASELINE_COMPARISON_PLAN.md)
+with an explicitly pending measurement template. No timing pairs, cost
+observations or video rehearsal are claimed.
+
+A coding helper uses `gpt-6-luna` / `max` for a small portable audit entry
+that reuses the existing scientific payload validator. Implementation and
+independent Linux verification remain in progress. The helper configuration
+does not select any Omnigent experiment model.
+
+---
+
 ## Team A milestone 10 — scientific review interface delivered, 2026-10-03
 
 Refreshed a clean worktree: main remains `01f17db`, and B has merged A's

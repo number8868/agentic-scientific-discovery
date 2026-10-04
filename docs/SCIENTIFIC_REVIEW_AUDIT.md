@@ -1,5 +1,16 @@
 # Scientific interpretation and citation handoff
 
+Latest addendum: A's [independent stored-result acceptance](results/science_closeout/README.md)
+checks the published failed native run from B `fe02c2a`. Both persisted science
+Results and the fixed threshold grid match their historical evidence. The
+registered and minimized computation hashes each validate against their own
+contract. The saved sparse-count review and threshold recommendation are
+scientifically acceptable as stored text, with resolved Result references.
+Native workflow completion, independent model review and effective runtime
+guards remain unverified; the original run stays failed. See the new
+[submission wording](SCIENCE_SUBMISSION_BRIEF.md) and
+[unmeasured baseline plan](BASELINE_COMPARISON_PLAN.md).
+
 Reviewed on 2026-10-03 against the published `luna-pilot-07` evidence and the
 paired-method audit. The original model text and frozen protocol remain
 unchanged. This review is an independent reading of stored evidence, not a new
