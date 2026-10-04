@@ -1,5 +1,29 @@
 # Frozen holdout validation handoff
 
+## Post-freeze interface acceptance
+
+B [PR #22](https://github.com/number8868/agentic-scientific-discovery/pull/22)
+is merged at main `cdde367`. Its optional post-freeze Runner now connects the
+existing A gate inside the fresh native workflow's original shared deadline.
+A's [independent acceptance](results/postfreeze_gate_acceptance/README.md)
+found no blocking source defect within the reviewed scope; seven new
+synthetic integration cases exercise the real A claim/transaction, nested
+timeouts, tamper rejection and durable no-retry behavior. The combined Linux
+regression passes 424 tests with no skips after correcting a test-tree venv
+link, without production changes. This is offline compatibility evidence;
+no actual holdout outcome is established.
+
+The three temporary private-hook wrappers restore themselves in `finally`.
+Do not invoke unrelated A gate calls concurrently in the same process.
+SQLite deadline checks are cooperative; the bounded POSIX parent supplies
+the outer cancellation deadline. The claim enforces one attempt per frozen
+run, so one actual team validation also requires coordinated ownership across
+hosts. A owns the next scientific acceptance and interpretation. A method or
+stop choice cannot be substituted into the original family/threshold freeze.
+Use a fresh valid native run and retain its original budget, exact guarded PI
+response and frozen ID. Export alone is not native authorization, and any
+failed/partial validation must be preserved without another computation.
+
 ## Latest native freeze review
 
 Native run06 on `955aaea` completed the bounded discovery/review/freeze path
@@ -13,10 +37,10 @@ do not reset it, rebuild its private context or import its portable events.
 
 The [gate review](results/native06_science_acceptance/holdout_gate_review.json)
 checks source only: A's bridge enforces immutable lineage, one attempt and
-worker/science budgets; B must connect a dedicated post-freeze Runner inside
-the original whole-run deadline. The current YAML stops with holdout
-unexecuted. A real validation therefore needs this orchestration connection
-in a fresh valid run, with the original protocol and no method extension.
+worker/science budgets. The historical run06 YAML stops with holdout
+unexecuted; B PR #22 adds the separate opt-in connection described above.
+A real validation still needs a fresh valid run, with the original protocol
+and no method extension.
 No holdout property, outcome or private runtime state was read in A's review.
 
 B run03 and the following implementation notes are historical evidence:

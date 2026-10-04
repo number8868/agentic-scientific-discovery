@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "review_kind": "source_only_static_interface_review",
+  "review_status": "complete_no_blocking_source_defect_found_in_scope",
+  "repository": {
+    "branch": "codex/post-freeze-gate-acceptance",
+    "head": "cdde367579765c3dbf52ce23217780ac4ab280cf",
+    "base_note": "Requested PR #22 / main handoff context; reviewed checked-out source at the recorded HEAD."
+  },
+  "conclusion": "The reviewed opt-in path has source-level gates for the requested authorization, lineage, bounded execution, one-attempt claim, persistence, and export behaviors. This is not operational readiness, scientific validation, or authorization for a live attempt.",
+  "review_boundary": {
+    "tests_executed": false,
+    "live_science_or_model_calls": false,
+    "prepared_or_raw_holdout_inputs_read": false,
+    "holdout_outcomes_read": false,
+    "nova_context_or_live_sqlite_read": false,
+    "test_execution_note": "Relevant existing test names were inventoried only. The 417-test count is B-reported context and was not independently verified or run by this reviewer. tests/test_native_holdout_acceptance.py was left to its separate owner and was not inspected."
+  },
+  "requirements": [
+    {
+      "requirement": "One original monotonic deadline covers adaptive, finalization, and holdout sessions.",
+      "status": "source_supported_with_outer_timeout_limit",
+      "evidence": [
+        {"file": "scripts/run_native_adaptive.py", "lines": "813-866", "functions": ["run_native_adaptive"], "supports": "Creates one monotonic deadline, passes it unchanged in the trusted child environment with the expected database and run IDs, and bounds the parent wait by the same deadline."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "575-590", "functions": ["_run_omnigent_cli_session"], "supports": "Each invocation uses a separate CLI --no-session invocation."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "643-644", "functions": ["_run_native_adaptive_child"], "supports": "Runs the adaptive session."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "680-682", "functions": ["_run_native_adaptive_child"], "supports": "Runs finalization in the same trusted child and inherited deadline."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "726-751", "functions": ["_run_native_adaptive_child"], "supports": "Runs the dedicated holdout session in the same child and passes the same absolute deadline to evidence export."},
+        {"file": "docs/B_POST_FREEZE_HANDOFF.md", "lines": "9-16", "functions": [], "supports": "Documents fresh-run opt-in, one shared deadline across three sessions, and cooperative POSIX process-group validation."}
+      ],
+      "limitation": "The parent enforces the outer wall-time bound. Process-group termination is available on POSIX; the non-POSIX branch terminates the direct child, and the holdout adapter itself rejects non-POSIX. No cross-platform hard-kill claim is made."
+    },
+    {
+      "requirement": "Fresh workflow state remains bound to the expected database and run.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "scripts/run_native_adaptive.py", "lines": "834-851", "functions": ["run_native_adaptive"], "supports": "Checks the active context against the host parent record, calls the fresh-follow-up gate, and binds the child to the resolved database and run ID."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "615-625", "functions": ["_run_native_adaptive_child"], "supports": "The child re-reads the parent context, compares it to the inherited expected binding, and repeats the freshness gate."},
+        {"file": "nova/adaptive_agent_tools.py", "lines": "203-214", "functions": ["_assert_fresh_followup"], "supports": "Rejects existing adaptive choice/state rows for the run before a new adaptive workflow."},
+        {"file": "nova/native_holdout_tools.py", "lines": "83-106", "functions": ["_trusted_scope"], "supports": "Requires trusted expected database/run values and checks them against the current bound context before accepting the original finite deadline."},
+        {"file": "nova/native_holdout_tools.py", "lines": "143-172", "functions": ["execute_frozen_native_holdout"], "supports": "Repeats database/run and deadline checks before claim, worker execution, and persistence."}
+      ],
+      "limitation": "Freshness here means an unstarted adaptive workflow on the currently bound eligible run. It does not mean a globally unique run across machines or future runs."
+    },
+    {
+      "requirement": "The frozen protocol is tied to an exact PI response and a guarded successful freeze turn.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "nova/native_adaptive_runtime.py", "lines": "87-110", "functions": ["_write_final_pi_response"], "supports": "Stores the exact bounded PI response text, role, PID, freeze call ID, character count, and SHA-256 in a private run-owned file."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "144-174", "functions": ["read_final_pi_response"], "supports": "Checks the response file shape, permissions, role, PID, length, and text hash."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "302-365", "functions": ["install_codex_guardrails.traced_turn"], "supports": "Traces guarded tool requests/completions and stores the exact response only after a successful PI freeze tool call and TurnComplete."},
+        {"file": "nova/native_holdout_tools.py", "lines": "43-80", "functions": ["_verify_finalization_proof"], "supports": "Binds the PI response PID/call ID and response digest to a guarded freeze request, successful structured completion, and later completed-turn hash."},
+        {"file": "nova/native_holdout_tools.py", "lines": "113-128", "functions": ["_trusted_scope"], "supports": "Requires both the persisted frozen state and validated exact PI response before execution."}
+      ],
+      "limitation": "This authenticates the trace and returned response bytes within the cooperative host runtime. It does not attest the model provider or independently certify response semantics."
+    },
+    {
+      "requirement": "Holdout execution is dispatched through a dedicated ID-only Runner.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "scripts/run_native_adaptive.py", "lines": "185-212", "functions": ["_holdout_yaml"], "supports": "Validates a distinct holdout_runner agent with exactly one function and a closed schema containing only the registered experiment_id string."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "726-740", "functions": ["_run_native_adaptive_child"], "supports": "Verifies the frozen host ID before dispatch and prompts the dedicated Runner with that ID only."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "495-514", "functions": ["verify_executor_trace"], "supports": "Requires holdout_runner role, exactly the experiment_id argument name, a matching frozen ID hash, and a guarded trace."},
+        {"file": "nova/holdout_bridge.py", "lines": "562-587", "functions": ["execute_live_registered_holdout"], "supports": "Accepts an experiment ID, resolves the current context and frozen host record, and checks that the ID equals the host-registered holdout."}
+      ]
+    },
+    {
+      "requirement": "A's immutable discovery lineage, science constraints, and no-failed-discovery checks remain authoritative.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "nova/holdout_bridge.py", "lines": "105-120", "functions": ["_check_frozen_science_spec"], "supports": "Requires the frozen discovery templates, split, groups, method, thresholds, repeats, seed, and 120-second registered timeout."},
+        {"file": "nova/holdout_bridge.py", "lines": "130-234", "functions": ["_assert_owned_discovery"], "supports": "Checks protocol shape, registered specs/results, exact live run-owned execution/selection lineage, linked follow-up, failed discovery events, and both Skeptic reviews in order."},
+        {"file": "nova/holdout_bridge.py", "lines": "327-351", "functions": ["_verified_evidence"], "supports": "Rehashes and validates discovery artifacts before passing canonical Results and the verified threshold payload to the worker."},
+        {"file": "nova/holdout_bridge.py", "lines": "583-625", "functions": ["execute_live_registered_holdout"], "supports": "Verifies canonical frozen protocol identity, active dataset, derived registered spec, review/freeze order, and no pre-freeze tool_failed event before claiming."}
+      ],
+      "limitation": "These checks cover A's persisted run event and immutable artifact model. They do not establish scientific quality or validate external events absent from that run record."
+    },
+    {
+      "requirement": "Claim occurs only after an immediate binding/deadline check, and worker timeout is the minimum of global remaining time, 120 seconds, remaining 360-second discovery budget, and registered timeout.",
+      "status": "source_supported_with_documented_cooperative_window",
+      "evidence": [
+        {"file": "nova/native_holdout_tools.py", "lines": "143-164", "functions": ["execute_frozen_native_holdout.BoundedController.run", "bounded_claim"], "supports": "Checks binding/deadline immediately before A's claim and bounds the controller call by A's timeout and current global remaining time."},
+        {"file": "nova/holdout_bridge.py", "lines": "27-28", "functions": [], "supports": "Defines MAX_WORKER_SECONDS=120 and AGGREGATE_SCIENCE_BUDGET_SECONDS=360."},
+        {"file": "nova/holdout_bridge.py", "lines": "601-603", "functions": ["execute_live_registered_holdout"], "supports": "Computes discovery budget already consumed and fails when the 360-second aggregate is exhausted."},
+        {"file": "nova/holdout_bridge.py", "lines": "637-645", "functions": ["execute_live_registered_holdout"], "supports": "Passes min(120 seconds, remaining aggregate discovery budget, registered timeout) into the worker controller; B's wrapper further mins this with global remaining time."}
+      ],
+      "limitation": "The deadline check is cooperative, not transactionally atomic with SQLite claim creation or worker startup. The handoff explicitly disclaims nanosecond-atomic SQLite deadlines and identifies the parent timeout as the outer bound (docs/B_POST_FREEZE_HANDOFF.md:33-37)."
+    },
+    {
+      "requirement": "Successful Result persistence is checked before expiry and committed with run ownership and successful claim; failed claims do not retry.",
+      "status": "source_supported_with_documented_cooperative_window",
+      "evidence": [
+        {"file": "nova/native_holdout_tools.py", "lines": "170-172", "functions": ["bounded_persist"], "supports": "Checks the same database/run binding and deadline immediately before A persists success."},
+        {"file": "nova/holdout_bridge.py", "lines": "354-402", "functions": ["_claim_table", "_claim"], "supports": "Uses a durable unique per-run claim and returns or rejects existing claimed/failed/succeeded states."},
+        {"file": "nova/holdout_bridge.py", "lines": "499-546", "functions": ["_mark_failed", "_persist_success"], "supports": "Marks a claimed attempt failed on execution error; atomically commits Result, run-owned event, and succeeded claim."},
+        {"file": "nova/holdout_bridge.py", "lines": "623-655", "functions": ["execute_live_registered_holdout"], "supports": "Rejects prior attempted claims and fails without retry after worker timeout/error."},
+        {"file": "docs/B_POST_FREEZE_HANDOFF.md", "lines": "33-37", "functions": [], "supports": "States the bounded adapter is cooperative and SQLite deadline checks are not nanosecond-atomic."}
+      ],
+      "claim_scope": "Exactly one attempt per run as represented by UNIQUE(run_id) and the run-scoped claim key. No source basis for a global once-only guarantee across hosts or fresh runs.",
+      "limitation": "SQLite connections use finite lock waits, so a check can precede a write that blocks across expiry. The implementation fails closed on a later worker/persist check and the parent deadline bounds the process, but this is not a real-time atomic write guarantee."
+    },
+    {
+      "requirement": "Temporary A gate hooks are restored even when execution fails.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "nova/native_holdout_tools.py", "lines": "137-194", "functions": ["execute_frozen_native_holdout"], "supports": "Installs the three adapter hooks under a process-local reentrant lock and restores _claim, _controller_factory, and _persist_success in finally."}
+      ],
+      "limitation": "The same-process lock protects this adapter; it does not make unrelated direct invocations of A's private hooks safe to run concurrently, as documented in the handoff at lines 33-37."
+    },
+    {
+      "requirement": "Evidence export reads persisted results and never executes science.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "scripts/export_native_holdout_evidence.py", "lines": "14-73", "functions": ["export_native_holdout_evidence"], "supports": "Loads the persisted Result, frozen protocol, succeeded claim, and run-owned Result event before export."},
+        {"file": "scripts/export_native_holdout_evidence.py", "lines": "75-109", "functions": ["export_native_holdout_evidence"], "supports": "Serializes existing specs/results and their science artifacts, checks context/deadline, and writes the export manifest; it contains no science execution call."},
+        {"file": "docs/B_POST_FREEZE_HANDOFF.md", "lines": "24-29", "functions": [], "supports": "Requires export to read persisted Results only and distinguishes scientific export from native authorization proof."}
+      ],
+      "limitation": "This portable export is scientific evidence, not the native trace/authorization bundle. The original private audit and exact PI response remain separately required."
+    },
+    {
+      "requirement": "Trace or export failure is reported as failed/partial while any persisted Result remains available for inspection without retry.",
+      "status": "source_supported",
+      "evidence": [
+        {"file": "scripts/run_native_adaptive.py", "lines": "739-787", "functions": ["_run_native_adaptive_child"], "supports": "Wraps holdout trace verification, private Result read, and evidence export; on error records a failure event when possible, reloads an already-written Result record, emits failed_or_partial status, and raises."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "114-207", "functions": ["_write_holdout_result_once", "read_native_holdout_result"], "supports": "Stores and hash-checks the successful host tool Result in a private run-owned record."},
+        {"file": "docs/B_POST_FREEZE_HANDOFF.md", "lines": "24-29", "functions": [], "supports": "Instructs preservation and inspection of an already committed Result after export/trace failure, not a rerun."}
+      ],
+      "limitation": "If the private trace record itself could not be written/read, the emitted status is unknown_or_partial and may omit the Result ID; the A database transaction remains the authoritative persisted record."
+    },
+    {
+      "requirement": "Runtime compatibility checks fail closed and do not claim provider or OS attestation.",
+      "status": "source_supported_with_platform_limit",
+      "evidence": [
+        {"file": "scripts/run_native_adaptive.py", "lines": "230-265", "functions": ["check_only"], "supports": "Requires exact Omnigent pin, validates requested surfaces, and explicitly reports runtime_ready=false, guardrail unverified, and no model/science calls."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "268-289", "functions": ["_verify_runtime_route", "_require_runtime_ready"], "supports": "Checks pinned internal signatures/harness routing and requires explicit live opt-in plus route availability."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "20-23", "functions": [], "supports": "Pins Omnigent to 0.16.0 and fixes the guarded host configuration."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "251-300", "functions": ["install_codex_guardrails"], "supports": "Rejects a pin/API/field/host mismatch and checks native tools, web search, skills, and config overrides in the guarded executor."},
+        {"file": "nova/native_adaptive_runtime.py", "lines": "454-547", "functions": ["verify_executor_trace"], "supports": "Rejects unguarded/missing/incomplete/failed turns and mismatched role/tool/result traces."},
+        {"file": "scripts/run_native_adaptive.py", "lines": "434-447", "functions": ["_create_runtime_manifest"], "supports": "Labels model fields as configured values and guardrail verification as requested_unverified_not_effective; it does not claim provider attestation."},
+        {"file": "nova/native_holdout_tools.py", "lines": "23-40", "functions": ["_verify_trusted_descendant"], "supports": "Requires POSIX, a live trusted owner/parent, and matching cooperative process group; this is not an OS sandbox."},
+        {"file": "docs/B_POST_FREEZE_HANDOFF.md", "lines": "13-16", "functions": [], "supports": "Explicitly limits process-group checking to cooperative runtime validation, not malicious-host protection or OS sandboxing."}
+      ],
+      "limitation": "This Windows review host is not a supported holdout execution host: _verify_trusted_descendant rejects non-POSIX before claim. No provider attestation, model identity proof, or OS sandbox attestation is asserted."
+    }
+  ],
+  "test_source_inventory_not_execution_results": [
+    {"file": "tests/test_native_holdout.py", "tests": ["test_final_pi_response_must_match_completed_freeze_turn", "test_expired_before_claim_does_not_claim_and_restores_gate", "test_bounded_controller_uses_original_remaining_deadline", "test_deadline_expiring_after_worker_return_prevents_result_persistence", "test_context_mismatch_and_exception_restore_gate"]},
+    {"file": "tests/test_native_adaptive.py", "tests": ["test_check_only_never_needs_model_or_science_runtime", "test_holdout_opt_in_marker_is_set_only_by_explicit_parent_flag", "test_holdout_export_uses_protocol_sql_hash_and_succeeded_claim", "test_trusted_native_child_requires_parent_marker_and_absolute_deadline", "test_host_bound_context_rejects_changed_database_or_run", "test_runner_receives_only_pi_registered_id_and_returns_real_result"]},
+    {"file": "tests/test_export_adaptive_evidence.py", "tests": ["test_failed_native_runner_export_preserves_failure_without_supervisor_completion", "test_native_export_labels_host_validation_recovery_and_preserves_prior_failure"]}
+  ],
+  "raw_source_sha256": {
+    "docs/B_POST_FREEZE_HANDOFF.md": "A77E38693A6A1D119D143ED7907C488AEE1855C24CACF8639D026EF3D8ED4C5F",
+    "nova/native_holdout_tools.py": "1D77BB4C9B0F740B338662BC978EB6356EE8BFAA09BB9B3BA06F612F5357FBE2",
+    "nova/native_adaptive_runtime.py": "275965B7F80959BE06D9F5DCA0C20823AF9AEFB1762524A543DEA81E48B777ED",
+    "scripts/run_native_adaptive.py": "E9D1AC216A0982823BD9F1491AAA276E4EB792A5CB8075464014D65006CD2A2D",
+    "scripts/export_native_holdout_evidence.py": "7AE013F69D3C5092B5996A7E6BD879A02B44DB880A891C1AD8150E2582E49FF3",
+    "nova/holdout_bridge.py": "4A7DBF2852CD0A21ECE1F9D54C2A03834156126FDD8A93DB9AF67074ABFECA3B",
+    "nova/adaptive_agent_tools.py": "5574F6F9E23B1BAAC8187B35E02548B3AD802DEBD00713D09B279ABFB11C9551"
+  }
+}

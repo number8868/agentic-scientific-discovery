@@ -1,5 +1,35 @@
 # Team status and handoff
 
+## Team A milestone 15 — post-freeze adapter accepted offline
+
+Based on merged B PR #22 (main `cdde367`), A independently reviewed the
+dedicated ID-only holdout Runner and its three scoped wrappers around the
+unchanged scientific gate. The [acceptance package](results/postfreeze_gate_acceptance/README.md)
+records eleven source checks, seven synthetic integration cases using the
+real SQLite claim/canonical Result transaction, and **424 complete Linux
+tests passed**, zero errors/failures/skips, 46.05 seconds. The initial two
+environment setup failures were corrected by linking the existing actual
+Linux venv into the source-only tree, without changing code; initial evidence
+is retained. Prepared metadata/byte preflight (nine checks) and three-stage
+configuration preflight pass separately with no model/science calls.
+
+A changed only its new acceptance test and review/coordination documents.
+Frozen source/dependency bytes, scientific parameters, historical evidence,
+B production runtime/prompts and shared contracts remain unchanged. The
+private-hook compatibility review supports one fresh controlled validation
+through the original gate; it is not native authorization from portable files.
+The per-run claim is not a global cross-host lock, so A coordinated ownership
+of the actual validation on B PR #22. POSIX process-group cancellation is an
+outer bound; SQLite checks remain cooperative. Method/stop choices retain
+their original unsupported-for-this-freeze status.
+
+No new real model/science workflow or holdout outcome was executed/read in
+this offline stage, and native06 remains expired. Existing authentication is
+available via the official CLI; the next A stage is one fresh bounded native
+attempt and scientific interpretation, preserving any failure/partial Result
+without recomputation. Actual validation, matched latency/cost baselines and
+final recording/submission are still pending.
+
 ## B post-freeze handoff — implementation ready for review, not live acceptance
 
 Based on merged A PR #21 (`12b89c0`), B adds a default-disabled
