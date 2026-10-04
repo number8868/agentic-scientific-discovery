@@ -209,7 +209,12 @@ def _record(event_type: str, payload_ref: str | None = None) -> None:
 
 
 def _record_finalization_response(database: Path, run_id: str, transcript: str) -> str:
-    """Persist the bounded final PI response separately from the adaptive response."""
+    """Persist the bounded final PI reply separately from the adaptive response.
+
+    This records the CLI's captured text only. It does not establish that the
+    executor trace or final response hash has been verified, or that the run
+    completed successfully.
+    """
     from nova.contracts import Mode
     from nova.storage import Storage
 
@@ -229,6 +234,15 @@ def _record_finalization_response(database: Path, run_id: str, transcript: str) 
                    (run_id, transcript, digest))
     store.append_event(run_id, "native_finalization_supervisor_response", actor="pi", mode=Mode.LIVE,
                        payload_ref=f"sha256:{digest}")
+    return digest
+
+
+def _capture_finalization_response_before_verification(
+    database: Path, run_id: str, transcript: str, verifier: Any,
+) -> str:
+    """Persist the CLI reply before host verification, even when verification fails."""
+    digest = _record_finalization_response(database, run_id, transcript)
+    verifier()
     return digest
 
 
@@ -425,9 +439,14 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                 raise RuntimeError("Omnigent finalization CLI returned no PI response")
             print(finalization_transcript, flush=True)
             from nova.native_adaptive_runtime import verify_executor_trace
-            verify_executor_trace(audit_path, codex_host,
-                                 required_tools=("record_adaptive_review", "submit_native_final_review",
-                                                 "freeze_native_final_protocol"))
+            finalization_response_sha256 = _capture_finalization_response_before_verification(
+                db, run_id, finalization_transcript,
+                lambda: verify_executor_trace(
+                    audit_path, codex_host,
+                    required_tools=("record_adaptive_review", "submit_native_final_review",
+                                    "freeze_native_final_protocol"),
+                ),
+            )
             from nova.contracts import Mode
             from nova.storage import Storage
             Storage(db).initialize().append_event(
@@ -450,8 +469,6 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     executor_verification = verify_executor_trace(audit_path, codex_host,
                                                  required_tools=required_final_tools,
                                                  final_response=finalization_transcript or None)
-    if finalization_transcript:
-        finalization_response_sha256 = _record_finalization_response(db, run_id, finalization_transcript)
     # A concise manifest event intentionally records no prompt, credentials,
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.

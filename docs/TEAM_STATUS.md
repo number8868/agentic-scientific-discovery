@@ -1,5 +1,24 @@
 # Team status and handoff
 
+## B run 04 update — final protocol frozen, native acceptance still failed
+
+PR #15 and #16 are merged; run 04 started from main c6cea09 with no tracked
+differences or unresolved conflicts. Actual discovery, final Skeptic review and
+PI freeze completed; holdout remains unexecuted. Original CLI exit 1 is
+preserved: final CLI output did not match the guarded freeze-turn response
+metadata hash. The captured output contains multiple PI replies. Investigation
+and a regression fix are in progress; no clean native success is claimed and
+no additional model run is being used to hide this failure. Scientific artifact
+audit passes, which is separate from native workflow acceptance. See
+[run 04 evidence](results/native_adaptive_live_04_frozen_cli_failed/README.md).
+
+The minimal launcher fix captures final CLI text before host verification,
+without writing a completion event on failure. Final combined regression: 381 tests,
+zero errors/failures/skips, 22.799 seconds. Extracted final-session text passes
+the original trace verifier posthoc; the original runtime mismatch remains
+unexplained. Strong response/tool/PID linkage is not loosened. No paid rerun
+or holdout execution followed this failure.
+
 ## B finalization update — real review/freeze, clean CLI pending
 
 The opt-in native finalization path is implemented without changing A's

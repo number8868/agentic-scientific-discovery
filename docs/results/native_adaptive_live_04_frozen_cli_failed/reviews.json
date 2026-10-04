@@ -1,0 +1,38 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-3dd5959fc94d1c30ad850a155ba85b75de46a19037b98a37a8753c27b6b3ea7f"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-3dd5959fc94d1c30ad850a155ba85b75de46a19037b98a37a8753c27b6b3ea7f"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-b7a2dc417166f8fc",
+    "reason": "The positive discovery contrast rests on only 3 oxide passes among 7,657 and 6 chalcogenide passes among 3,158. Although the resampling interval excludes zero (0.0001109 to 0.0032220), its lower bound is close to zero and its width leaves the contrast magnitude uncertain; supported_in_snapshot should therefore remain a bounded snapshot finding.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-3dd5959fc94d1c30ad850a155ba85b75de46a19037b98a37a8753c27b6b3ea7f"
+  },
+  {
+    "claim_refs": [
+      "nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86"
+    ],
+    "concerns": [
+      {
+        "concern_type": "final_protocol",
+        "evidence_refs": [
+          "nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-3b16648b7eb16bdb",
+    "reason": "Positive intervals at 0.025/0.05/0.1 eV/atom do not resolve the primary review's sparse-pass limitation: only 2\u20133 oxide and 5\u20138 chalcogenide passes occur. At 0.05 with optical gap 1.1\u20131.8 eV, counts are 3/7657 versus 6/3158; delta is 0.0015081383 with interval [0.0001109144, 0.0032220183]. Contrast magnitude remains uncertain; same-snapshot discovery sensitivity supports only supported_in_snapshot, without independent replication or holdout validation.",
+    "recommended_template": null,
+    "result_id": "nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86"
+  }
+]

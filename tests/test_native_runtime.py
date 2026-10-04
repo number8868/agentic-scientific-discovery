@@ -140,6 +140,73 @@ def test_final_trace_verifier_matches_real_turn_hash_and_provider_guard(tmp_path
         raise AssertionError("mismatched final PI response was accepted")
 
 
+def test_final_trace_verifier_binds_exact_finalization_text_after_retry_turn(tmp_path):
+    from nova.native_adaptive_runtime import CONFIG_OVERRIDES, verify_executor_trace
+
+    host = Path("/opt/codex-code-mode-host")
+    final_response = (
+        "Host confirmed `stage=frozen_unexecuted` for protocol `NOVA-FINAL-fixture`.\n\n"
+        "Skeptic Final recorded one medium concern: sparse pass counts leave the contrast’s "
+        "magnitude uncertain. Holdout `NOVA-HOLDOUT-fixture` remains unexecuted; findings "
+        "remain limited to discovery snapshot evidence.\n\n"
+        "The first freeze call was rejected for explanation length; the shortened retry succeeded."
+    )
+
+    def response_hash(text):
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        return hashlib.sha256(json.dumps(
+            {"response_sha256": digest, "response_chars": len(text)},
+            sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        ).encode("utf-8")).hexdigest()
+
+    rows = [{"event": "runner_bootstrap_installed", "pid": 10}]
+
+    def add_turn(pid, role, tool, call_id, *, structured_result="a" * 64,
+                 status="success", response="role response"):
+        rows.extend([
+            {"event": "executor_guard_installed", "pid": pid, "role": role,
+             "details": {"native_tools_disabled": True, "web_search_disabled": True,
+                         "skills": "none", "config_overrides": [*CONFIG_OVERRIDES,
+                                                                    'model_provider="openai"'],
+                         "host_binary": str(host)}},
+            {"event": "executor_turn_started", "pid": pid, "role": role},
+            {"event": "tool_request", "actor": "codex-model", "pid": pid, "role": role,
+             "tool": tool, "call_id": call_id},
+            {"event": "tool_complete", "actor": "omnigent-tool-dispatch", "pid": pid,
+             "role": role, "tool": tool, "call_id": call_id, "status": status,
+             "structured_result_sha256": structured_result},
+            {"event": "turn_complete", "actor": "codex-model", "pid": pid, "role": role,
+             "result_sha256": response_hash(response)},
+        ])
+
+    add_turn(20, "skeptic", "record_adaptive_review", "primary-review")
+    add_turn(21, "skeptic", "submit_native_final_review", "final-review")
+    # The first PI attempt ends after a rejected overlong explanation.
+    add_turn(22, "pi", "freeze_native_final_protocol", "freeze-retry-1",
+             structured_result=None, status="error", response="Rejected explanation.")
+    add_turn(22, "pi", "freeze_native_final_protocol", "freeze-retry-2",
+             response=final_response)
+
+    path = tmp_path / "multi-response-trace.jsonl"
+    path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+    required = ("record_adaptive_review", "submit_native_final_review",
+                "freeze_native_final_protocol")
+    assert verify_executor_trace(path, host, required_tools=required,
+                                 final_response=final_response)["completed_turns"] == 4
+
+    for invalid_response in (
+        "First discovery session reply.\n\n" + final_response,
+        final_response.replace("shortened retry succeeded", "shortened retry failed"),
+    ):
+        try:
+            verify_executor_trace(path, host, required_tools=required,
+                                  final_response=invalid_response)
+        except RuntimeError as exc:
+            assert "does not match" in str(exc)
+        else:
+            raise AssertionError("aggregated or changed final PI response was accepted")
+
+
 def test_spawned_sdk_bootstrap_guards_real_codex_executor_without_model_calls(tmp_path):
     audit_root = tmp_path / "audit-root"
     run_dir = audit_root / "runs" / "runtime-probe"
