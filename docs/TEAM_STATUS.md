@@ -1,5 +1,29 @@
 # Team status and handoff
 
+## Team A milestone 19 — public interactive online demo deployed
+
+The [online demo](ONLINE_DEMO.md) is live at
+[NOVA-MAT](https://nova-mat-scientific-demo.hy75252882.chatgpt.site), ready for
+the competition's working-demo URL field. Visitors can replay the completed
+native09 flow, inspect recorded stages/roles and PI alternatives, switch all
+three frozen discovery/holdout thresholds, and inspect/download aggregate
+evidence with real Result/Spec/freeze IDs and hashes. The presentation follows
+the submission videos' navy/teal lattice design and attributes JARVIS-DFT/NIST.
+
+Synced B's merge of PR #26 at main `e4882df`, then created `codex/online-demo`.
+A independently checked six aggregate points, 26 event records, three Result
+mappings, parent/freeze links and source hashes. Syntax/static bindings and
+anonymous production HTTP access pass; deployed JS/CSS/JSON byte-match the
+reviewed assets. [Verification](demo/online_validation.json) explicitly records
+that browser interaction/layout are unverified because Tabbit routing exited
+69. The public site replays existing real evidence; it performs no new model,
+scientific or holdout execution. Raw/prepared rows, runtime SQLite and credentials
+are excluded. Scientific source/dependency bytes and prior evidence are unchanged.
+
+Shared-file scope is this status entry only, after refreshing B's latest main.
+Final competition-form submission remains with the team; the two documented
+MP4 files and this live URL are available for its remaining submission steps.
+
 ## Team A milestone 18 — polished Product demo and Technical walkthrough delivered
 
 The [submission videos](demo/README.md) are complete: Product demo **55.00 s**

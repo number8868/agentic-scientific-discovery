@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "run": {
+    "id": "native-adaptive-live-09",
+    "label": "ACTUAL RUN 09 · EVIDENCE REPLAY",
+    "source_commit": "19a1c91",
+    "mode": "live",
+    "status": "completed",
+    "event_count": 26,
+    "event_start_utc": "2026-10-04T06:48:54.134963+00:00",
+    "event_end_utc": "2026-10-04T06:52:15.965929+00:00",
+    "exported_at_utc": "2026-10-04T06:52:34.545724+00:00",
+    "reported_trace_to_final_model_turn_seconds": 188,
+    "reported_completed_model_turns": 13,
+    "reported_executor_pids": 8,
+    "reported_parent_deadline_seconds": 600,
+    "reported_timing_note": "The run README reports approximately 188 seconds from trace start to final model turn. This is not a matched speed benchmark or a complete end-to-end performance claim.",
+    "result_count": 3,
+    "review_count": 2,
+    "frozen_holdout_count": 1
+  },
+  "events": [
+    {"seq":1,"utc":"2026-10-04T06:48:54.134963+00:00","actor":"host","type":"run_created"},
+    {"seq":2,"utc":"2026-10-04T06:48:54.135420+00:00","actor":"host","type":"objective_registered"},
+    {"seq":3,"utc":"2026-10-04T06:48:54.135708+00:00","actor":"pi","type":"hypothesis_frozen"},
+    {"seq":4,"utc":"2026-10-04T06:48:54.137287+00:00","actor":"planner","type":"plan_registered"},
+    {"seq":5,"utc":"2026-10-04T06:48:54.138416+00:00","actor":"pi","type":"selection"},
+    {"seq":6,"utc":"2026-10-04T06:48:54.139109+00:00","actor":"runner","type":"running"},
+    {"seq":7,"utc":"2026-10-04T06:48:54.535313+00:00","actor":"runner","type":"result"},
+    {"seq":8,"utc":"2026-10-04T06:49:11.929802+00:00","actor":"host","type":"native_adaptive_orchestration_started"},
+    {"seq":9,"utc":"2026-10-04T06:49:26.196858+00:00","actor":"planner","type":"native_adaptive_options_registered"},
+    {"seq":10,"utc":"2026-10-04T06:50:04.989437+00:00","actor":"skeptic","type":"native_adaptive_review_submitted"},
+    {"seq":11,"utc":"2026-10-04T06:50:18.550682+00:00","actor":"skeptic","type":"review"},
+    {"seq":12,"utc":"2026-10-04T06:50:18.554438+00:00","actor":"pi","type":"second_selection"},
+    {"seq":13,"utc":"2026-10-04T06:50:18.555795+00:00","actor":"pi","type":"native_adaptive_choice_committed"},
+    {"seq":14,"utc":"2026-10-04T06:50:44.458594+00:00","actor":"runner","type":"native_adaptive_runner_started"},
+    {"seq":15,"utc":"2026-10-04T06:50:44.460449+00:00","actor":"runner","type":"running"},
+    {"seq":16,"utc":"2026-10-04T06:50:44.990416+00:00","actor":"runner","type":"result"},
+    {"seq":17,"utc":"2026-10-04T06:50:44.991766+00:00","actor":"runner","type":"native_adaptive_runner_result_returned"},
+    {"seq":18,"utc":"2026-10-04T06:51:12.106271+00:00","actor":"host","type":"native_adaptive_supervisor_returned"},
+    {"seq":19,"utc":"2026-10-04T06:51:39.417907+00:00","actor":"skeptic","type":"second_review"},
+    {"seq":20,"utc":"2026-10-04T06:51:39.419344+00:00","actor":"host","type":"native_adaptive_final_review_submitted"},
+    {"seq":21,"utc":"2026-10-04T06:51:49.833121+00:00","actor":"host","type":"final_protocol_frozen"},
+    {"seq":22,"utc":"2026-10-04T06:51:49.835654+00:00","actor":"host","type":"native_adaptive_final_protocol_frozen"},
+    {"seq":23,"utc":"2026-10-04T06:51:55.899224+00:00","actor":"pi","type":"native_finalization_supervisor_response"},
+    {"seq":24,"utc":"2026-10-04T06:51:55.901616+00:00","actor":"host","type":"native_adaptive_finalization_supervisor_returned"},
+    {"seq":25,"utc":"2026-10-04T06:52:15.484208+00:00","actor":"runner","type":"holdout_running"},
+    {"seq":26,"utc":"2026-10-04T06:52:15.965929+00:00","actor":"runner","type":"holdout_result"}
+  ],
+  "stages": [
+    {
+      "id":"question","label":"Question","event_sequences":[2,3],"time":"06:48:54 UTC",
+      "title":"A host-seeded scientific question",
+      "summary":"Which material family passes the frozen OPT screening criteria more often? The host seeded this question, and the recorded discovery-to-validation path traces how evidence shaped the next decision.",
+      "facts":["Objective and initial hypothesis are recorded at events 2–3.","Planner registers the first plan and the PI selects the initial screen at events 4–5.","The starting hypothesis was host-seeded."]
+    },
+    {
+      "id":"discovery","label":"Discovery","event_sequences":[4,5,6,7],"time":"06:48:54 UTC",
+      "title":"A registered screen returns a Result",
+      "summary":"Runner executes the selected discovery Spec. At the 0.05 eV/atom threshold, the stored Result reports 3 of 7,657 oxides and 6 of 3,158 chalcogenides passing the frozen filters.",
+      "facts":["Experiment NOVA-dc9b40ba4d22c6f8 produced the primary discovery Result.","The Result is the source for the later review and threshold follow-up.","The default results panel below shows the exact recorded discovery and holdout aggregates."]
+    },
+    {
+      "id":"choice","label":"PI choice","event_sequences":[8,9,10,11,12,13],"time":"06:49:11–06:50:18 UTC",
+      "title":"The PI selects a Result-informed follow-up",
+      "summary":"Planner registered alternatives. Skeptic reviewed the primary Result, then the PI committed the registered threshold-sensitivity option. The method comparison remained an offered option, not an executed study.",
+      "facts":["Options registered at event 9; Skeptic review is recorded at events 10–11.","PI selection and committed choice are recorded at events 12–13.","Threshold sensitivity was selected; OPT / MBJ method sensitivity and Stop were not run."]
+    },
+    {
+      "id":"review","label":"Review","event_sequences":[14,15,16,17,18,19,20],"time":"06:50:44–06:51:39 UTC",
+      "title":"The follow-up Result is reviewed",
+      "summary":"Runner returns the registered threshold grid. Skeptic submits the second review and the host records final review before protocol freeze.",
+      "facts":["The follow-up is experiment NOVA-0fcce1f550b846ed.","Skeptic second review is event 19; final review submission is event 20.","The review is linked to the canonical primary and follow-up Results."]
+    },
+    {
+      "id":"freeze","label":"Freeze","event_sequences":[21,22],"time":"06:51:49 UTC",
+      "title":"A final protocol is frozen before validation",
+      "summary":"The exported record binds one final protocol to the primary discovery Result, the threshold follow-up Result, and the later controlled holdout.",
+      "facts":["Frozen protocol ID NOVA-FINAL-016efccbe5a473d4.","Protocol SHA-256 is displayed in Explore evidence.","The event export places protocol freeze at sequences 21–22, before the holdout starts."]
+    },
+    {
+      "id":"validation","label":"Validation","event_sequences":[25,26],"time":"06:52:15 UTC",
+      "title":"One controlled holdout Result is persisted",
+      "summary":"Controlled validation preserves the observed direction and quantifies its uncertainty. The exported holdout Result remains linked to the frozen protocol.",
+      "facts":["Holdout experiment NOVA-HOLDOUT-f4c48d7913f24919.","At 0.05 eV/atom: oxide 1/3,282; chalcogenide 3/1,354.","Stored classification and full confidence interval are visible in the Results explorer."]
+    },
+    {
+      "id":"export","label":"Evidence export","event_sequences":[],"time":"06:52:34 UTC",
+      "title":"Portable evidence is exported",
+      "summary":"The published export contains three canonical science Results, two reviews, the frozen protocol, and the holdout record. The site includes a self-contained aggregate summary and hashes for review.",
+      "facts":["Export manifest time: 2026-10-04 06:52:34 UTC.","Exported artifacts are linked by canonical Result IDs and SHA-256 hashes.","No raw or prepared materials rows are included in this page."]
+    }
+  ],
+  "roles": [
+    {"id":"host","label":"Host","description":"Registered the objective, orchestrated the native flow, recorded final review and froze the protocol. The initial question/hypothesis was host-seeded.","sequences":[1,2,8,18,20,21,22,24]},
+    {"id":"planner","label":"Planner","description":"Registered the initial plan and the alternatives for a Result-informed follow-up.","sequences":[4,9]},
+    {"id":"skeptic","label":"Skeptic","description":"Reviewed the primary Result before PI selection and reviewed the follow-up before final freeze.","sequences":[10,11,19]},
+    {"id":"pi","label":"PI","description":"Selected the initial screen and committed threshold sensitivity after the primary Result review.","sequences":[3,5,12,13,23]},
+    {"id":"runner","label":"Runner","description":"Executed the registered discovery and threshold follow-up, then returned the single frozen holdout Result.","sequences":[6,7,14,15,16,17,25,26]}
+  ],
+  "choices": [
+    {"id":"threshold_sensitivity","name":"Threshold sensitivity","status":"Selected & executed","note":"PI-selected registered follow-up tied to the primary Result.","selected":true},
+    {"id":"method_sensitivity","name":"Method comparison · OPT / MBJ","status":"Offered only","note":"Not selected and not executed in native09.","selected":false},
+    {"id":"stop","name":"Stop","status":"Offered only","note":"Not selected; the PI committed threshold sensitivity.","selected":false}
+  ],
+  "thresholds": {
+    "0.025": {
+      "discovery":{"oxide":{"passes":2,"observed":7657},"chalcogenide":{"passes":5,"observed":3158},"delta_pp":"0.13220816543501487","ci95_pp":["0.005545720849834367","0.2905362211664905"],"status":"supported_in_snapshot"},
+      "holdout":{"oxide":{"passes":1,"observed":3282},"chalcogenide":{"passes":3,"observed":1354},"delta_pp":"0.19109650508525533","ci95_pp":["-0.030469226081657527","0.4865174799744724"],"status":"direction_consistent_inconclusive","scientific_status":"inconclusive","ci_crosses_zero":true}
+    },
+    "0.05": {
+      "discovery":{"oxide":{"passes":3,"observed":7657},"chalcogenide":{"passes":6,"observed":3158},"delta_pp":"0.1508138314330796","ci95_pp":["0.011091441699668733","0.3222018323127856"],"status":"supported_in_snapshot"},
+      "holdout":{"oxide":{"passes":1,"observed":3282},"chalcogenide":{"passes":3,"observed":1354},"delta_pp":"0.19109650508525533","ci95_pp":["-0.030469226081657527","0.4865174799744724"],"status":"direction_consistent_inconclusive","scientific_status":"inconclusive","ci_crosses_zero":true}
+    },
+    "0.1": {
+      "discovery":{"oxide":{"passes":3,"observed":7657},"chalcogenide":{"passes":8,"observed":3158},"delta_pp":"0.2141450537256699","ci95_pp":["0.04830277369579823","0.3985929997536062"],"status":"supported_in_snapshot"},
+      "holdout":{"oxide":{"passes":2,"observed":3282},"chalcogenide":{"passes":3,"observed":1354},"delta_pp":"0.16062727900359783","ci95_pp":["-0.07849088668598335","0.4560482538928149"],"status":"direction_consistent_inconclusive","scientific_status":"inconclusive","ci_crosses_zero":true}
+    }
+  },
+  "lineage": {
+    "primary_discovery":{"experiment_id":"NOVA-dc9b40ba4d22c6f8","result_id":"nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d","registered_spec_sha256":"382ab714d336bb77283524523df8849b5b25ae3b3e39d547c76b8ede2e89153b","payload_sha256":"ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4"},
+    "threshold_followup":{"experiment_id":"NOVA-0fcce1f550b846ed","result_id":"nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9","registered_spec_sha256":"35bda55623c74f48c929c0ddf45d8f4f8b81b2b635d29f4e559d8470bba99b28","payload_sha256":"2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70","parent_result_id":"nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d"},
+    "frozen_protocol":{"id":"NOVA-FINAL-016efccbe5a473d4","sha256":"016efccbe5a473d4101a42ad7109cde5e8662feeae835109f235e40a594d16e5"},
+    "holdout":{"experiment_id":"NOVA-HOLDOUT-f4c48d7913f24919","result_id":"nova-result-ec1717ee5923f960e1b69964ef1da537043547da6bedfeb9d350f3397009a210","registered_spec_sha256":"f3a64da0eee026693eda39d00e3e894128e91ccb93fbe7f1aeee7f471b2d75ec","payload_sha256":"53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c","frozen_protocol_id":"NOVA-FINAL-016efccbe5a473d4","parent_result_id":"nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"}
+  },
+  "sources": [
+    {"path":"docs/results/native09_completed/README.md","sha256":"b128cf83d63b21b132bb60b319218ebd1f64316a30a4d2caea56eb827f66fccb"},
+    {"path":"docs/results/native09_completed/results.json","sha256":"5a79414648a42e79ab4141eb4c2c196bda39e6e57c96a74f1eeb325ba133a1a9"},
+    {"path":"docs/results/native09_completed/specs.json","sha256":"1dc42f98f4b26f545d807461f614960ab681fbb3c28c68b784ba4278cc7b0af2"},
+    {"path":"docs/results/native09_completed/reviews.json","sha256":"bdb8ff105ea961bceafc07a2804658d29eb0b5b6df6ded649cc90b440a09ba32"},
+    {"path":"docs/results/native09_completed/final_protocol.json","sha256":"6fb91c4794855133784adf1e9ccf0e18ce7a6447f629faded292561e32258c8f"},
+    {"path":"docs/results/native09_completed/events.jsonl","sha256":"cdb8ef736741a77770ec0026dae6d51d98c56f7472685c21596709625efa5e02"},
+    {"path":"docs/results/native09_completed/manifest.json","sha256":"003825dcd51f265b61b73a4be610586c34aed7d177b1d64251906e562faa7f0d"},
+    {"path":"docs/results/native09_completed/native-holdout-result.json","sha256":"a7aec06435a33d5a9d722735a15908f7bdba2cc9d69e430669b5168ffad410ff"},
+    {"path":"docs/results/native09_completed/science-artifacts.json","sha256":"9c5ac8b86acd9f7e43fae39c712598c4245a82899e14bc960b733d203bb593ee"}
+  ],
+  "boundaries": [
+    "The initial question and hypothesis were host-seeded; the threshold follow-up was selected by the PI after review of the primary Result.",
+    "The holdout classification is direction_consistent_inconclusive. Its stored 95% intervals cross zero at all three thresholds; this is not scientific replication.",
+    "Threshold rows reuse the same frozen comparison and are not three independent validations.",
+    "100% coverage refers only to the original OPT-selected cohort, not MBJ coverage or an independent MBJ truth set.",
+    "The reported approximately 188-second trace span is not a matched speedup, cost comparison, or complete end-to-end benchmark.",
+    "This browser page replays the exported aggregate evidence; it makes no model or scientific experiment calls and includes no raw or prepared material rows."
+  ]
+}
