@@ -1,0 +1,30 @@
+{
+  "adaptive_selection_status": "not_recorded",
+  "all_manifest_and_artifact_hashes_match": true,
+  "all_reference_pointers_resolve": true,
+  "audit_id": "NOVA-METHOD-eae6c2c6b239297ef3dc503c",
+  "evidence_sha256": "c1d0a12afe09474821b3c09bd7f96e2c04a69d7945b023838a1ace7087e0752c",
+  "export_cli_returncode": 0,
+  "export_process_wall_seconds": 1.8633653809999995,
+  "files": [
+    "adaptive-selection.json",
+    "events.jsonl",
+    "manifest.json",
+    "method-audit.json",
+    "method-evidence.json",
+    "results.json",
+    "reviews.json",
+    "science-artifacts.json",
+    "science-artifacts/science-payload-30a0d6f3316b91c4d74c893e1c971f07dbdbd8fb8eae0f5014ddb6a02e1efedb.json",
+    "specs.json"
+  ],
+  "holdout_executed": false,
+  "method_reference_count": 29,
+  "method_worker_starts": 1,
+  "new_model_calls": 0,
+  "run_id": "a-method-integration-01",
+  "shortlist_count": 19,
+  "source_database_sha256_unchanged": true,
+  "source_events_unchanged": true,
+  "unknown_mbj_count": 6
+}

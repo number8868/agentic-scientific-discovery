@@ -1,0 +1,102 @@
+name: nova-mat-native-adaptive-live
+description: Native Omnigent PI/Planner/Skeptic/Runner workflow for one bounded discovery follow-up
+prompt: |
+  You are the PI and Omnigent supervisor for one existing live discovery run.
+  First dispatch Planner to obtain the host-built feasible follow-up packet.
+  Then dispatch Skeptic to inspect the actual stored Result and record one
+  evidence-grounded bounded review. Commit exactly one choice from the packet
+  (threshold_sensitivity, method_sensitivity, or stop), based on the Result,
+  review, scope, and remaining budget. Do not change any method or threshold
+  settings; the host binds each choice to its frozen registered protocol.
+  If the choice is stop, do not dispatch Runner. Otherwise give Runner exactly
+  the registered ID returned by your commit function, wait for its tool result,
+  and use that actual returned Result in your final response. Never infer a
+  Result from a Runner message. Do not propose or execute holdout work.
+executor:
+  harness: codex
+  model: gpt-6-luna
+cancellable: true
+async: false
+tools:
+  planner:
+    type: agent
+    description: Read host-built bounded follow-up options for the completed family Result.
+    executor: {harness: codex, model: gpt-6-luna}
+    pass_history: true
+    max_sessions: 1
+    prompt: |
+      Call get_adaptive_options exactly once. Present the returned host-built
+      options and their feasibility. Do not add, remove, rank as scientifically
+      optimal, or execute an option. Do not invent IDs or costs.
+    tools:
+      get_adaptive_options:
+        type: function
+        callable: nova.adaptive_agent_tools.get_adaptive_options
+        parameters: {type: object, properties: {}, required: [], additionalProperties: false}
+  skeptic:
+    type: agent
+    description: Review actual stored discovery evidence and submit a bounded concern.
+    executor: {harness: codex, model: gpt-6-luna}
+    pass_history: true
+    max_sessions: 1
+    prompt: |
+      Read the host-supplied Result, frozen Spec, and Planner packet using
+      read_adaptive_evidence. Identify one cautious limitation or uncertainty
+      grounded in registered Result fields. Submit a concise concern and only
+      the field names that support it via record_adaptive_review. Do not choose
+      the next experiment, alter a criterion, or execute experiments.
+    tools:
+      read_adaptive_evidence:
+        type: function
+        callable: nova.adaptive_agent_tools.read_adaptive_evidence
+        parameters: {type: object, properties: {}, required: [], additionalProperties: false}
+      record_adaptive_review:
+        type: function
+        callable: nova.adaptive_agent_tools.record_adaptive_review
+        parameters:
+          type: object
+          properties:
+            concern: {type: string, minLength: 1, maxLength: 500}
+            evidence_fields:
+              type: array
+              items: {type: string, enum: [scientific_status, delta, resampling_interval, missingness_interval, groups_summary, quality_flags]}
+              minItems: 1
+              maxItems: 6
+          required: [concern, evidence_fields]
+          additionalProperties: false
+  runner:
+    type: agent
+    description: Execute only the PI-committed registered adaptive discovery ID.
+    executor: {harness: codex, model: gpt-6-luna}
+    pass_history: true
+    max_sessions: 1
+    prompt: |
+      Call execute_selected_adaptive exactly once with the ID explicitly
+      returned by the PI's commit_adaptive_choice function. Return the actual
+      function result to the PI; never execute holdout or any unregistered ID.
+    tools:
+      execute_selected_adaptive:
+        type: function
+        callable: nova.adaptive_agent_tools.execute_selected_adaptive
+        parameters:
+          type: object
+          properties:
+            registered_id: {type: string, minLength: 1, maxLength: 120}
+          required: [registered_id]
+          additionalProperties: false
+  commit_adaptive_choice:
+    type: function
+    description: Commit exactly one feasible host-proposed choice or stop.
+    callable: nova.adaptive_agent_tools.commit_adaptive_choice
+    parameters:
+      type: object
+      properties:
+        choice: {type: string, enum: [threshold_sensitivity, method_sensitivity, stop]}
+        reason: {type: string, minLength: 1, maxLength: 500}
+      required: [choice, reason]
+      additionalProperties: false
+policies:
+  limit_tool_calls:
+    type: function
+    handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+    factory_params: {limit: 16}

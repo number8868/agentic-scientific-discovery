@@ -1,0 +1,17 @@
+# Adaptive live run verification
+
+Independent read-only audit of the two adaptive live bundles and the run 02 SQLite record. The JSON companion contains machine-readable counts and the exact parent estimate.
+
+Run 02 is a completed, two-experiment discovery workflow. Its bundle at [adaptive_live_02_with_science](results/adaptive_live_02_with_science) records 18 events, two registered Specs, two completed Results, and one review. The selected choice is `threshold_sensitivity`. The model rationale is supported by the recorded parent summary: Δ = 0.001508, resampling interval [0.000111, 0.003222], oxide 7,657 observed with 3 passes, and chalcogenide 3,158 observed with 6 passes; both groups have 100% coverage and the quality flags pass. The next check is a reasonable discovery-only robustness question. The recorded follow-up Result completed and points to the same dataset hash.
+
+Run 01 is preserved as a failed decision attempt after a completed parent Result in [adaptive_live_01_failed_with_science](results/adaptive_live_01_failed_with_science). It has nine events, one Spec, one Result, no review, and no recorded adaptive choice. Its packet is explicitly marked reconstructed for inspection, not the actual model input.
+
+Both bundles include the science payloads referenced by their Results. SHA256 values match the payload IDs and `science-artifacts.json`; run 02 maps exactly its two registered Results to two payloads, and run 01 maps its one Result to one payload. Run 02's threshold grid has points at 0.025, 0.05, and 0.1 eV/atom; the registered primary point (index 1 at 0.05) matches the parent Result's Δ and interval. File hashes agree with each bundle's `hashes.json`; run 02's SQLite event count matches its exported 18-event sequence, and each bundle contains only that run's Specs and Results. The original source dataset snapshot is not included, so the bundles are not standalone rebuild environments.
+
+Manifest counts now match entity totals: run 02 has 18 events, two Results and Specs, one review, and two science payload mappings; run 01 has nine events, one Result and Spec, no review, and one science payload. Hash inventories and manifest hashes were independently checked after the metadata refresh; payload bytes remain hash-bound to their registered artifact IDs.
+
+Interpret the orchestration evidence narrowly. Run 02 records one bounded choice by Omnigent's `CodexExecutor`, with the requested identifier `gpt-6-luna`; there is no provider attestation. The choice function returns an acceptance acknowledgement, then the host performs review, registration, and science execution after the model turn. The run therefore demonstrates an evidence-informed model choice gating host execution, not a supervisor-to-subagent call with the follow-up function result returned to the supervisor.
+
+The `review` event has actor `skeptic`, but the saved review JSON repeats the adaptive PI choice rationale and generic host-built concern. The runner calls `submit_live_review` with the model's reason; this is not evidence of an independent Skeptic model turn. No holdout was run and no replication claim is supported. The scientific scope is observed discovery representatives in this snapshot only.
+
+Before the native integration draft was added, the focused adaptive, export-adjacent, and registered method audit subset passed (39 tests), and the full suite passed with `.venv-omnigent/bin/python -m pytest -q`. Those runs do not validate the later native integration draft.

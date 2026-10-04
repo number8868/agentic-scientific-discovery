@@ -1,0 +1,54 @@
+{
+  "a_source_sha256": {
+    "nova/method_evidence.py": "117fa718d8d6d3b3b86e5c5bca2df249e0177deb8fd5c43f18219d98d5786a16",
+    "nova/method_evidence_export.py": "f872c9eeaa4cd34cea4809076ced7e715f0b8f2c883ac446d734b8727575b39a",
+    "scripts/export_registered_method.py": "3047c3c7667d4ec30db42185b4ea14f2426739bfb68531d2c36c4910ab3407fe",
+    "tests/test_method_evidence.py": "2b5e6d3d4108e7c54b192844d7a941d38e62b662287be10551011ed156a2b4cc",
+    "tests/test_registered_method_export.py": "8e209c9ed4fa638bb5bfec9bf3e83030542d9a3e9fb23fcbf88cdb37fca515d7"
+  },
+  "focused_windows_regression": {
+    "scope": "method evidence builder, completed exporter, and B registered method gate; synthetic tests",
+    "status": "passed",
+    "tests": 25
+  },
+  "latest_b_live_evidence": {
+    "scope": "One model choice gating host execution; not a method-selected run or independent Skeptic turn",
+    "selected_choice": "threshold_sensitivity",
+    "source": "../adaptive_live_02_with_science/"
+  },
+  "limitations": [
+    "No method-selected live model run or candidate-level model review was performed by this A stage.",
+    "No browser verification or complete workflow cost/speed comparison was performed.",
+    "Real holdout remains unexecuted; the accessible native run lacks the original final freeze.",
+    "Published aggregates and shortlist do not include the source/prepared dataset or complete audit rows."
+  ],
+  "linux_regression": {
+    "command": ".venv-omnigent/bin/python -m pytest -q",
+    "numpy": "2.5.3",
+    "python": "3.12.13",
+    "real_model_calls": 0,
+    "scope": "Complete combined suite in an isolated code checkout without prepared data or private live context",
+    "status": "passed",
+    "tests": 280
+  },
+  "main_at_takeover": "01f17db",
+  "protected_source_hashes_verified_against_record": true,
+  "published_copy_manifest_and_artifact_hashes_verified": true,
+  "real_discovery_integration": {
+    "all_aggregate_fields_reproduced": true,
+    "export_check": "export_verification.json",
+    "holdout_executed": false,
+    "method_citations_resolved": 29,
+    "method_worker_starts": 1,
+    "new_model_calls": 0,
+    "reproduction": "independent_reproduction.json",
+    "run_id": "a-method-integration-01",
+    "selection_source": "human_host_integration_verification",
+    "shortlist_rows_reproduced": 19,
+    "source": "host-run.json",
+    "source_database_and_events_unchanged": true
+  },
+  "schema_version": 1,
+  "team_b_integrated_base": "22506ef",
+  "verification_date_local": "2026-10-03"
+}

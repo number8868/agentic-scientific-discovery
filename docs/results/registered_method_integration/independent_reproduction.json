@@ -1,0 +1,32 @@
+{
+  "all_aggregate_fields_match": [
+    "arms",
+    "subset_shift",
+    "paired_method_change",
+    "transitions",
+    "candidate_counts",
+    "candidate_counts_by_family",
+    "n_eligible",
+    "n_shortlisted",
+    "dataset_sha256",
+    "parent_protocol_sha256",
+    "protocol_sha256",
+    "representative_compositions_csv_sha256",
+    "split_assignment_sha256"
+  ],
+  "cached_read_added_events": false,
+  "holdout_executed": false,
+  "method_worker_starts": 1,
+  "new_model_calls": 0,
+  "protected_source_hashes": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "scope": "Independent exact comparison against previously published discovery evidence, without recomputing bootstrap or reading holdout outcomes",
+  "shortlist_fields_match": 19,
+  "unknown_mbj_count": 6
+}

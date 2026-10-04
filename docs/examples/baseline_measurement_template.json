@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "artifact_type": "nova.baseline_measurement_template.v1",
+  "measurement_status": "pending_not_measured",
+  "benchmark_scope": "discovery_only_engineering_comparison",
+  "protocol": "docs/BASELINE_COMPARISON_PLAN.md",
+  "matched_group_id": null,
+  "arm": null,
+  "policy_version": null,
+  "run_id": null,
+  "primary_result_id": null,
+  "source_provenance": {
+    "dataset_sha256": null,
+    "representative_sha256": null,
+    "split_sha256": null,
+    "primary_protocol_sha256": null,
+    "threshold_protocol_sha256": null,
+    "method_protocol_sha256": null,
+    "prepared_manifest_sha256": null,
+    "primary_scientific_fields_sha256": null
+  },
+  "environment": {
+    "host": null,
+    "python": null,
+    "dependencies": null,
+    "native_runtime_version": null,
+    "cache_mode": null,
+    "completed_result_cache_hits": null,
+    "arm_order_in_matched_group": null
+  },
+  "budget": {
+    "shared_wall_seconds": null,
+    "shared_science_seconds": null,
+    "global_model_call_limit": null
+  },
+  "decision": {
+    "feasible_packet_sha256": null,
+    "selected_actions": [],
+    "selection_evidence_refs": [],
+    "terminal_outcome": null,
+    "workflow_succeeded": null,
+    "science_components_completed": null,
+    "failure_kind": null,
+    "failure_evidence_ref": null,
+    "human_interventions": null
+  },
+  "timing_seconds": {
+    "primary_setup_wall": null,
+    "followup_wall_including_model_and_export": null,
+    "total_wall": null,
+    "science_compute_by_action": null,
+    "model_wall_all_attempted_turns": null,
+    "host_startup_validation_and_export": null,
+    "observed_human_setup_and_intervention": null
+  },
+  "model_usage": {
+    "requested_models": null,
+    "attested_models": null,
+    "attempted_turns": null,
+    "failed_turns": null,
+    "repair_turns": null,
+    "input_tokens": null,
+    "output_tokens": null,
+    "billed_cost_usd": null,
+    "billing_source_ref": null,
+    "usage_trace_ref": null
+  },
+  "evidence_coverage": {
+    "threshold_points_reported": null,
+    "method_arms_reported": null,
+    "paired_change_reported": null,
+    "candidate_count_reported": null,
+    "unknown_comparator_count_reported": null,
+    "actions_not_dispatched_and_reasons": null
+  },
+  "acceptance": {
+    "source_facts_and_refs_checked": null,
+    "free_text_scientific_review": null,
+    "independent_model_review_evidenced": null,
+    "runner_return_evidenced": null,
+    "final_decision_evidenced": null,
+    "all_attempts_accounted_for": null
+  },
+  "new_holdout_execution": false,
+  "holdout_outcomes_read": false,
+  "limitations": [
+    "This is a pending template, not a measurement or completed comparison.",
+    "Unknown timing, model identity, usage or cost remains null.",
+    "A shorter workflow with less evidence does not prove equal-work acceleration."
+  ]
+}

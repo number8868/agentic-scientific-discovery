@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-51bf0ea23425fde5f73d989a7dbb3eb8ab7562f0b717bca8c0cab81e03971307"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-51bf0ea23425fde5f73d989a7dbb3eb8ab7562f0b717bca8c0cab81e03971307"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-df029d4d4f4bb31e",
+    "reason": "The positive discovery contrast (delta 0.001508138314330796) rests on only 3 oxide and 6 chalcogenide passes; its resampling interval [0.00011091441699668733, 0.003222018323127856] remains positive but approaches zero at the lower bound. Complete coverage does not remove sparse-pass uncertainty, so supported_in_snapshot should not be treated as established robustness.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-51bf0ea23425fde5f73d989a7dbb3eb8ab7562f0b717bca8c0cab81e03971307"
+  }
+]

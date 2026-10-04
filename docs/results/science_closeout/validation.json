@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "team_b_base": "9cda56f",
+  "linux_regression": {
+    "tests": 336,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite_seconds": 38.689,
+    "junit_sha256": "43606ed9f781f99715d48f86ce52249c9ea4f5d5368cc4fb93af619f446083fb",
+    "scope": "Complete A/B engineering suite without prepared data or private live context",
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "new_audit_cases": 14
+  },
+  "first_linux_regression": {
+    "tests": 336,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "suite_seconds": 45.751,
+    "junit_sha256": "3891a40dbc94c8fc350cc21293319ea7275b0c26a0f6a613c157d5a79f638cc2",
+    "explanation": "Malformed inputs were rejected; three tests expected internal messages instead of the deliberately generic public error"
+  },
+  "corrected_tests": "Spy captures the exact underlying bridge rejection and checks generic public error plus no output; production guard and redaction unchanged",
+  "windows_focused": {
+    "passed": 6,
+    "skipped": 8,
+    "scope": "Preflight/security negatives; POSIX payload-validation cases exercised on Linux"
+  },
+  "coding_helper": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "max",
+    "configuration_separate_from_scientific_roles": true
+  },
+  "tested_source_sha256": {
+    "scripts/audit_discovery_bundle.py": "a916d314c2f8177b556309233119014f1a4d425b863408c18470cbba5a201dd9",
+    "tests/test_audit_discovery_bundle.py": "f866bf7def6be994f61198bee5b15e1a9ff359f8fb9eee9a9481f1404a0d1827"
+  },
+  "direct_published_fixture_cli": {
+    "status": "passed",
+    "source_digest_entries": 12,
+    "registered_and_computation_hashes_checked": 2,
+    "threshold_points_checked": 3,
+    "output_agrees_with_independent_stored_evidence_check": true
+  },
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "source_bundle_unchanged": true,
+  "scientific_submission_brief": {
+    "local_evidence_links_checked": 26,
+    "narration_words": 107,
+    "video_recorded": false,
+    "timed_rehearsal_verified": false
+  },
+  "baseline": {
+    "status": "design_and_pending_template_only",
+    "matched_runs_measured": 0,
+    "billed_cost_measurements": 0,
+    "acceleration_claim": false
+  },
+  "actual_calls_in_this_stage": {
+    "scientific_role_model_calls": 0,
+    "new_science_executions": 0,
+    "holdout_outcomes_read": false,
+    "browser_verified": false
+  },
+  "limitations": [
+    "Checks stored scientific consistency, not a new raw-data or bootstrap reproduction.",
+    "Native orchestration failure, missing model trace and absent supervisor return are preserved.",
+    "No raw dataset identity authentication or new native authorization is established.",
+    "Real frozen-protocol holdout and complete latency/cost comparison remain unexecuted."
+  ]
+}

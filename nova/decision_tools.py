@@ -52,6 +52,19 @@ def _table(path: Path) -> None:
         db.execute("CREATE TABLE IF NOT EXISTS decision_packets (run_id TEXT PRIMARY KEY, plan_json TEXT NOT NULL, review_json TEXT)")
 
 
+def _has_registered_method_audit(path: Path, run_id: str) -> bool:
+    """Return whether this run has entered the dedicated method-audit path."""
+    with sqlite3.connect(str(path), timeout=5) as db:
+        present = db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='registered_method_audits'"
+        ).fetchone()
+        if present is None:
+            return False
+        return db.execute(
+            "SELECT 1 FROM registered_method_audits WHERE run_id=? LIMIT 1", (run_id,)
+        ).fetchone() is not None
+
+
 def _packet(path: Path) -> Dict[str, Any]:
     _table(path)
     with sqlite3.connect(str(path)) as db:
@@ -167,6 +180,10 @@ def commit_next_spec(result_id: str, recommended_template: str) -> str:
     first = store.get_spec(result.experiment_id) if result else None
     if result is None or first is None or first.template is not Template.FAMILY_SCREEN:
         _fail(run_id, store, "follow-up requires a family_screen initial spec")
+    # Host role execution is serial. This read is deliberately before spec/event
+    # creation; cross-table reservation is not atomic with method-audit registration.
+    if _has_registered_method_audit(path, run_id):
+        raise ValueError("threshold follow-up is closed after method-audit registration")
     experiment_id = _id(run_id, "second")
     spec = ExperimentSpec(1, experiment_id, first.hypothesis_id, _active_dataset_sha256(), Split.DISCOVERY, Template.THRESHOLD_SENSITIVITY, ("oxide", "chalcogenide"), "opt", (1.1, 1.8), 0.05, 2000, 1729, 120, result_id, result_id, None)
     store.register_spec(spec)

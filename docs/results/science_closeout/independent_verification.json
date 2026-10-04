@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "audit_type": "independent_stored_discovery_evidence_acceptance",
+  "run_id": "native-adaptive-live-01",
+  "source_bundle": "docs/results/native_adaptive_live_01_failed",
+  "manifest_entries_checked": 11,
+  "hashes_inventory_entries_checked": 12,
+  "all_recorded_hashes_match": true,
+  "source_package_unchanged": true,
+  "registered_and_computation_hashes_independently_checked": [
+    {
+      "experiment_id": "NOVA-de6018cd65d2dea6",
+      "template": "family_screen",
+      "registered_spec_sha256": "18d3c69254b8475ad342ad3047b3373463672e566e721fc532698efba575cf16",
+      "computation_spec_sha256": "f5eaf8c139baa0f7d0850dae9a39bc96657f426b4939cc4ffd8012819a721079",
+      "payload_sha256": "17194d26da52035d615eb52b47dd5c8f3d0142f3d8d8a73f4982e8f05942818f",
+      "result_id": "nova-result-13c98cb8a52d8ec707c385f5bdd057aba53674c16b1c1eaf14eba9b7c812c0b5"
+    },
+    {
+      "experiment_id": "NOVA-cd3b328843109e3d",
+      "template": "threshold_sensitivity",
+      "registered_spec_sha256": "ecc07dd876b916aebf6749890cf5a681078794a8c30cf6437362fbca1b4f865a",
+      "computation_spec_sha256": "6bd6307e8d56b6ba209a1e14d999262dce9d17743b9001a350dddb74d7be213a",
+      "payload_sha256": "b7dcdd0604c26c09865f7fcd5e6517bd716cd6211f0688dfdf56afdaf6a128af",
+      "result_id": "nova-result-6ba5a4a44b20423060e1527444aecc710cbb7609c350d38755660fd44057826c"
+    }
+  ],
+  "primary_scientific_fields_match_original": true,
+  "all_threshold_scientific_fields_match_historical": true,
+  "comparison_scope": "Stored discovery values and arithmetic; not a new raw-data or bootstrap recomputation",
+  "threshold_points": [
+    {
+      "threshold_ev_atom": 0.025,
+      "delta": 0.0013220816543501486,
+      "resampling_interval": [
+        5.5457208498343666e-05,
+        0.002905362211664905
+      ],
+      "scientific_status": "supported_in_snapshot"
+    },
+    {
+      "threshold_ev_atom": 0.05,
+      "delta": 0.001508138314330796,
+      "resampling_interval": [
+        0.00011091441699668733,
+        0.003222018323127856
+      ],
+      "scientific_status": "supported_in_snapshot"
+    },
+    {
+      "threshold_ev_atom": 0.1,
+      "delta": 0.002141450537256699,
+      "resampling_interval": [
+        0.0004830277369579823,
+        0.003985929997536062
+      ],
+      "scientific_status": "supported_in_snapshot"
+    }
+  ],
+  "stored_review_field_references_resolve": true,
+  "stored_selection_links_actual_parent_and_followup": true,
+  "stored_review_prose_scientifically_acceptable": true,
+  "review_prose_scope": "Human reading of sparse-count and bounded threshold-followup claims; no model authorship attestation",
+  "method_selected_or_candidate_review_evidenced": false,
+  "native_workflow_status": "failed",
+  "native_model_turn_records": 0,
+  "supervisor_return_evidenced": false,
+  "runtime_guardrail_enforcement_verified": false,
+  "failure_message_source": "operator_supplied_not_persisted",
+  "recorded_native_attempt_wall_seconds": 114.805177,
+  "timing_scope": "Host native-start marker to failed marker; excludes parent setup and does not isolate full model latency",
+  "complete_model_usage_or_billed_cost": null,
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "new_science_executions": 0,
+  "new_model_calls": 0,
+  "holdout_outcomes_read": false,
+  "browser_verified": false
+}

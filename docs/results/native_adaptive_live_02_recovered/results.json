@@ -1,0 +1,110 @@
+[
+  {
+    "artifact_ids": [
+      "nova-manifest:f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+      "nova-protocol:9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+      "nova-compositions-csv:d7184816ea97e4daa860b1a93a387b56a82280d3758eb2f658fbfa7ab021fb50",
+      "nova-result-payload:1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f",
+      "nova-artifact-path:runs/science-payload-1aa325689e843592fb770ff78464ae172ced085f3ac39d9fa73e8ac0051bf49f.json"
+    ],
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "delta": 0.001508138314330796,
+    "elapsed_seconds": 0.29033075005281717,
+    "error": null,
+    "execution_status": "completed",
+    "experiment_id": "NOVA-df029d4d4f4bb31e",
+    "finished_at": "2026-10-04T02:13:30.494323+00:00",
+    "groups_summary": [
+      {
+        "coverage": 1.0,
+        "group": "oxide",
+        "missing_lower": 0.00039179835444691133,
+        "missing_upper": 0.00039179835444691133,
+        "n_observed": 7657,
+        "n_pass": 3,
+        "n_total": 7657,
+        "observed_rate": 0.00039179835444691133
+      },
+      {
+        "coverage": 1.0,
+        "group": "chalcogenide",
+        "missing_lower": 0.0018999366687777073,
+        "missing_upper": 0.0018999366687777073,
+        "n_observed": 3158,
+        "n_pass": 6,
+        "n_total": 3158,
+        "observed_rate": 0.0018999366687777073
+      }
+    ],
+    "missingness_interval": [
+      0.001508138314330796,
+      0.001508138314330796
+    ],
+    "quality_flags": [
+      "science-quality-json-v1:{\"chalcogenide\":{\"endpoint_has_pass_and_fail\":true,\"minimum_coverage_pass\":true,\"minimum_evaluable_count_pass\":true},\"endpoint_non_degenerate\":true,\"minimum_sample_and_coverage_pass\":true,\"missingness_bounds_cross_zero\":false,\"oxide\":{\"endpoint_has_pass_and_fail\":true,\"minimum_coverage_pass\":true,\"minimum_evaluable_count_pass\":true}}"
+    ],
+    "resampling_interval": [
+      0.00011091441699668733,
+      0.003222018323127856
+    ],
+    "result_id": "nova-result-51bf0ea23425fde5f73d989a7dbb3eb8ab7562f0b717bca8c0cab81e03971307",
+    "scientific_status": "supported_in_snapshot",
+    "spec_sha256": "cb17ad0bdde83f0cdcb989b938ed517661160d5d1d1333f6e95871f6bae7e471",
+    "started_at": "2026-10-04T02:13:30.204000+00:00"
+  },
+  {
+    "artifact_ids": [
+      "nova-manifest:f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+      "nova-protocol:9497988f1f8443f66326fa66a976d7196e5671ad320a1cce8a638780a8fc64ac",
+      "nova-compositions-csv:d7184816ea97e4daa860b1a93a387b56a82280d3758eb2f658fbfa7ab021fb50",
+      "nova-threshold-protocol:9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+      "nova-parent-result:b8d3fd9336d76d3f9e4e6e1468b76396952308b89964c42e6be733ca75fe45ec",
+      "nova-result-payload:72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8",
+      "nova-artifact-path:runs/science-payload-72eb4fa084ec814f85841ee033f86f17eead5d2e796ec1564f5ebe9ee10574d8.json"
+    ],
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "delta": 0.001508138314330796,
+    "elapsed_seconds": 0.408988666953519,
+    "error": null,
+    "execution_status": "completed",
+    "experiment_id": "NOVA-ad55feadb63b67b5",
+    "finished_at": "2026-10-04T02:15:26.624291+00:00",
+    "groups_summary": [
+      {
+        "coverage": 1.0,
+        "group": "oxide",
+        "missing_lower": 0.00039179835444691133,
+        "missing_upper": 0.00039179835444691133,
+        "n_observed": 7657,
+        "n_pass": 3,
+        "n_total": 7657,
+        "observed_rate": 0.00039179835444691133
+      },
+      {
+        "coverage": 1.0,
+        "group": "chalcogenide",
+        "missing_lower": 0.0018999366687777073,
+        "missing_upper": 0.0018999366687777073,
+        "n_observed": 3158,
+        "n_pass": 6,
+        "n_total": 3158,
+        "observed_rate": 0.0018999366687777073
+      }
+    ],
+    "missingness_interval": [
+      0.001508138314330796,
+      0.001508138314330796
+    ],
+    "quality_flags": [
+      "science-quality-json-v1:{\"chalcogenide\":{\"endpoint_has_pass_and_fail\":true,\"minimum_coverage_pass\":true,\"minimum_evaluable_count_pass\":true},\"endpoint_non_degenerate\":true,\"minimum_sample_and_coverage_pass\":true,\"missingness_bounds_cross_zero\":false,\"oxide\":{\"endpoint_has_pass_and_fail\":true,\"minimum_coverage_pass\":true,\"minimum_evaluable_count_pass\":true}}"
+    ],
+    "resampling_interval": [
+      0.00011091441699668733,
+      0.003222018323127856
+    ],
+    "result_id": "nova-result-6f4d260124a90768f88f78214ac0cf91cff611340c310c44dc587c0a81df4582",
+    "scientific_status": "supported_in_snapshot",
+    "spec_sha256": "bd385e0263e986b96bf4ba109ec38f062443b89db7e0b69cc73f0c2b6ad8e95e",
+    "started_at": "2026-10-04T02:15:26.215325+00:00"
+  }
+]

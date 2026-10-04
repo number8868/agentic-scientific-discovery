@@ -4,6 +4,8 @@ __pycache__/
 .venv/
 .venv-*/
 .nova/
+# Omnigent's private Codex session homes may reference local login state.
+.codex-tmp/
 *.sqlite3
 runs/
 data/raw/

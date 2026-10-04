@@ -7,5 +7,7 @@ docs/THRESHOLD_PROTOCOL.json text eol=lf
 docs/METHOD_AUDIT_PROTOCOL.json text eol=lf
 nova/experiments/method_sensitivity.py text eol=lf
 nova/method_audit_report.py text eol=lf
+nova/method_evidence.py text eol=lf
+nova/method_review.py text eol=lf
 scripts/run_method_audit.py text eol=lf
 docs/results/** -text whitespace=cr-at-eol
