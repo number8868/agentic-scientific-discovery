@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-13c98cb8a52d8ec707c385f5bdd057aba53674c16b1c1eaf14eba9b7c812c0b5"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-13c98cb8a52d8ec707c385f5bdd057aba53674c16b1c1eaf14eba9b7c812c0b5"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-de6018cd65d2dea6",
+    "reason": "The positive discovery contrast (delta 0.001508; resampling interval 0.000111\u20130.003222) rests on only 3 oxide and 6 chalcogenide passes. This sparse endpoint limits confidence in robustness despite supported_in_snapshot status. The offered bounded discovery sensitivity analyses are relevant to assessing robustness, but the stored Result does not establish threshold or method stability.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-13c98cb8a52d8ec707c385f5bdd057aba53674c16b1c1eaf14eba9b7c812c0b5"
+  }
+]

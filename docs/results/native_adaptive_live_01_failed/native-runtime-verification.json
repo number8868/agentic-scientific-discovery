@@ -1,0 +1,13 @@
+{
+  "failure_detail": "science payload does not match the registered Result Spec",
+  "failure_detail_source": "operator_supplied_not_persisted",
+  "guardrail_enforcement": "unverified",
+  "guardrail_verification": "requested_unverified_not_effective",
+  "model_request_or_completion_observed": false,
+  "model_tool_trace": "unavailable",
+  "native_model_audit_scope": "host_function_events_only",
+  "native_workflow_status": "failed",
+  "run_owned_results_persisted": 2,
+  "runner_feedback_validation": "failed",
+  "supervisor_response_persisted": false
+}

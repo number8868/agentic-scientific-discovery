@@ -5,6 +5,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+import pytest
+
 from nova.contracts import ExperimentSpec, Mode, Result, Split, Template
 from nova.storage import Storage
 from scripts import export_adaptive_evidence as exporter
@@ -136,3 +138,171 @@ def test_failed_export_labels_reconstructed_packet_and_unattested_model(tmp_path
     assert evidence["runtime"]["operator_reported_model"] == "gpt-6-luna"
     assert evidence["provider_attestation"] is None
     assert len(evidence["run_events"]) == 4
+
+
+def test_native_export_uses_persisted_state_and_sanitizes_trusted_runtime_files(tmp_path, monkeypatch):
+    db, store, _spec, result = _seed(tmp_path, "native-run", monkeypatch, artifact=True)
+    from nova.adaptive_policy import propose_followups
+
+    packet = propose_followups(result, remaining_seconds=600)
+    packet["selection"] = None
+    review = {"parent_result_id": result.result_id, "concern": "Coverage review",
+              "evidence_refs": [f"result:{result.result_id}#groups_summary"]}
+    selection = {"choice": "stop", "reason": "Stop after reviewing discovery evidence",
+                 "scope": "discovery_only", "evidence_refs": [f"result:{result.result_id}"]}
+    with sqlite3.connect(db) as conn:
+        conn.executescript("""
+            CREATE TABLE native_adaptive_state (
+                run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL, packet_json TEXT NOT NULL,
+                review_json TEXT, selection_json TEXT, selected_id TEXT, selected_kind TEXT, status TEXT NOT NULL
+            );
+            CREATE TABLE native_adaptive_supervisor_results (
+                run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL,
+                response_text TEXT NOT NULL, response_sha256 TEXT NOT NULL
+            );
+        """)
+        conn.execute("INSERT INTO native_adaptive_state VALUES (?,?,?,?,?,?,?,?)", (
+            "native-run", result.result_id, json.dumps(packet), json.dumps(review),
+            json.dumps(selection), None, None, "committed"))
+        response = "The PI stopped after considering the registered evidence."
+        conn.execute("INSERT INTO native_adaptive_supervisor_results VALUES (?,?,?,?)", (
+            "native-run", result.result_id, response, hashlib.sha256(response.encode()).hexdigest()))
+    store.append_event("native-run", "native_adaptive_options_registered", actor="planner", mode=Mode.LIVE,
+                       payload_ref=result.result_id)
+    store.append_event("native-run", "native_adaptive_review_submitted", actor="skeptic", mode=Mode.LIVE,
+                       payload_ref=result.result_id)
+    store.append_event("native-run", "native_adaptive_choice_committed", actor="pi", mode=Mode.LIVE,
+                       payload_ref=result.result_id)
+    store.append_event("native-run", "native_adaptive_supervisor_returned", actor="host", mode=Mode.LIVE,
+                       payload_ref=result.result_id)
+
+    run_dir = db.parent
+    manifest = {
+        "schema_version": 1, "run_id": "native-run", "omnigent_version": "0.16.0",
+        "model_override": "gpt-6-luna",
+        "effective_role_models": {role: "gpt-6-luna" for role in ("pi", "planner", "skeptic", "runner")},
+        "native_tools_disabled": True, "web_search_disabled": True, "skills": "none",
+        "config_overrides": ["features.code_mode_host=true", "features.code_mode=false"],
+        "host_binary_env": "CODEX_CODE_MODE_HOST_PATH",
+    }
+    manifest_path = run_dir / "native-runtime-manifest.json"
+    manifest_path.write_text(json.dumps(manifest) + "\n")
+    manifest_path.chmod(0o600)
+    trace_records = [
+        {"event": "native_adaptive_trace_started", "run_id": "native-run", "requested_model": "gpt-6-luna"},
+        {"event": "tool_complete", "actor": "omnigent-tool-dispatch", "tool": "commit_adaptive_choice",
+         "status": "success", "result_text": "sk-abcdefghijklmnopqrstuv"},
+    ]
+    trace_path = run_dir / "native-model-audit.jsonl"
+    trace_path.write_text("".join(json.dumps(record) + "\n" for record in trace_records))
+    trace_path.chmod(0o600)
+
+    output = exporter.export_adaptive_evidence(db, "native-run", tmp_path / "runs" / "native-export")
+    evidence = json.loads((output / "adaptive_evidence.json").read_text())
+    assert evidence["packet_source"] == "recorded_native_packet"
+    assert evidence["adaptive_packet"] == packet
+    assert evidence["adaptive_review"] == review
+    assert evidence["adaptive_selection"] == selection
+    assert evidence["native_supervisor_response"]["response_text"] == response
+    assert evidence["runtime"]["selector_kind"] == "native_omnigent_yaml"
+    assert evidence["runtime"]["requested_model"] == "operator_reported_not_attested"
+    assert evidence["runtime"]["effective_role_models_reported_not_attested"]["pi"] == "gpt-6-luna"
+    assert evidence["provider_attestation"] is None
+    assert evidence["native_runtime_verification"]["guardrail_verification"] == "requested_unverified_not_effective"
+    assert evidence["native_runtime_verification"]["model_tool_trace"] == "unavailable"
+    exported_manifest = json.loads((output / "native-runtime-manifest.json").read_text())
+    assert (output / "native-runtime-manifest.json").read_bytes() == manifest_path.read_bytes()
+    assert exported_manifest["model_override"] == "gpt-6-luna"
+    exported_trace = (output / "native-model-audit.jsonl").read_text()
+    assert "sk-abcdefghijklmnopqrstuv" not in exported_trace
+    assert "[redacted]" in exported_trace
+    inventory = json.loads((output / "hashes.json").read_text())
+    assert {"native-runtime-manifest.json", "native-model-audit.jsonl"} <= set(inventory)
+    for relative, digest in inventory.items():
+        assert hashlib.sha256((output / relative).read_bytes()).hexdigest() == digest
+    with pytest.raises(ValueError, match="output directory must be new or empty"):
+        exporter.export_adaptive_evidence(db, "native-run", output)
+    assert json.loads((output / "hashes.json").read_text()) == inventory
+
+
+def test_failed_native_runner_export_preserves_failure_without_supervisor_completion(tmp_path, monkeypatch):
+    db, store, _parent_spec, parent_result = _seed(
+        tmp_path, "native-failed", monkeypatch, artifact=True)
+    threshold = ExperimentSpec(
+        1, "NOVA-native-threshold", "H1", "d" * 64, Split.DISCOVERY,
+        Template.THRESHOLD_SENSITIVITY, ("oxide", "chalcogenide"), "opt",
+        (1.1, 1.8), 0.05, 2000, 1729, 120, parent_result.result_id, parent_result.result_id,
+    )
+    threshold_payload = b'{"template":"threshold_sensitivity","split":"discovery","points":[]}\n'
+    digest = hashlib.sha256(threshold_payload).hexdigest()
+    (tmp_path / "runs" / f"science-payload-{digest}.json").write_bytes(threshold_payload)
+    threshold_result = Result(
+        "result-native-threshold", threshold.experiment_id, threshold.sha256,
+        threshold.dataset_sha256, "completed", "inconclusive", "start", "end", 30.0,
+        artifact_ids=(f"nova-result-payload:{digest}",
+                      f"nova-artifact-path:runs/science-payload-{digest}.json"),
+    )
+    store.register_spec(threshold)
+    store.save_result(threshold_result)
+    packet = {"packet_type": "adaptive_discovery_followups", "parent_result_id": parent_result.result_id,
+              "selection": None}
+    review = {"parent_result_id": parent_result.result_id, "concern": "sparse passes"}
+    selection = {"choice": "threshold_sensitivity", "selected_id": threshold.experiment_id,
+                 "selected_kind": "experiment_id", "scope": "discovery_only"}
+    with sqlite3.connect(db) as conn:
+        conn.execute("""CREATE TABLE native_adaptive_state (
+            run_id TEXT PRIMARY KEY, parent_result_id TEXT NOT NULL, packet_json TEXT NOT NULL,
+            review_json TEXT, selection_json TEXT, selected_id TEXT, selected_kind TEXT, status TEXT NOT NULL
+        )""")
+        conn.execute("INSERT INTO native_adaptive_state VALUES (?,?,?,?,?,?,?,?)", (
+            "native-failed", parent_result.result_id, json.dumps(packet), json.dumps(review),
+            json.dumps(selection), threshold.experiment_id, "experiment_id", "failed"))
+    events = (
+        ("native_adaptive_orchestration_started", "host", None),
+        ("native_adaptive_options_registered", "planner", parent_result.result_id),
+        ("native_adaptive_review_submitted", "skeptic", parent_result.result_id),
+        ("second_selection", "pi", threshold.experiment_id),
+        ("native_adaptive_choice_committed", "pi", threshold.experiment_id),
+        ("native_adaptive_runner_started", "runner", threshold.experiment_id),
+        ("result", "runner", threshold_result.result_id),
+        ("native_adaptive_runner_failed", "host", threshold.experiment_id),
+        ("native_adaptive_orchestration_failed", "host", None),
+    )
+    for event_type, actor, reference in events:
+        store.append_event("native-failed", event_type, actor=actor, mode=Mode.LIVE,
+                           payload_ref=reference)
+    run_dir = db.parent
+    manifest = {"schema_version": 1, "run_id": "native-failed", "model_override": "gpt-6-luna",
+                "effective_role_models": {role: "gpt-6-luna" for role in ("pi", "planner", "skeptic", "runner")},
+                "native_tools_disabled": True, "web_search_disabled": True, "skills": "none",
+                "config_overrides": ["features.code_mode_host=true", "features.code_mode=false"]}
+    manifest_path = run_dir / "native-runtime-manifest.json"
+    manifest_path.write_text(json.dumps(manifest) + "\n")
+    manifest_path.chmod(0o600)
+    trace_path = run_dir / "native-model-audit.jsonl"
+    trace_path.write_text(json.dumps({"event": "native_adaptive_trace_started", "run_id": "native-failed"}) + "\n")
+    trace_path.write_text(trace_path.read_text() + json.dumps({"event": "function_complete", "actor": "runner",
+                                                               "tool": "execute_selected_adaptive"}) + "\n")
+    trace_path.chmod(0o600)
+    output = exporter.export_adaptive_evidence(
+        db, "native-failed", tmp_path / "runs" / "native-failed-export",
+        failure_detail="science payload does not match the registered Result Spec",
+    )
+    evidence = json.loads((output / "adaptive_evidence.json").read_text())
+    assert evidence["packet_source"] == "recorded_native_packet"
+    assert len(evidence["registered_results"]) == 2
+    assert len(json.loads((output / "science-artifacts.json").read_text())["results"]) == 2
+    assert evidence["native_runtime_verification"]["native_workflow_status"] == "failed"
+    assert evidence["native_runtime_verification"]["supervisor_response_persisted"] is False
+    assert evidence["native_supervisor_response"] is None
+    assert evidence["native_runtime_verification"]["guardrail_verification"] == "requested_unverified_not_effective"
+    assert evidence["native_runtime_verification"]["model_tool_trace"] == "unavailable"
+    assert evidence["native_runtime_verification"]["model_request_or_completion_observed"] is False
+    assert evidence["native_runtime_verification"]["native_model_audit_scope"] == "host_function_events_only"
+    assert evidence["native_runtime_verification"]["failure_detail"] == (
+        "science payload does not match the registered Result Spec")
+    assert evidence["native_runtime_verification"]["failure_detail_source"] == "operator_supplied_not_persisted"
+    assert evidence["native_runtime_verification"]["runner_feedback_validation"] == "failed"
+    assert evidence["native_runtime_verification"]["run_owned_results_persisted"] == 2
+    assert (output / "native-runtime-manifest.json").read_bytes() == manifest_path.read_bytes()
+    assert evidence["provider_attestation"] is None
