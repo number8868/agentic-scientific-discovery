@@ -1,5 +1,18 @@
 # Team status and handoff
 
+## B integration update — native discovery run 02
+
+PR #13 science-closeout is integrated on B `fc41d23`; its acceptance of failed
+native run 01 remains historical and unchanged. The newer native run 02 has
+four actual specialist processes, five completed model turns, two discovery
+Results and a PI final response. It completed with host validation recovery,
+not a clean CLI exit: original exit code 1 is preserved, and recovery added no
+model/science execution. See [run 02 evidence](results/native_adaptive_live_02_recovered/README.md).
+Full tests passed after PR #13 integration. Initial hypothesis autonomy,
+final scientific review/freeze integration, holdout and matched speed/cost
+measurements remain incomplete. Consolidation into main is an integration
+step, not evidence that these remaining challenge requirements are achieved.
+
 ## Team A milestone 11 — independent scientific closeout delivered, 2026-10-03
 
 Synced a clean worktree to B `9cda56f`, which merges A's PR #12 and includes

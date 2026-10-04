@@ -323,6 +323,49 @@ def test_missing_payload_and_manifest_path_traversal_are_rejected(tmp_path: Path
     assert "unsupported package path" in _assert_rejected(package, output_dir)
 
 
+def test_optional_native_metadata_is_allowlisted_but_still_checked(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+    package = _copy_fixture(tmp_path)
+    metadata = {
+        "README.md": b"# Native discovery evidence\n",
+        "host-recovery.json": _canonical({"recovery_type": "hash_bound_transport_witness_recorded"}),
+    }
+    manifest_path = package / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for name, raw in metadata.items():
+        (package / name).write_bytes(raw)
+        manifest["files"][name] = {"sha256": hashlib.sha256(raw).hexdigest(), "count": 1}
+    _write_json(manifest_path, manifest)
+
+    output = audit.audit_bundle(package, tmp_path / "runs" / "metadata-audit")
+    report = json.loads((output / "audit.json").read_text(encoding="utf-8"))
+    assert report["source_sha256"]["README.md"] == hashlib.sha256(metadata["README.md"]).hexdigest()
+    assert report["source_sha256"]["host-recovery.json"] == hashlib.sha256(
+        metadata["host-recovery.json"]).hexdigest()
+
+    tampered = _copy_fixture(tmp_path / "tampered")
+    manifest_path = tampered / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for name, raw in metadata.items():
+        (tampered / name).write_bytes(raw)
+        manifest["files"][name] = {"sha256": hashlib.sha256(raw).hexdigest(), "count": 1}
+    _write_json(manifest_path, manifest)
+    (tampered / "host-recovery.json").write_text("{}\n", encoding="utf-8")
+    assert "digest does not match manifest" in _assert_rejected(
+        tampered, tmp_path / "runs" / "tampered-audit")
+
+    linked = _copy_fixture(tmp_path / "linked")
+    manifest_path = linked / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for name, raw in metadata.items():
+        (linked / name).write_bytes(raw)
+        manifest["files"][name] = {"sha256": hashlib.sha256(raw).hexdigest(), "count": 1}
+    _write_json(manifest_path, manifest)
+    (linked / "README.md").unlink()
+    (linked / "README.md").symlink_to("events.jsonl")
+    assert "unsafe" in _assert_rejected(linked, tmp_path / "runs" / "linked-audit")
+
+
 def test_holdout_spec_is_rejected_before_outcome_files_are_read(tmp_path: Path, output_dir: Path, monkeypatch):
     package = _copy_fixture(tmp_path)
     specs_path = package / "specs.json"

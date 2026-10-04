@@ -26,7 +26,7 @@ _HEX = re.compile(r"^[0-9a-f]{64}$")
 _PAYLOAD = re.compile(r"^science-artifacts/science-payload-([0-9a-f]{64})\.json$")
 _FIXED_FILES = frozenset({
     "adaptive_evidence.json", "events.jsonl", "hashes.json", "manifest.json",
-    "native-model-audit.jsonl", "native-runtime-manifest.json",
+    "native-model-audit.jsonl", "native-runtime-manifest.json", "README.md", "host-recovery.json",
     "native-runtime-verification.json", "results.json", "reviews.json",
     "science-artifacts.json", "specs.json",
 })
@@ -214,6 +214,12 @@ def _read_json_file(root: Path, manifest: dict[str, Any], source_hashes: dict[st
 
 
 def _inventory_count(name: str, raw: bytes) -> int:
+    if name == "README.md":
+        try:
+            raw.decode("utf-8")
+        except UnicodeDecodeError:
+            _fail("package metadata file is not valid UTF-8")
+        return 1
     if name.endswith(".jsonl"):
         try:
             lines = raw.decode("utf-8").splitlines()
