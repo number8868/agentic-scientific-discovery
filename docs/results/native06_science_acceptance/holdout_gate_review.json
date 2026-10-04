@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "review_id": "native06_holdout_gate_review",
+  "reviewed_at_utc": "2026-10-04T04:50:30Z",
+  "checkout": {
+    "branch": "codex/native06-science-acceptance",
+    "head": "903579c",
+    "published_run_source_commit": "955aaea"
+  },
+  "assessment": {
+    "published_scientific_state": "clean_native_discovery_finalization_with_frozen_unexecuted_holdout_spec",
+    "scientific_freeze_accepted_for": "the frozen family_screen plus threshold_sensitivity discovery protocol and its derived holdout spec only",
+    "execution_readiness": "not_established",
+    "holdout_authorized_by_this_review": false,
+    "holdout_result_present_in_published_run06": false,
+    "private_live_context_or_database_inspected": false,
+    "prepared_data_accessed": false,
+    "holdout_or_model_call_performed": false,
+    "provider_identity_or_os_confinement_attested": false
+  },
+  "run06_public_timing": {
+    "run_id": "native-adaptive-live-06",
+    "run_created_utc": "2026-10-04T04:25:50.924636Z",
+    "native_orchestration_started_utc": "2026-10-04T04:25:53.181493Z",
+    "final_freeze_event_utc": "2026-10-04T04:28:48.186795Z",
+    "native_orchestration_completed_utc": "2026-10-04T04:28:54.907000Z",
+    "declared_shared_budget_seconds": 600,
+    "registered_holdout_id": "NOVA-HOLDOUT-57d4e4ffc96064d4",
+    "holdout_stage": "frozen_unexecuted",
+    "deadline_assessment": {
+      "exact_wall_clock_deadline_reconstructed": false,
+      "reason": "The launcher uses a process-local monotonic deadline created before the native child starts; its absolute value is not in the portable export, and run_created alone does not establish that deadline.",
+      "conservative_upper_bounds": [
+        {
+          "budget_seconds": 600,
+          "basis": "The parent deadline is created before the child is launched, and the published completion event is inside that child. Therefore the deadline must be earlier than completion plus the run README's 600-second budget.",
+          "latest_possible_cutoff_utc_exclusive": "2026-10-04T04:38:54.907000Z",
+          "past_this_upper_bound_at_parent_observation_utc": "2026-10-04T04:41:18Z",
+          "minimum_elapsed_past_bound_seconds": 143.093
+        },
+        {
+          "budget_seconds": 720,
+          "basis": "Source permits up to 720 seconds although the run README declares 600; used only as an extra conservative check.",
+          "latest_possible_cutoff_utc_exclusive": "2026-10-04T04:40:54.907000Z",
+          "past_this_upper_bound_at_parent_observation_utc": "2026-10-04T04:41:18Z",
+          "minimum_elapsed_past_bound_seconds": 23.093
+        }
+      ],
+      "disposition": "The old run's original window had expired by the supplied 04:41:18Z observation even under the source's 720-second ceiling. Do not extend, reset, reconstruct, or invoke the published run06 holdout ID."
+    },
+    "source_refs": [
+      {
+        "path": "docs/results/native_adaptive_live_06_completed/README.md",
+        "lines": [1, 28],
+        "supports": "Published 600-second budget, clean finalization, unexecuted holdout, and no provider or OS attestation."
+      },
+      {
+        "path": "docs/results/native_adaptive_live_06_completed/events.jsonl",
+        "lines": [1, 25],
+        "supports": "Public run_created, orchestration start, final-review, freeze, and orchestration-completion UTC timestamps."
+      },
+      {
+        "path": "docs/results/native06_host_acceptance.json",
+        "lines": [3, 28],
+        "supports": "Published frozen_unexecuted stage, absent holdout Result, portable checks, and unattested remote model identity/OS confinement."
+      }
+    ]
+  },
+  "source_findings": [
+    {
+      "finding": "The host holdout implementation is narrowly bound to an ID returned by final freeze. It checks live mode, protocol ID/hash and host freeze event, the active dataset, exact family_screen and threshold_sensitivity specs, run-owned discovery Results/reviews/event order, registered holdout derivation, and prior failures before starting a worker.",
+      "source_refs": [
+        {"path": "nova/holdout_bridge.py", "lines": [82, 120], "supports": "Derived holdout and exact frozen discovery spec fields."},
+        {"path": "nova/holdout_bridge.py", "lines": [130, 234], "supports": "Frozen protocol shape, registered specs/results, native selections, event lineage, reviews and order."},
+        {"path": "nova/holdout_bridge.py", "lines": [562, 621], "supports": "Live context, frozen identity, active dataset, registered holdout and freeze/review checks."}
+      ]
+    },
+    {
+      "finding": "The executor enforces one 360-second aggregate science-compute allowance shared across discovery and holdout. Before the holdout, it subtracts elapsed_seconds from both discovery Results and caps the holdout worker at the minimum of 120 seconds, the remaining shared compute allowance, and registered spec timeout. These checks do not measure or enforce the complete native workflow deadline.",
+      "source_refs": [
+        {"path": "nova/holdout_bridge.py", "lines": [27, 30], "supports": "Compute and worker constants."},
+        {"path": "nova/holdout_bridge.py", "lines": [601, 603], "supports": "Budget is calculated only from the two discovery Result elapsed_seconds values."},
+        {"path": "nova/holdout_bridge.py", "lines": [637, 655], "supports": "Worker-only deadline and terminal failure handling; no native whole-run deadline lookup."},
+        {"path": "nova/process_control.py", "lines": [104, 153], "supports": "Worker timing starts after synchronous process.start and covers execution, receive and worker exit."},
+        {"path": "nova/process_control.py", "lines": [159, 172], "supports": "Worker cleanup occurs after the measured deadline path."}
+      ]
+    },
+    {
+      "finding": "A shared whole-child wall deadline exists in run_native_adaptive: its default is 600 seconds, it creates a monotonic deadline after context/preflight checks, passes it to the child, bounds child communication, and terminates the child/process group on timeout. The source accepts up to 720 seconds, so the published run's declared 600 seconds must remain the operative budget. The source does not derive this deadline from run_created.",
+      "source_refs": [
+        {"path": "scripts/run_native_adaptive.py", "lines": [37, 40], "supports": "720-second source ceiling."},
+        {"path": "scripts/run_native_adaptive.py", "lines": [671, 712], "supports": "600-second default, preflight before monotonic deadline creation, and child deadline propagation."},
+        {"path": "scripts/run_native_adaptive.py", "lines": [714, 752], "supports": "Whole-child timeout and cancellation/termination handling."},
+        {"path": "scripts/run_native_adaptive.py", "lines": [768, 788], "supports": "CLI default of 600 seconds and accepted caller-supplied value."},
+        {"path": "nova/adaptive_agent_tools.py", "lines": [180, 190], "supports": "Adaptive tool writes require the trusted absolute deadline."}
+      ]
+    },
+    {
+      "finding": "There is no dedicated post-freeze Runner in the current B orchestration. The adaptive discovery Runner forbids holdout; the finalization YAML ends at freeze and says the holdout remains unexecuted; finalization exposes review and freeze tools only. The native child records orchestration completed after finalization and has no holdout stage.",
+      "source_refs": [
+        {"path": "agents/adaptive-live.yaml", "lines": [4, 14], "supports": "Discovery workflow forbids holdout."},
+        {"path": "agents/adaptive-live.yaml", "lines": [75, 97], "supports": "Runner tool is limited to the committed adaptive discovery ID."},
+        {"path": "agents/adaptive-finalize.yaml", "lines": [3, 15], "supports": "Finalization stops after a frozen_unexecuted response and forbids another Runner/holdout call."},
+        {"path": "agents/adaptive-finalize.yaml", "lines": [27, 67], "supports": "Finalization YAML has final review and freeze, with no holdout Runner."},
+        {"path": "nova/native_finalization_tools.py", "lines": [1, 5], "supports": "Finalization module intentionally has no holdout execution callable."},
+        {"path": "nova/live_bridge.py", "lines": [51, 70], "supports": "Generic live bridge admits only registered discovery family/threshold specs."},
+        {"path": "docs/HOLDOUT_VALIDATION.md", "lines": [66, 81], "supports": "Documented Team B handoff requires a dedicated post-freeze Runner and updated prompts while preserving the discovery guard."},
+        {"path": "scripts/run_native_adaptive.py", "lines": [584, 668], "supports": "Review/freeze sequence then orchestration-completed event; no post-freeze stage."}
+      ]
+    },
+    {
+      "finding": "The standalone holdout launcher validates a new/empty export directory under runs, calls the host gate, verifies the live context identity did not change, then exports events/results/protocol and checksummed science artifacts. It has no shared native wall-deadline check. The portable instructions say export failure should recover evidence without a second computation.",
+      "source_refs": [
+        {"path": "scripts/run_holdout_validation.py", "lines": [16, 26], "supports": "Export destination containment and empty-directory gate."},
+        {"path": "scripts/run_holdout_validation.py", "lines": [29, 72], "supports": "Direct host invocation and export sequencing; no workflow-deadline parameter/check."},
+        {"path": "docs/HOLDOUT_VALIDATION.md", "lines": [83, 91], "supports": "Trusted host invocation, export contents, and no retry after export failure."}
+      ]
+    },
+    {
+      "finding": "The claim path is fail-closed and single-attempt: SQLite BEGIN IMMEDIATE plus UNIQUE(run_id) protects one claim; success atomically stores Result, ownership event and succeeded claim; timeout/failure is marked and not retried. Existing cached success is returned only after full authorization/evidence checks.",
+      "source_refs": [
+        {"path": "nova/holdout_bridge.py", "lines": [354, 402], "supports": "Atomic one-claim-per-run table and failed-closed insert."},
+        {"path": "nova/holdout_bridge.py", "lines": [484, 540], "supports": "Run-owned result validation and atomic successful persistence."},
+        {"path": "nova/holdout_bridge.py", "lines": [623, 655], "supports": "Claim before worker, no retry after failure/interruption, and stored-success path."}
+      ]
+    }
+  ],
+  "minimum_team_b_handoff": [
+    "Use a fresh live run with the original family_screen primary plus threshold_sensitivity follow-up. Keep method_sensitivity out of this frozen family-threshold route; native finalization explicitly rejects it.",
+    "Add a dedicated post-freeze Runner and its bounded one-ID tool schema for nova.holdout_bridge.execute_live_registered_holdout. Schedule it only after the real final Skeptic review and freeze have returned stage=frozen_unexecuted, and pass exactly the holdout ID returned by that freeze. Preserve the discovery Runner's existing holdout prohibition.",
+    "Integrate the post-freeze stage before native_adaptive_orchestration_completed in the same bounded B parent/child workflow. Carry the already-established original absolute deadline and cancellation accounting through model turn, claim, worker, persistence, and export; do not launch a second run with a fresh 600-second allowance or rely on the holdout worker's compute cap as a run deadline.",
+    "Make the holdout host path reject an expired shared deadline before consuming the one-attempt claim, and cap work by both remaining science compute and remaining wall time. Preserve the current fail-closed no-retry behavior.",
+    "Run only in the documented Linux/macOS host environment (Ubuntu WSL qualifies as Linux). Export once to a new/empty runs/ subdirectory and independently review the portable evidence; if export fails after a Result is committed, recover that evidence without starting another computation."
+  ],
+  "remaining_execution_conditions": [
+    "A new native run and new freeze must exist; run06's registered ID is expired and cannot be reused or reconstructed.",
+    "The owning host must validate the actual private context, live database, active prepared-dataset hash, exact freeze/event lineage, registered spec and one-attempt claim at execution time. None of those current runtime values were inspected here.",
+    "The Team B post-freeze Runner/YAML/orchestration/deadline handoff described above is absent from this checkout.",
+    "The portable run06 package does not attest provider/model identity or OS confinement; this review makes no runtime authorization claim."
+  ],
+  "checks_performed": [
+    "Read-only repository check: branch codex/native06-science-acceptance at 903579c; worktree clean before writing this artifact.",
+    "Static source review of docs/HOLDOUT_VALIDATION.md, nova/holdout_bridge.py, nova/live_bridge.py, nova/process_control.py, scripts/run_holdout_validation.py, scripts/run_native_adaptive.py, nova/adaptive_agent_tools.py, nova/native_finalization_tools.py, agents/adaptive-live.yaml, and agents/adaptive-finalize.yaml.",
+    "Read-only review of the published native06 README, public events.jsonl, native06_host_acceptance.json, native runtime manifest/verification, and exported run manifest. No private runtime artifact was opened.",
+    "Compared public event timestamps with the 600-second run budget and the source's permissive 720-second ceiling using conservative completion-plus-budget upper bounds; did not reconstruct the process-local monotonic deadline.",
+    "No tests, live calls, holdout launcher, database access, or prepared-data access were performed."
+  ],
+  "artifact_scope": {
+    "written_path": "docs/results/native06_science_acceptance/holdout_gate_review.json",
+    "production_source_or_test_edits": false,
+    "commit_created": false
+  }
+}

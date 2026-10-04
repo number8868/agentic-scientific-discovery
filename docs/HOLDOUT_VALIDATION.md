@@ -2,6 +2,25 @@
 
 ## Latest native freeze review
 
+Native run06 on `955aaea` completed the bounded discovery/review/freeze path
+with original CLI exit 0; B PR #20 is merged at `903579c`.
+A's [run06 science acceptance](results/native06_science_acceptance/README.md)
+checks the same frozen family/threshold protocol and unexecuted holdout
+`NOVA-HOLDOUT-57d4e4ffc96064d4`, including the persisted final PI reply.
+Scientific consistency and clean discovery completion do not authorize an
+out-of-deadline holdout call. Run06's original 600-second budget has elapsed;
+do not reset it, rebuild its private context or import its portable events.
+
+The [gate review](results/native06_science_acceptance/holdout_gate_review.json)
+checks source only: A's bridge enforces immutable lineage, one attempt and
+worker/science budgets; B must connect a dedicated post-freeze Runner inside
+the original whole-run deadline. The current YAML stops with holdout
+unexecuted. A real validation therefore needs this orchestration connection
+in a fresh valid run, with the original protocol and no method extension.
+No holdout property, outcome or private runtime state was read in A's review.
+
+B run03 and the following implementation notes are historical evidence:
+
 B PR #16 records a real second Skeptic review and PI freeze in native run 03.
 A's [independent portable acceptance](results/frozen_science_acceptance/README.md)
 checks the original OPT family/threshold parameters, canonical protocol/stage

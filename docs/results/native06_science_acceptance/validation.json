@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "stage": "A native run 06 science acceptance",
+  "base_commit": "903579c",
+  "source_run_id": "native-adaptive-live-06",
+  "linux_complete_regression": {
+    "tests": 405,
+    "passed": 405,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 54.81,
+    "junit_sha256": "a2802d5cd8bfcf0a67dbeb893a1c9a2e6fe33e9401d01198e9fb7b3e5147b576",
+    "environment": "Linux/WSL; Python 3.12.13; NumPy 2.5.3; existing Linux venv",
+    "python_prefix_is_virtual_environment": true,
+    "command": "python -m pytest -q -o addopts= --junitxml=native06-regression.xml",
+    "prepared_data_or_private_context_in_checkout": false
+  },
+  "run06_native_cli_report": {
+    "original_cli_exit_code": 0,
+    "source": "B-published docs/results/native_adaptive_live_06_completed/README.md",
+    "source_run_model_turns_reported_by_B": 10,
+    "source_run_result_events_recorded": 2,
+    "portable_audit_status": "pass",
+    "portable_audit_proves_native_cli_success": false,
+    "portable_audit_proves_native_completion": false,
+    "portable_audit_establishes_holdout_runtime_authorization": false,
+    "portable_preflight_authorizes_execution": false
+  },
+  "portable_audit_comparison": {
+    "portable_audit_status": "pass",
+    "audit_sha256": "ba19d9963a80325ac33864026e9ed748144b37b1ba85a58d8af94848486dcdfc",
+    "historical_comparison_run_id": "native-adaptive-live-03",
+    "dataset_identity_field_matches": true,
+    "role_counts_status_and_computation_spec_hashes_match": true,
+    "full_threshold_grid_matches": true,
+    "cli_authorization_scope": {
+      "native_cli_success_verified": false,
+      "native_completion_verified": false,
+      "native_holdout_runtime_authorization_established": false,
+      "new_model_calls": 0,
+      "new_science_executions": 0,
+      "holdout_outcomes_read": false,
+      "native_frozen_discovery_protocol_verified": true,
+      "runtime_gate_and_context_checks_required": true
+    },
+    "finalization_preflight_checks": {
+      "status": "frozen_discovery_evidence_verified",
+      "final_pi_response_present": true,
+      "original_and_export_hashes_verified": true,
+      "final_review_matches_stored_review": true,
+      "holdout_spec_derivation_verified": true,
+      "holdout_execution_attempt_evidence_found": false,
+      "post_freeze_cli_failure_preserved": false,
+      "offline_preflight_grants_execution_authorization": false
+    },
+    "portable_manifest_matches_audit_sources": true
+  },
+  "recorded_run_event_span": {
+    "basis": "recorded_event_span_only",
+    "start_event": "run_created",
+    "start_timestamp_utc": "2026-10-04T04:25:50.924636+00:00",
+    "end_event": "native_adaptive_orchestration_completed",
+    "end_timestamp_utc": "2026-10-04T04:28:54.907000+00:00",
+    "seconds": 183.982364,
+    "recorded_result_events": 2,
+    "is_model_latency_measurement": false,
+    "is_matched_baseline": false,
+    "cost_usd": null
+  },
+  "source_working_bytes_equal_tested_Linux_bytes": true,
+  "source_sha256": {
+    "scripts/audit_discovery_bundle.py": "fb2ebf3a71f76d345879d6782e617dd0d5cacd2221afb48f0b2c82141ca025e9",
+    "nova/native_adaptive_runtime.py": "d9d8a93a2dba590ff12b222a252efe3da2fe610faabe641c5b73f04f56d1b8e6",
+    "scripts/run_native_adaptive.py": "cb9ad59f9e4d1b22090a89eddf8f8daa5f4da722fe5df714ca4a2673ad996bc2",
+    "agents/adaptive-live.yaml": "3d494c7a817b84119e650874d782681f5572339677025cdec411b95fbea8a7f7",
+    "agents/adaptive-finalize.yaml": "7689c1cc986738599ac9c41b43fbf5efa3f24109da5f30ae262d2c63f4fe14e6",
+    "tests/test_native_runtime.py": "8eca7b53a155d6e777d0b66e690e1473e2d4c0e403c8a259a98d9dcb2ef7a8b8",
+    "tests/test_native_adaptive.py": "7495ec3382b57246eaf9992331acb3632506bb7344818a78ab449bee38bd2f95",
+    "tests/test_frozen_discovery_audit.py": "4f4b87b5ff2dd87cc7ca4e8da45a265b4a0b57df8e4bf085e15f3bd7059f8ab5"
+  },
+  "tested_Linux_checkout_kind": "source-only Linux tree without data/ or .nova/",
+  "frozen_A_audit_adapter_and_test_hashes": {
+    "scripts/audit_discovery_bundle.py": "fb2ebf3a71f76d345879d6782e617dd0d5cacd2221afb48f0b2c82141ca025e9",
+    "tests/test_frozen_discovery_audit.py": "4f4b87b5ff2dd87cc7ca4e8da45a265b4a0b57df8e4bf085e15f3bd7059f8ab5",
+    "tests/test_audit_discovery_bundle.py": "c51906c7a639e9fb0c2633c451b203d18d966215f6c6c59022a9b41a87737691"
+  },
+  "frozen_A_source_hashes_match_previous_acceptance": true,
+  "protected_source_hashes_unchanged": {
+    "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
+    "docs/THRESHOLD_PROTOCOL.json": "9dd5cda359722312ebe4cc9087b566eb0849ccd7175ada7587eb5efa7c6624c3",
+    "nova/data/pipeline.py": "944c23f9c7f8b8cb4d68c0e23c4e197181b33e39ffa352fcc3a9b22339f6be0a",
+    "nova/experiments/method_sensitivity.py": "ac00178c36f9d017f2321b2cab64362dff54bbdb27d8134ecb10dc40882da60b",
+    "requirements-science-lock.txt": "7894930b0e716d73935d2b8f524b971a781bc8141e71461bf6802753f8b7af0f",
+    "requirements-science.txt": "7d999e0c77206a7b82a97cbe6dc96c46cc16cf3e2bb2e94eb8d66fb93d8ba242"
+  },
+  "independent_verification_sha256": "fc25ba0261b6b6f666501a8858ebaed40f163efd2a943b0c8599a6611319dc9f",
+  "holdout_gate_review_sha256": "a68bcce610cbe6ca194925890d40017aa9548f2041e0cd0cddbd39671bdde8ee",
+  "local_document_links_checked": 91,
+  "timed_rehearsal_or_recording": false,
+  "provider_attestation_verified": false,
+  "coding_helper": {
+    "task": "native06 acceptance validation recorder",
+    "model": "gpt-6-luna",
+    "reasoning_effort": "max",
+    "separate_from_Omnigent_scientific_roles": true
+  },
+  "scope": {
+    "new_real_data_science_executions": 0,
+    "new_scientific_role_model_calls": 0,
+    "synthetic_tests_may_execute_scientific_code": true,
+    "prepared_properties_read": false,
+    "holdout_outcomes_read": false,
+    "private_runtime_context_or_database_opened": false,
+    "native_execution_authorization_reconstructed": false,
+    "holdout_execution_authorized_by_portable_audit": false,
+    "private_permissions_verified": false,
+    "clean_native_CLI_success_independently_replayed": false,
+    "matched_baseline_measured": false,
+    "actual_billed_cost_known": false,
+    "browser_verified": false,
+    "provider_attestation_verified": false
+  }
+}

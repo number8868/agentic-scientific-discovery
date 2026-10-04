@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "audit_type": "independent_native06_science_acceptance",
+  "verification_status": "completed_with_review_findings",
+  "run_id": "native-adaptive-live-06",
+  "source_bundle": "docs/results/native_adaptive_live_06_completed",
+  "read_only_scope": {
+    "published_evidence_and_science_documents_only": true,
+    "private_runtime_databases_read": false,
+    "private_terminal_transcript_read": false,
+    "prepared_properties_or_raw_source_data_read": false,
+    "holdout_outcomes_read": false,
+    "native_execution_authorization_reconstructed": false,
+    "real_science_executions": 0,
+    "scientific_role_model_calls": 0
+  },
+  "checks": {
+    "inventory_name_set": true,
+    "manifest_raw_sha256:adaptive_evidence.json": true,
+    "inventory_raw_sha256:adaptive_evidence.json": true,
+    "manifest_count:adaptive_evidence.json": true,
+    "manifest_raw_sha256:events.jsonl": true,
+    "inventory_raw_sha256:events.jsonl": true,
+    "manifest_count:events.jsonl": true,
+    "manifest_raw_sha256:native-finalization-evidence.json": true,
+    "inventory_raw_sha256:native-finalization-evidence.json": true,
+    "manifest_count:native-finalization-evidence.json": true,
+    "manifest_raw_sha256:native-model-audit.jsonl": true,
+    "inventory_raw_sha256:native-model-audit.jsonl": true,
+    "manifest_count:native-model-audit.jsonl": true,
+    "manifest_raw_sha256:native-runtime-manifest.json": true,
+    "inventory_raw_sha256:native-runtime-manifest.json": true,
+    "manifest_count:native-runtime-manifest.json": true,
+    "manifest_raw_sha256:native-runtime-verification.json": true,
+    "inventory_raw_sha256:native-runtime-verification.json": true,
+    "manifest_count:native-runtime-verification.json": true,
+    "manifest_raw_sha256:results.json": true,
+    "inventory_raw_sha256:results.json": true,
+    "manifest_count:results.json": true,
+    "manifest_raw_sha256:reviews.json": true,
+    "inventory_raw_sha256:reviews.json": true,
+    "manifest_count:reviews.json": true,
+    "manifest_raw_sha256:science-artifacts.json": true,
+    "inventory_raw_sha256:science-artifacts.json": true,
+    "artifact_index_dual_counts": true,
+    "manifest_count:science-artifacts.json": true,
+    "manifest_raw_sha256:science-artifacts/science-payload-0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1.json": true,
+    "inventory_raw_sha256:science-artifacts/science-payload-0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1.json": true,
+    "manifest_count:science-artifacts/science-payload-0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1.json": true,
+    "manifest_raw_sha256:science-artifacts/science-payload-aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359.json": true,
+    "inventory_raw_sha256:science-artifacts/science-payload-aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359.json": true,
+    "manifest_count:science-artifacts/science-payload-aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359.json": true,
+    "manifest_raw_sha256:specs.json": true,
+    "inventory_raw_sha256:specs.json": true,
+    "manifest_count:specs.json": true,
+    "inventory_raw_sha256:manifest.json": true,
+    "source_inventory_unchanged_during_audit": true,
+    "one_payload_ref:family_screen": true,
+    "spec_computation_identity:family_screen": true,
+    "payload_identity:family_screen": true,
+    "result_identity:family_screen": true,
+    "result_science_consistency:family_screen": true,
+    "one_payload_ref:threshold_sensitivity": true,
+    "spec_computation_identity:threshold_sensitivity": true,
+    "payload_identity:threshold_sensitivity": true,
+    "result_identity:threshold_sensitivity": true,
+    "result_science_consistency:threshold_sensitivity": true,
+    "primary_matches_original_result": true,
+    "full_threshold_matches_historical_payload": true,
+    "threshold_main_point_matches_primary": true,
+    "full_threshold_matches_prior_acceptance_audit": true,
+    "primary_counts_match_prior_acceptance_audit": true,
+    "prior_acceptance_record_preserves_historical_comparison": true,
+    "original_science_protocol_consistent": true,
+    "threshold_extension_hash": true,
+    "primary_reported_science_arithmetic_and_status": true,
+    "all_threshold_reported_science_arithmetic_and_status": true,
+    "both_reviews_and_finalization_reference_correct_results": true,
+    "adaptive_packet_and_review_reference_primary_result": true,
+    "method_audit_not_selected_or_executed": true,
+    "canonical_protocol_and_identities": true,
+    "canonical_review_and_freeze_stage_hashes": true,
+    "derived_holdout_spec_and_unexecuted_state": true,
+    "required_lifecycle_event_references": true,
+    "intermediate_supervisor_parent_context_reference": true,
+    "all_tool_request_completion_pairs": true,
+    "guarded_completed_turn_trace_consistency": true,
+    "accepted_packet:record_adaptive_review": true,
+    "accepted_packet:submit_native_final_review": true,
+    "accepted_packet:freeze_native_final_protocol": true,
+    "bounded_choice_and_rationale_hashes": true,
+    "adaptive_options_response_hash": true,
+    "runner_response_payload_hash_linkage": true,
+    "final_pi_text_hash_event_and_guarded_turn": true,
+    "b_reported_cli_provenance_only": true,
+    "review_narrative_fact_strings": true
+  },
+  "invariant_failures": [],
+  "manifest_entries_checked": 12,
+  "hash_inventory_entries_checked": 13,
+  "manifest_sha256": "fbc7cabde963176eb00cfb15f7b9658c49b26fe6075faa352c247bbdc43a967a",
+  "hash_inventory_sha256": "fc90a87e82748d9335d7d50abf663cfd525d7a7386255333e1016ffe2f944891",
+  "registered_computation_payload_result_identities": [
+    {
+      "experiment_id": "NOVA-2b3a480941d5eafa",
+      "template": "family_screen",
+      "registered_spec_sha256": "77505f525f75a71cc933713a095e09ae199ba32ccd06a1e7e7f462d3692dc2e0",
+      "computation_spec_sha256": "f5eaf8c139baa0f7d0850dae9a39bc96657f426b4939cc4ffd8012819a721079",
+      "payload_sha256": "aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359",
+      "result_id": "nova-result-fa4fe2a22bcbca828487170f3f0ba2ce6702501eea149e397e5e68a28412392c"
+    },
+    {
+      "experiment_id": "NOVA-6438209c46bb471a",
+      "template": "threshold_sensitivity",
+      "registered_spec_sha256": "316797e815e20a21be8eaa9bbb5fa5e58d85fc4dc1d60edcae8c22416f3baa20",
+      "computation_spec_sha256": "6bd6307e8d56b6ba209a1e14d999262dce9d17743b9001a350dddb74d7be213a",
+      "payload_sha256": "0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1",
+      "result_id": "nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f"
+    }
+  ],
+  "primary_matches_original": true,
+  "full_threshold_matches_historical_payload_and_prior_acceptance": true,
+  "threshold_points": [
+    {
+      "threshold_ev_atom": 0.025,
+      "oxide_passes": 2,
+      "oxide_observed": 7657,
+      "chalcogenide_passes": 5,
+      "chalcogenide_observed": 3158,
+      "reported_coverage": {
+        "oxide": 1.0,
+        "chalcogenide": 1.0
+      },
+      "delta_percentage_points": 0.132208165,
+      "resampling_interval_percentage_points": [
+        0.005545721,
+        0.290536221
+      ],
+      "missingness_interval_percentage_points": [
+        0.132208165,
+        0.132208165
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      }
+    },
+    {
+      "threshold_ev_atom": 0.05,
+      "oxide_passes": 3,
+      "oxide_observed": 7657,
+      "chalcogenide_passes": 6,
+      "chalcogenide_observed": 3158,
+      "reported_coverage": {
+        "oxide": 1.0,
+        "chalcogenide": 1.0
+      },
+      "delta_percentage_points": 0.150813831,
+      "resampling_interval_percentage_points": [
+        0.011091442,
+        0.322201832
+      ],
+      "missingness_interval_percentage_points": [
+        0.150813831,
+        0.150813831
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      }
+    },
+    {
+      "threshold_ev_atom": 0.1,
+      "oxide_passes": 3,
+      "oxide_observed": 7657,
+      "chalcogenide_passes": 8,
+      "chalcogenide_observed": 3158,
+      "reported_coverage": {
+        "oxide": 1.0,
+        "chalcogenide": 1.0
+      },
+      "delta_percentage_points": 0.214145054,
+      "resampling_interval_percentage_points": [
+        0.048302774,
+        0.398593
+      ],
+      "missingness_interval_percentage_points": [
+        0.214145054,
+        0.214145054
+      ],
+      "scientific_status": "supported_in_snapshot",
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      }
+    }
+  ],
+  "primary_science": {
+    "threshold_ev_atom": 0.05,
+    "oxide_passes": 3,
+    "oxide_observed": 7657,
+    "chalcogenide_passes": 6,
+    "chalcogenide_observed": 3158,
+    "reported_coverage": {
+      "oxide": 1.0,
+      "chalcogenide": 1.0
+    },
+    "delta_percentage_points": 0.150813831,
+    "resampling_interval_percentage_points": [
+      0.011091442,
+      0.322201832
+    ],
+    "missingness_interval_percentage_points": [
+      0.150813831,
+      0.150813831
+    ],
+    "scientific_status": "supported_in_snapshot",
+    "quality_flags": {
+      "chalcogenide": {
+        "endpoint_has_pass_and_fail": true,
+        "minimum_coverage_pass": true,
+        "minimum_evaluable_count_pass": true
+      },
+      "endpoint_non_degenerate": true,
+      "minimum_sample_and_coverage_pass": true,
+      "missingness_bounds_cross_zero": false,
+      "oxide": {
+        "endpoint_has_pass_and_fail": true,
+        "minimum_coverage_pass": true,
+        "minimum_evaluable_count_pass": true
+      }
+    }
+  },
+  "raw_dataset_authenticated_or_recomputed": false,
+  "bootstrap_resampling_reproduced": false,
+  "same_original_opt_discovery_protocol": true,
+  "method_audit_selected_or_executed": false,
+  "stored_reviews_reference_correct_results": true,
+  "canonical_protocol_sha256": "5737a5d9854b8d1fd967cb978ba9781bd98b78ddfd94996448b12d36aab4b0fc",
+  "frozen_protocol_id": "NOVA-FINAL-5737a5d9854b8d1f",
+  "derived_holdout_experiment_id": "NOVA-HOLDOUT-57d4e4ffc96064d4",
+  "stage_packet_sha256": {
+    "review": "2361d1d5b2e7328a5846cf98e716828bf6f440859cf332a1c7ede64b38913066",
+    "freeze": "c2cf24a92a90a47f01e8477aac449f9f2676cb198bce18dee5818ebd20b087a2"
+  },
+  "holdout_spec_matches_original_rules_but_was_not_executed": true,
+  "accepted_review_and_freeze_packets": [
+    {
+      "tool": "record_adaptive_review",
+      "role": "skeptic",
+      "pid": 96535,
+      "call_id": "call_Haoo80dkOuDpPgYnG2NxbyJL",
+      "args_sha256": "8890530f0b302263ddb771ec5b1ed07f749cfeb50d519bff8699776f23008b8b",
+      "structured_response_sha256": "70989094cdfc0bf0a1753f1049b45c229371b4be4ba60b9b9ae92af76667f54f",
+      "recorded_requests_for_tool": 1,
+      "accepted_packet_matches": 1
+    },
+    {
+      "tool": "submit_native_final_review",
+      "role": "skeptic",
+      "pid": 96910,
+      "call_id": "call_FsEHtHpHW9F7eQIEThY4qApi",
+      "args_sha256": "425d945b41b124d9efa0dd60354357019878a7ff297dd99c33d683a263f2531a",
+      "structured_response_sha256": "2361d1d5b2e7328a5846cf98e716828bf6f440859cf332a1c7ede64b38913066",
+      "recorded_requests_for_tool": 2,
+      "accepted_packet_matches": 1
+    },
+    {
+      "tool": "freeze_native_final_protocol",
+      "role": "pi",
+      "pid": 96806,
+      "call_id": "call_48kk1buFPqXPcDZzDwgppfWc",
+      "args_sha256": "9c7a504ba2a842339c00191d34d2d8bdc5fe5a2691dcf26818c11fa2e3f798f1",
+      "structured_response_sha256": "c2cf24a92a90a47f01e8477aac449f9f2676cb198bce18dee5818ebd20b087a2",
+      "recorded_requests_for_tool": 1,
+      "accepted_packet_matches": 1
+    }
+  ],
+  "paired_tool_calls_checked": 21,
+  "trace_counts": {
+    "native_adaptive_trace_started": 1,
+    "runner_bootstrap_installed": 2,
+    "executor_guard_installed": 6,
+    "executor_turn_started": 10,
+    "tool_request": 21,
+    "tool_complete": 21,
+    "turn_complete": 10,
+    "function_complete": 5,
+    "supervisor_response_persisted": 1
+  },
+  "trace_completion_status_counts": {
+    "tool_request": {
+      "None": 21
+    },
+    "tool_complete": {
+      "success": 21
+    }
+  },
+  "unmatched_review_freeze_attempts": {
+    "count": 1,
+    "counts_by_tool": {
+      "submit_native_final_review": 1
+    },
+    "attempts": [
+      {
+        "tool": "submit_native_final_review",
+        "count": 1,
+        "completion_status": "success",
+        "structured_response_hash_available": false,
+        "cause": null,
+        "interpretation": "not linked to a saved accepted packet; cause is not inferable from the published hashes"
+      }
+    ]
+  },
+  "bounded_choice": {
+    "allowed_choices": [
+      "threshold_sensitivity",
+      "method_sensitivity",
+      "stop"
+    ],
+    "selected_choice": "threshold_sensitivity",
+    "selected_experiment_id": "NOVA-6438209c46bb471a",
+    "selected_estimate_seconds": 60.0,
+    "selected_estimate_kind": "planning_estimate_not_measured",
+    "method_estimate_seconds": 120.0,
+    "method_estimate_kind": "planning_estimate_not_measured",
+    "remaining_budget_seconds_as_recorded": 583.8062580829719,
+    "rationale_and_choice_hashes_match": true,
+    "method_audit_request_count": 0,
+    "method_audit_result_count": 0
+  },
+  "runner_transport": {
+    "public_request_and_response_hashes_match_registered_child": true,
+    "structured_response_sha256": "3b46557a55686393f7ecb6d41788b8c246098a7729145f6abd8f5d3cd1e9841d",
+    "wire_result_sha256": "6aa284dda7a32d1401c8f353b1f9dd1611d31ccc79731210b81d4a0354dc7886",
+    "retrospective_transport_witness_present": false,
+    "generic_sidecar_runner_feedback_validation": "not_recorded"
+  },
+  "final_pi_response_sha256": "27982b51f34b28ca93511e66a02e75f22fea741c19be7528c74de8794dcb8290",
+  "final_pi_response_chars": 307,
+  "final_pi_freeze_call_id": "call_48kk1buFPqXPcDZzDwgppfWc",
+  "final_pi_pid": 96806,
+  "final_pi_turn_completion_sha256": "245d6e16836229acf53eed98cc9551e037ce353a4bf7128f59d213789c8bf4f4",
+  "final_pi_text_available_and_verified": true,
+  "reference_and_prose_findings": {
+    "freeze_explanation_experiment_as_result": {
+      "present": true,
+      "text_id": "NOVA-6438209c46bb471a",
+      "canonical_result_id": "nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f",
+      "reading": "the explanation labels the NOVA experiment ID as a registered Result; preserve its original text/hash and correct the label only in presentation prose"
+    },
+    "intermediate_supervisor_event_reference": {
+      "event_seq": 18,
+      "parent_context_ref_matches_primary_result": true,
+      "response_text_names_followup_result": true,
+      "reading": "event ref binds the returned response to its primary parent context; response prose correctly names the follow-up Result"
+    },
+    "initial_skeptic_review": "Sparse primary pass counts and near-zero lower interval are accurately stated; the bounded threshold option addresses sensitivity within discovery scope.",
+    "final_skeptic_review": "Primary counts, three positive correlated discovery thresholds, sparse endpoints, and lack of independent replication are accurately stated.",
+    "final_pi_response": "Correctly records frozen_unexecuted and discovery-only scope; its exported text hash links to the response event and guarded PI turn.",
+    "material_discovery_or_speedup_claimed": false,
+    "prose_review_scope": "human-readable interpretation of published review, selection, freeze, final PI and README text; not source-data validation"
+  },
+  "source_reported_original_cli_exit_code": {
+    "value": 0,
+    "provenance": "B-published host acceptance and README",
+    "independently_observed_or_os_attested": false
+  },
+  "recorded_guard_configuration_consistent": true,
+  "recorded_executor_process_count": 6,
+  "recorded_completed_model_turns": 10,
+  "generic_runtime_sidecar_status": "completed",
+  "generic_runtime_sidecar_guardrail_status": "requested_unverified_not_effective",
+  "recorded_model_label": "gpt-6-luna",
+  "provider_model_attestation": false,
+  "os_confinement_attestation": false,
+  "holdout_result_present": false,
+  "holdout_outcomes_read": false,
+  "material_or_device_performance_claimed": false,
+  "speedup_demonstrated": false,
+  "actual_billed_cost": null,
+  "matched_baseline_measured": false
+}

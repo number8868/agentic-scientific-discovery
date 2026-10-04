@@ -1,5 +1,28 @@
 # Scientific interpretation and citation handoff
 
+## Native run 06 independent science review
+
+After B PR #20 merged at `903579c`, A replayed the portable preflight and
+independently inspected run06's registered Results, historical numerical
+facts, original frozen protocol and public model/tool trace. See the
+[acceptance report](results/native06_science_acceptance/README.md).
+Both Skeptic reviews retain sparse 3/7,657 oxide and 6/3,158 chalcogenide
+passes, full coverage, the primary contrast/interval and all three correlated
+threshold points. The final review explicitly distinguishes same-discovery
+sensitivity from independent replication. The final PI reply names the
+frozen protocol and holdout correctly and preserves discovery-only scope.
+
+PI's frozen explanation calls `NOVA-6438209c46bb471a` a registered Result.
+It is the experiment ID; the canonical Result is
+`nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f`.
+Correct this reference in future narration, without changing the original
+explanation, protocol/hash or model-authored evidence. The method candidate
+was available but not selected; no run06 method-candidate review is claimed.
+Initial hypothesis and primary screen were host seeded. The clean B host
+acceptance does not extend the original deadline or authorize a holdout from
+its portable export; the [gate review](results/native06_science_acceptance/holdout_gate_review.json)
+describes the remaining integration conditions.
+
 ## Native run 03 final review and freeze
 
 After B PR #16 merged at `c6cea09`, A independently checked the actual second
