@@ -1,0 +1,47 @@
+{
+  "exported_at": "2026-10-04T01:11:55.912181+00:00",
+  "files": {
+    "adaptive-selection.json": {
+      "count": 1,
+      "sha256": "537db3c88c63758617ab7147edb61e46b60ebbbb4d962c50909f6ae47c0a6aaf"
+    },
+    "events.jsonl": {
+      "count": 10,
+      "sha256": "8ec4df69e23f5745944ec7661380d649a68720e6fce67e447eae7cce9daa47c7"
+    },
+    "method-audit.json": {
+      "count": 1,
+      "sha256": "c1d0a12afe09474821b3c09bd7f96e2c04a69d7945b023838a1ace7087e0752c"
+    },
+    "method-evidence.json": {
+      "count": 1,
+      "sha256": "3fc14d9c96ab60e6bd82a7d39e108a4b985d5cc2007bf978da90decfeede4fb9"
+    },
+    "results.json": {
+      "count": 1,
+      "sha256": "7b59e0708cbbf7526dfad0363ae3e6a8dc25e7d4121c71db26406c4db8b0fba9"
+    },
+    "reviews.json": {
+      "count": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "science-artifacts.json": {
+      "count": 1,
+      "sha256": "46e0808a12d9196ffb569b7244bea2c8f6c60971d4690b22b581664ca53dee29"
+    },
+    "specs.json": {
+      "count": 1,
+      "sha256": "5e4e49167fd39bb4ddacdb7e7a2378b37e6b4e5d1adb5486d74c3983cae47ce2"
+    }
+  },
+  "method_audit": {
+    "audit_id": "NOVA-METHOD-eae6c2c6b239297ef3dc503c",
+    "citations_file": "method-evidence.json",
+    "evidence_file": "method-audit.json",
+    "evidence_sha256": "c1d0a12afe09474821b3c09bd7f96e2c04a69d7945b023838a1ace7087e0752c",
+    "selection_file": "adaptive-selection.json"
+  },
+  "mode": "live",
+  "run_id": "a-method-integration-01",
+  "schema_version": 1
+}

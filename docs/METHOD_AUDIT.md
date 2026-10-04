@@ -6,7 +6,17 @@ The [protocol](METHOD_AUDIT_PROTOCOL.json) is registered before new method outco
 
 The researcher-facing output is a candidate evidence list with JID, composition, both gaps, stability value, eligibility under each method, uncertainty reason and a next validation action. Candidates passing both methods remain computational screening candidates. The full eligible-row audit is retained locally; the published shortlist and aggregate results do not replace the frozen prepared dataset.
 
-This iteration is a standalone scientific executor and report. Shared live registries, B's Planner/PI choice mechanisms and YAML prompts need a separate integration before this can be advertised as an agent-selectable live alternative. PR #9's holdout code is independent; this exploratory protocol does not change its frozen primary/follow-up choices.
+The original iteration delivered a standalone scientific executor and report.
+B has since added a separately registered, controlled method alternative in
+the [adaptive host](ADAPTIVE_DISCOVERY.md). A's [completed-method evidence
+handoff](METHOD_EVIDENCE_HANDOFF.md) now preserves the canonical parent Result
+and provides hash-bound arm/candidate citations. The [real registered
+integration](results/registered_method_integration/README.md) reproduced the
+published result with one method worker; it was a human integration choice.
+B's recorded model choice selected threshold sensitivity, so a live
+model-selected method run and its independent model review remain to be
+demonstrated. PR #9's holdout code remains independent; this exploratory
+protocol does not change its frozen primary/follow-up choices.
 
 The [recorded real result and verification](results/paired_method_audit/README.md) are now available: 19 shortlisted representatives, with 0 observed both-method passes, 13 paired method disagreements and 6 OPT passes lacking MBJ. Original OPT results reproduce exactly. Both paired family-screen comparisons are `inconclusive` under the frozen rules. The paired method-change contrast is reported separately and must not be interpreted as replication.
 
