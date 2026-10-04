@@ -1,0 +1,67 @@
+{
+  "verified_at": "2026-10-04T00:14:56.811514+00:00",
+  "status": "passed",
+  "method": "Independent standard-library arithmetic from metadata-filtered discovery representative CSV; no science analysis helpers imported",
+  "n_eligible": 10815,
+  "n_shortlisted": 19,
+  "arms": {
+    "opt_all": {
+      "oxide": {
+        "n_total": 7657,
+        "n_observed": 7657,
+        "n_pass": 3
+      },
+      "chalcogenide": {
+        "n_total": 3158,
+        "n_observed": 3158,
+        "n_pass": 6
+      }
+    },
+    "opt_paired": {
+      "oxide": {
+        "n_total": 7657,
+        "n_observed": 1230,
+        "n_pass": 1
+      },
+      "chalcogenide": {
+        "n_total": 3158,
+        "n_observed": 804,
+        "n_pass": 2
+      }
+    },
+    "mbj_paired": {
+      "oxide": {
+        "n_total": 7657,
+        "n_observed": 1230,
+        "n_pass": 0
+      },
+      "chalcogenide": {
+        "n_total": 3158,
+        "n_observed": 804,
+        "n_pass": 10
+      }
+    }
+  },
+  "candidate_counts": {
+    "mbj_only": 10,
+    "neither_passes": 2021,
+    "no_current_pass_incomplete_evidence": 8775,
+    "opt_only": 3,
+    "opt_pass_mbj_unknown": 6
+  },
+  "checks": [
+    "same representative JID and formula",
+    "discovery filter before properties",
+    "every gap/hull and three-state decision",
+    "full audit and shortlist membership/order",
+    "three-arm counts, coverage, rates and family deltas",
+    "paired transition counts and within-family changes",
+    "subset selection shifts",
+    "original OPT result and interval unchanged",
+    "extension protocol byte hash"
+  ],
+  "limits": "Bootstrap algorithms are additionally checked by synthetic reference tests; no holdout, autonomous choice, new DFT or acceleration is validated by this arithmetic check.",
+  "result_sha256": "06f4d1851779854b2e26351c251f67a28626c418b1e5c8b57fcb78adab5f40a1",
+  "audit_rows_sha256": "6b6a20822ea007daa847820d8ec2b4d5841b6aabdb5766a5e62fcde284db01d9",
+  "candidates_sha256": "0cbd32481fc1ca0d67c757f70e72299eef7f12643163a69a7d13ad1277fd4d2d"
+}
