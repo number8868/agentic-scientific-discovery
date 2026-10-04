@@ -1,5 +1,27 @@
 # Team status and handoff
 
+## B native09 — real post-freeze holdout and export completed
+
+After the user confirmed A's early attempt was stopped with no freeze/claim or
+holdout Result, B took over one controlled validation. Native08 first failed
+before freeze: its PI explanation exceeded 500 characters and the once-call
+prompt prevented correction. That failure is preserved; it read no holdout.
+B explicitly bounded finalization text at 300 characters and allowed one
+same-protocol argument correction only before successful freeze. Host scientific
+criteria, schemas and A source were not loosened. The separate holdout PI also
+received explicit async completion-notice/inbox instructions.
+
+Fresh native09 on `19a1c91` completed the entire native discovery/review/freeze/
+holdout/export path with original CLI exit **0**, eight executor PIDs and thirteen
+completed model turns. Freeze passed first call; the sole holdout claim is
+`succeeded` and the actual Result was exported. Final regression: **426 passed**,
+zero failures/skips, 23.22 seconds. See [native09 evidence](results/native09_completed/README.md).
+The original hypothesis/primary remain host-seeded. Scientific status is
+`direction_consistent_inconclusive`: the holdout direction matches but its
+interval crosses zero, not demonstrated replication. A should independently
+accept and interpret the existing evidence without another holdout computation.
+Baseline latency/cost, recording and submission packaging remain pending.
+
 ## Team A milestone 15 — post-freeze adapter accepted offline
 
 On [A PR #23](https://github.com/number8868/agentic-scientific-discovery/pull/23),

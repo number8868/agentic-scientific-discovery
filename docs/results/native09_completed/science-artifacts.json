@@ -1,0 +1,52 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "nova-result-payload:53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c",
+      "exported_path": "science-artifacts/science-payload-53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c.json",
+      "sha256": "53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c",
+      "size_bytes": 13752,
+      "source_path": "runs/science-payload-53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c.json"
+    },
+    {
+      "artifact_id": "nova-result-payload:2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70",
+      "exported_path": "science-artifacts/science-payload-2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70.json",
+      "sha256": "2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70",
+      "size_bytes": 9126,
+      "source_path": "runs/science-payload-2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70.json"
+    },
+    {
+      "artifact_id": "nova-result-payload:ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4",
+      "exported_path": "science-artifacts/science-payload-ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4.json",
+      "sha256": "ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4",
+      "size_bytes": 2633,
+      "source_path": "runs/science-payload-ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4.json"
+    }
+  ],
+  "results": [
+    {
+      "artifact_ids": [
+        "nova-result-payload:53113ebd3a0742cce069c624e0e096d329995516d37bd0a0e5edbceee3ad257c"
+      ],
+      "experiment_id": "NOVA-HOLDOUT-f4c48d7913f24919",
+      "registered_spec_sha256": "f3a64da0eee026693eda39d00e3e894128e91ccb93fbe7f1aeee7f471b2d75ec",
+      "result_id": "nova-result-ec1717ee5923f960e1b69964ef1da537043547da6bedfeb9d350f3397009a210"
+    },
+    {
+      "artifact_ids": [
+        "nova-result-payload:2b617437abd3ab16266f7a83ccd890021faf4d17ec29e934163a8b90832c8c70"
+      ],
+      "experiment_id": "NOVA-0fcce1f550b846ed",
+      "registered_spec_sha256": "35bda55623c74f48c929c0ddf45d8f4f8b81b2b635d29f4e559d8470bba99b28",
+      "result_id": "nova-result-0ebf806b3bd6a00b78d742d0cf5c5e34f655aa4c5b3a726c8f7b7489679c15b9"
+    },
+    {
+      "artifact_ids": [
+        "nova-result-payload:ff09e519755c3f8fa2b485fef1a2b3b389211aa8c597cac23cd73001bf37f1c4"
+      ],
+      "experiment_id": "NOVA-dc9b40ba4d22c6f8",
+      "registered_spec_sha256": "382ab714d336bb77283524523df8849b5b25ae3b3e39d547c76b8ede2e89153b",
+      "result_id": "nova-result-93d6553815371d18140c70bd82b14b4fcfa3900d3637703e1ce3105609a8dd5d"
+    }
+  ],
+  "schema_version": 1
+}
