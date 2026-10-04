@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "voice": "Microsoft Zira Desktop",
+  "voice_rate": 1,
+  "evidence": {
+    "run": "native-adaptive-live-09",
+    "run_label": "NATIVE09",
+    "replay_label": "ACTUAL NATIVE09 · EVIDENCE REPLAY",
+    "mode": "Recorded evidence replay; no new experiment is executed",
+    "public_sources": [
+      "docs/results/native09_completed/README.md",
+      "docs/results/native09_completed/results.json",
+      "docs/results/native09_completed/specs.json",
+      "docs/results/native09_completed/reviews.json",
+      "docs/results/native09_completed/events.jsonl",
+      "docs/results/native09_completed/native-holdout-result.json",
+      "docs/results/native09_completed/final_protocol.json"
+    ],
+    "scope": "Snapshot screening; threshold sensitivity is correlated; holdout executed and replication is inconclusive",
+    "provenance": "Public recorded Results and portable consistency review; not remote provider or OS attestation"
+  },
+  "videos": {
+    "product_demo": {
+      "title": "NOVA-MAT | Product demo",
+      "target_duration_seconds": 55,
+      "scenes": [
+        {
+          "id": "01-question",
+          "layout": "title",
+          "kicker": "Agentic scientific discovery",
+          "title": "NOVA-MAT",
+          "subtitle": "A completed Omnigent workflow, from screening result to controlled validation",
+          "narration": "See NOVA-MAT carry a real screening Result through agent review, registered execution and controlled holdout validation.",
+          "items": [
+            {"label": "Question", "value": "Which material family passes the frozen screening criteria more often?"},
+            {"label": "Scope", "value": "JARVIS discovery snapshot · 10,815 composition representatives"}
+          ],
+          "footer": "Completed native09 evidence replay · Omnigent multi-agent workflow"
+        },
+        {
+          "id": "02-primary",
+          "layout": "primary",
+          "kicker": "01 / Frozen screening",
+          "title": "A measurable screening contrast",
+          "subtitle": "OPT gap 1.1–1.8 eV · energy above hull ≤ 0.05 eV/atom",
+          "narration": "Three oxide and six chalcogenide compositions passed the frozen filters. Their observed rates make the screening contrast measurable.",
+          "metrics": [
+            {"label": "Oxides", "value": "3 / 7,657", "detail": "0.03918% observed pass rate"},
+            {"label": "Chalcogenides", "value": "6 / 3,158", "detail": "0.18999% observed pass rate"}
+          ],
+          "items": [
+            {"label": "Difference", "value": "+0.15081 percentage points"},
+            {"label": "95% resampling interval", "value": "[0.01109, 0.32220] percentage points"}
+          ],
+          "footer": "Frozen baseline · nine passing compositions"
+        },
+        {
+          "id": "03-decision",
+          "layout": "decision",
+          "kicker": "02 / Choose from the Result",
+          "title": "The Result shapes the next experiment",
+          "subtitle": "Skeptic review informs the principal investigator’s choice",
+          "narration": "After Skeptic reviews the Result, Planner offers alternatives. The PI selects the registered threshold study.",
+          "options": [
+            {"name": "Threshold sensitivity", "status": "SELECTED"},
+            {"name": "OPT / MBJ comparison", "status": "OFFERED"},
+            {"name": "Stop", "status": "OFFERED"}
+          ],
+          "items": [
+            {"label": "Review question", "value": "Does the observed direction depend on the stability cutoff?"},
+            {"label": "Recorded selection", "value": "threshold_sensitivity"}
+          ],
+          "footer": "Threshold sensitivity selected · method comparison remains an offered option"
+        },
+        {
+          "id": "04-followup",
+          "layout": "sensitivity",
+          "kicker": "03 / Registered follow-up",
+          "title": "Runner measures the full threshold grid",
+          "subtitle": "All points reported · 0.05 eV/atom stays primary",
+          "narration": "Runner reported every registered cutoff. The observed direction matched across this grid on the same discovery snapshot.",
+          "rows": [
+            {"ehull": "0.025", "oxide": "2", "chalcogenide": "5", "delta_pp": "+0.13221"},
+            {"ehull": "0.050", "oxide": "3", "chalcogenide": "6", "delta_pp": "+0.15081"},
+            {"ehull": "0.100", "oxide": "3", "chalcogenide": "8", "delta_pp": "+0.21415"}
+          ],
+          "items": [
+            {"label": "Scientific status", "value": "supported_in_snapshot at all three points"},
+            {"label": "Interpretation", "value": "Thresholds evaluated on the same discovery snapshot"}
+          ],
+          "footer": "Same discovery snapshot · every threshold point reported"
+        },
+        {
+          "id": "05-lineage",
+          "layout": "holdout",
+          "kicker": "04 / Frozen protocol · controlled holdout",
+          "title": "Controlled validation preserves the observed direction",
+          "subtitle": "Oxides: 1 / 3,282 · Chalcogenides: 3 / 1,354",
+          "narration": "The controlled holdout retains the observed direction and quantifies uncertainty. Every outcome remains linked to the frozen protocol.",
+          "interval_pp": [-0.03046922608165753, 0.4865174799744724],
+          "delta_pp": 0.19109650508525534,
+          "metrics": [
+            {"label": "Oxides", "value": "1 / 3,282", "detail": "100% field coverage"},
+            {"label": "Chalcogenides", "value": "3 / 1,354", "detail": "100% field coverage"}
+          ],
+          "items": [
+            {"label": "Observed difference", "value": "+0.19110 percentage points"},
+            {"label": "95% resampling interval", "value": "[-0.03047, 0.48652] percentage points"},
+            {"label": "Scientific status", "value": "Direction consistent · replication inconclusive"}
+          ],
+          "footer": "Frozen protocol · controlled holdout · evidence persisted"
+        },
+        {
+          "id": "06-scope",
+          "layout": "closing",
+          "kicker": "NOVA-MAT product outcome",
+          "title": "From evidence to the next scientific decision",
+          "subtitle": "A completed agent loop · controlled validation · traceable results",
+          "narration": "NOVA-MAT links screening, review, execution and validation. Traceable records set up the next scientific decision.",
+          "items": [
+            {"label": "Completed loop", "value": "Omnigent planning → review → registered execution → controlled holdout"},
+            {"label": "Decision trail", "value": "Actual Result → Skeptic review → PI choice → registered follow-up"},
+            {"label": "Evidence", "value": "3 Results · 2 reviews · frozen protocol · immutable payloads"}
+          ],
+          "footer": "Traceable records link each decision to its evidence"
+        }
+      ]
+    },
+    "technical_walkthrough": {
+      "title": "NOVA-MAT | Technical walkthrough",
+      "target_duration_seconds": 55,
+      "scenes": [
+        {
+          "id": "01-architecture",
+          "layout": "title",
+          "kicker": "Technical walkthrough",
+          "title": "An agentic loop for scientific decisions",
+          "subtitle": "Team A scientific execution · Omnigent native orchestration · traceable evidence",
+          "narration": "Team A’s scientific pipeline connects to Omnigent’s native multi-agent orchestration. Native09 completed the loop from screening Result through controlled validation and evidence export.",
+          "items": [
+            {"label": "Scientific execution", "value": "A validated immutable Spec produces a shared Result"},
+            {"label": "Agent orchestration", "value": "Omnigent 0.16.0 · bounded native workflow"}
+          ],
+          "footer": "Native Omnigent orchestration · one shared scientific Result contract"
+        },
+        {
+          "id": "02-ownership",
+          "layout": "ownership",
+          "kicker": "01 / Clear interface boundary",
+          "title": "Two modules, one shared contract",
+          "subtitle": "Modular scientific execution connects to planning through a shared Result",
+          "narration": "Team A owns data, experiments, statistics, and payloads. Team B plans follow-ups and runs registered tools through the shared Result contract.",
+          "items": [
+            {"label": "Team A", "value": "Data → experiments → statistics → scientific payload"},
+            {"label": "Shared interface", "value": "execute(registered Spec) → Result + immutable evidence"},
+            {"label": "Team B", "value": "Planner / Skeptic / PI / Runner → run control"}
+          ],
+          "footer": "Shared frozen JIDs, data splits, windows and thresholds"
+        },
+        {
+          "id": "03-agents",
+          "layout": "decision",
+          "kicker": "02 / Result-informed choice",
+          "title": "Review, choose, then execute",
+          "subtitle": "The registered choice follows review of the actual Result",
+          "narration": "The host seeds the initial hypothesis. Skeptic reviews the Result, Planner offers alternatives, and the PI chooses a registered threshold-sensitivity run.",
+          "options": [
+            {"name": "Threshold sensitivity", "status": "SELECTED"},
+            {"name": "Method sensitivity", "status": "OFFERED"},
+            {"name": "Stop", "status": "OFFERED"}
+          ],
+          "items": [
+            {"label": "Recorded native09 choice", "value": "Threshold sensitivity, tied to the parent Result and review"},
+            {"label": "Runner entry", "value": "Registered experiment ID; frozen parameters"}
+          ],
+          "footer": "Selected option, review and parent Result remain linked"
+        },
+        {
+          "id": "04-contract",
+          "layout": "provenance",
+          "kicker": "03 / Persisted lineage",
+          "title": "Traceable records connect every execution",
+          "subtitle": "Canonical Specs, Results, reviews and hashes bind each step",
+          "narration": "Registered Specs produce immutable Results. Reviews link decisions to evidence, while canonical hashes make the final protocol traceable.",
+          "nodes": ["Spec", "Result", "Science payload", "Review", "Final protocol"],
+          "items": [
+            {"label": "execution_status", "value": "completed"},
+            {"label": "scientific_status (holdout)", "value": "direction_consistent_inconclusive"},
+            {"label": "Evidence binding", "value": "Registered IDs · canonical hashes · parent/review references"}
+          ],
+          "footer": "Portable evidence · registered IDs · canonical hashes · review links"
+        },
+        {
+          "id": "05-holdout",
+          "layout": "gate",
+          "kicker": "04 / Controlled validation",
+          "title": "The holdout gate completes a frozen protocol",
+          "subtitle": "Lineage, shared time budget and one-attempt claim checked",
+          "narration": "The holdout gate checked frozen lineage, shared time budget, and a one-attempt claim, then persisted the completed Result.",
+          "nodes": ["Frozen ID", "Lineage check", "Remaining budget", "One-attempt claim", "Persist Result"],
+          "items": [
+            {"label": "Authorization", "value": "Parent-approved native path; registered frozen protocol"},
+            {"label": "Gate checks", "value": "Lineage verified · shared deadline · single attempt claim"},
+            {"label": "Native09 holdout", "value": "Executed once · completed Result · evidence exported"}
+          ],
+          "footer": "Controlled execution keeps the validation path auditable"
+        },
+        {
+          "id": "06-limits",
+          "layout": "closing",
+          "kicker": "NOVA-MAT technical outcome",
+          "title": "From evidence to the next scientific decision",
+          "subtitle": "A completed agent loop with controlled validation and traceable results",
+          "narration": "NOVA-MAT carries screening through agent review, registered execution, controlled validation, and evidence export. Its traceable records keep each decision connected to its evidence.",
+          "items": [
+            {"label": "Completed loop", "value": "Planning → review → registered execution → holdout → evidence export"},
+            {"label": "Decision trail", "value": "Actual Result → review → PI choice → registered follow-up"},
+            {"label": "Evidence record", "value": "3 Results · 2 reviews · frozen protocol · immutable payloads"}
+          ],
+          "footer": "Traceable, controlled, and ready for the next scientific question"
+        }
+      ]
+    }
+  }
+}

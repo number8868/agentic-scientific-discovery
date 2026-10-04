@@ -1,0 +1,470 @@
+{
+  "bootstrap_recomputed": false,
+  "boundary": "Checks exported IDs, all manifest file checksums, hashes.json, index-declared payload sizes, canonical Result/payload mappings, recorded aggregate arithmetic, and classifications only. The frozen protocol semantic hash uses the host compact canonical serializer; its portable pretty-printed bytes are separately bound by the export manifest SHA. It does not inspect the live claim/database, prepared/raw inputs, native trace, or provider state; portable export is not authorization or attestation.",
+  "discovery": {
+    "primary": {
+      "ci95_percentage_points": [
+        0.011091441699668733,
+        0.3222018323127856
+      ],
+      "delta_percentage_points": 0.1508138314330796,
+      "groups": {
+        "chalcogenide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0018999366687777073,
+          "missing_upper": 0.0018999366687777073,
+          "n_observed": 3158,
+          "n_pass": 6,
+          "n_total": 3158,
+          "observed_rate": 0.0018999366687777073
+        },
+        "oxide": {
+          "coverage": 1.0,
+          "missing_lower": 0.00039179835444691133,
+          "missing_upper": 0.00039179835444691133,
+          "n_observed": 7657,
+          "n_pass": 3,
+          "n_total": 7657,
+          "observed_rate": 0.00039179835444691133
+        }
+      },
+      "missingness_bounds": {
+        "chalcogenide_rate_lower": 0.0018999366687777073,
+        "chalcogenide_rate_upper": 0.0018999366687777073,
+        "lower": 0.001508138314330796,
+        "oxide_rate_lower": 0.00039179835444691133,
+        "oxide_rate_upper": 0.00039179835444691133,
+        "upper": 0.001508138314330796
+      },
+      "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+      "quality_flags": {
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      },
+      "threshold_ev_atom": 0.05
+    },
+    "scientific_status": "supported_in_snapshot",
+    "threshold_grid": [
+      {
+        "ci95_percentage_points": [
+          0.005545720849834367,
+          0.2905362211664905
+        ],
+        "delta_percentage_points": 0.13220816543501487,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0015832805573147563,
+            "missing_upper": 0.0015832805573147563,
+            "n_observed": 3158,
+            "n_pass": 5,
+            "n_total": 3158,
+            "observed_rate": 0.0015832805573147563
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0002611989029646076,
+            "missing_upper": 0.0002611989029646076,
+            "n_observed": 7657,
+            "n_pass": 2,
+            "n_total": 7657,
+            "observed_rate": 0.0002611989029646076
+          }
+        },
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.0015832805573147563,
+          "chalcogenide_rate_upper": 0.0015832805573147563,
+          "lower": 0.0013220816543501486,
+          "oxide_rate_lower": 0.0002611989029646076,
+          "oxide_rate_upper": 0.0002611989029646076,
+          "upper": 0.0013220816543501486
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "scientific_status": "supported_in_snapshot",
+        "threshold_ev_atom": 0.025
+      },
+      {
+        "ci95_percentage_points": [
+          0.011091441699668733,
+          0.3222018323127856
+        ],
+        "delta_percentage_points": 0.1508138314330796,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0018999366687777073,
+            "missing_upper": 0.0018999366687777073,
+            "n_observed": 3158,
+            "n_pass": 6,
+            "n_total": 3158,
+            "observed_rate": 0.0018999366687777073
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.00039179835444691133,
+            "missing_upper": 0.00039179835444691133,
+            "n_observed": 7657,
+            "n_pass": 3,
+            "n_total": 7657,
+            "observed_rate": 0.00039179835444691133
+          }
+        },
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.0018999366687777073,
+          "chalcogenide_rate_upper": 0.0018999366687777073,
+          "lower": 0.001508138314330796,
+          "oxide_rate_lower": 0.00039179835444691133,
+          "oxide_rate_upper": 0.00039179835444691133,
+          "upper": 0.001508138314330796
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "scientific_status": "supported_in_snapshot",
+        "threshold_ev_atom": 0.05
+      },
+      {
+        "ci95_percentage_points": [
+          0.04830277369579823,
+          0.3985929997536062
+        ],
+        "delta_percentage_points": 0.2141450537256699,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.00253324889170361,
+            "missing_upper": 0.00253324889170361,
+            "n_observed": 3158,
+            "n_pass": 8,
+            "n_total": 3158,
+            "observed_rate": 0.00253324889170361
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.00039179835444691133,
+            "missing_upper": 0.00039179835444691133,
+            "n_observed": 7657,
+            "n_pass": 3,
+            "n_total": 7657,
+            "observed_rate": 0.00039179835444691133
+          }
+        },
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.00253324889170361,
+          "chalcogenide_rate_upper": 0.00253324889170361,
+          "lower": 0.002141450537256699,
+          "oxide_rate_lower": 0.00039179835444691133,
+          "oxide_rate_upper": 0.00039179835444691133,
+          "upper": 0.002141450537256699
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "scientific_status": "supported_in_snapshot",
+        "threshold_ev_atom": 0.1
+      }
+    ]
+  },
+  "frozen_protocol_export_sha256": "6fb91c4794855133784adf1e9ccf0e18ce7a6447f629faded292561e32258c8f",
+  "frozen_protocol_id": "NOVA-FINAL-016efccbe5a473d4",
+  "frozen_protocol_sha256": "016efccbe5a473d4101a42ad7109cde5e8662feeae835109f235e40a594d16e5",
+  "holdout": {
+    "interpretation_scope": "Frozen JARVIS snapshot holdout representatives only; bootstrap intervals describe resampling stability in this snapshot; missingness bounds limit interpretation to observed representatives and do not support claims about all real materials.",
+    "main_primary": {
+      "ci95_percentage_points": [
+        -0.030469226081657527,
+        0.4865174799744724
+      ],
+      "delta_percentage_points": 0.19109650508525533,
+      "groups": {
+        "chalcogenide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0022156573116691287,
+          "missing_upper": 0.0022156573116691287,
+          "n_observed": 1354,
+          "n_pass": 3,
+          "n_total": 1354,
+          "observed_rate": 0.0022156573116691287
+        },
+        "oxide": {
+          "coverage": 1.0,
+          "missing_lower": 0.0003046922608165753,
+          "missing_upper": 0.0003046922608165753,
+          "n_observed": 3282,
+          "n_pass": 1,
+          "n_total": 3282,
+          "observed_rate": 0.0003046922608165753
+        }
+      },
+      "holdout_scientific_status": "inconclusive",
+      "missingness_bounds": {
+        "chalcogenide_rate_lower": 0.0022156573116691287,
+        "chalcogenide_rate_upper": 0.0022156573116691287,
+        "lower": 0.0019109650508525534,
+        "oxide_rate_lower": 0.0003046922608165753,
+        "oxide_rate_upper": 0.0003046922608165753,
+        "upper": 0.0019109650508525534
+      },
+      "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+      "quality_flags": {
+        "all_holdout_quality_gates_pass": true,
+        "chalcogenide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        },
+        "endpoint_non_degenerate": true,
+        "minimum_sample_and_coverage_pass": true,
+        "missingness_bounds_cross_zero": false,
+        "oxide": {
+          "endpoint_has_pass_and_fail": true,
+          "minimum_coverage_pass": true,
+          "minimum_evaluable_count_pass": true
+        }
+      },
+      "replication_status": "direction_consistent_inconclusive"
+    },
+    "scientific_status": "direction_consistent_inconclusive",
+    "threshold_grid": [
+      {
+        "ci95_percentage_points": [
+          -0.030469226081657527,
+          0.4865174799744724
+        ],
+        "delta_percentage_points": 0.19109650508525533,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0022156573116691287,
+            "missing_upper": 0.0022156573116691287,
+            "n_observed": 1354,
+            "n_pass": 3,
+            "n_total": 1354,
+            "observed_rate": 0.0022156573116691287
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0003046922608165753,
+            "missing_upper": 0.0003046922608165753,
+            "n_observed": 3282,
+            "n_pass": 1,
+            "n_total": 3282,
+            "observed_rate": 0.0003046922608165753
+          }
+        },
+        "holdout_scientific_status": "inconclusive",
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.0022156573116691287,
+          "chalcogenide_rate_upper": 0.0022156573116691287,
+          "lower": 0.0019109650508525534,
+          "oxide_rate_lower": 0.0003046922608165753,
+          "oxide_rate_upper": 0.0003046922608165753,
+          "upper": 0.0019109650508525534
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "all_holdout_quality_gates_pass": true,
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "replication_status": "direction_consistent_inconclusive",
+        "threshold_ev_atom": 0.025
+      },
+      {
+        "ci95_percentage_points": [
+          -0.030469226081657527,
+          0.4865174799744724
+        ],
+        "delta_percentage_points": 0.19109650508525533,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0022156573116691287,
+            "missing_upper": 0.0022156573116691287,
+            "n_observed": 1354,
+            "n_pass": 3,
+            "n_total": 1354,
+            "observed_rate": 0.0022156573116691287
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0003046922608165753,
+            "missing_upper": 0.0003046922608165753,
+            "n_observed": 3282,
+            "n_pass": 1,
+            "n_total": 3282,
+            "observed_rate": 0.0003046922608165753
+          }
+        },
+        "holdout_scientific_status": "inconclusive",
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.0022156573116691287,
+          "chalcogenide_rate_upper": 0.0022156573116691287,
+          "lower": 0.0019109650508525534,
+          "oxide_rate_lower": 0.0003046922608165753,
+          "oxide_rate_upper": 0.0003046922608165753,
+          "upper": 0.0019109650508525534
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "all_holdout_quality_gates_pass": true,
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "replication_status": "direction_consistent_inconclusive",
+        "threshold_ev_atom": 0.05
+      },
+      {
+        "ci95_percentage_points": [
+          -0.07849088668598335,
+          0.4560482538928149
+        ],
+        "delta_percentage_points": 0.16062727900359783,
+        "groups": {
+          "chalcogenide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0022156573116691287,
+            "missing_upper": 0.0022156573116691287,
+            "n_observed": 1354,
+            "n_pass": 3,
+            "n_total": 1354,
+            "observed_rate": 0.0022156573116691287
+          },
+          "oxide": {
+            "coverage": 1.0,
+            "missing_lower": 0.0006093845216331506,
+            "missing_upper": 0.0006093845216331506,
+            "n_observed": 3282,
+            "n_pass": 2,
+            "n_total": 3282,
+            "observed_rate": 0.0006093845216331506
+          }
+        },
+        "holdout_scientific_status": "inconclusive",
+        "missingness_bounds": {
+          "chalcogenide_rate_lower": 0.0022156573116691287,
+          "chalcogenide_rate_upper": 0.0022156573116691287,
+          "lower": 0.0016062727900359782,
+          "oxide_rate_lower": 0.0006093845216331506,
+          "oxide_rate_upper": 0.0006093845216331506,
+          "upper": 0.0016062727900359782
+        },
+        "missingness_scope": "worst-case chalcogenide-minus-oxide bounds over all fixed family totals; applies to these frozen snapshot representatives only",
+        "quality_flags": {
+          "all_holdout_quality_gates_pass": true,
+          "chalcogenide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          },
+          "endpoint_non_degenerate": true,
+          "minimum_sample_and_coverage_pass": true,
+          "missingness_bounds_cross_zero": false,
+          "oxide": {
+            "endpoint_has_pass_and_fail": true,
+            "minimum_coverage_pass": true,
+            "minimum_evaluable_count_pass": true
+          }
+        },
+        "replication_status": "direction_consistent_inconclusive",
+        "threshold_ev_atom": 0.1
+      }
+    ]
+  },
+  "holdout_result_id": "nova-result-ec1717ee5923f960e1b69964ef1da537043547da6bedfeb9d350f3397009a210",
+  "holdout_spec_id": "NOVA-HOLDOUT-f4c48d7913f24919",
+  "native_result_record": {
+    "mapping_matches_portable_result": true,
+    "record_sha256": "a7aec06435a33d5a9d722735a15908f7bdba2cc9d69e430669b5168ffad410ff",
+    "result_id": "nova-result-ec1717ee5923f960e1b69964ef1da537043547da6bedfeb9d350f3397009a210",
+    "result_sha256": "ce6a32c38209c66b91470f99bc983ea15567743e196dbf8c9b864c4a138f2212"
+  },
+  "native_trace_or_guard_proven": false,
+  "new_model_calls": 0,
+  "new_science_calls": 0,
+  "portable_bundle_integrity": {
+    "artifact_payload_size_checks": 3,
+    "hashes_json_verified": true,
+    "manifest_file_count": 13
+  },
+  "portable_consistency_only": true,
+  "provider_attestation_proven": false,
+  "run_id": "native-adaptive-live-09",
+  "runtime_authorization_proven": false,
+  "schema_version": 1,
+  "status": "consistent"
+}

@@ -1,5 +1,66 @@
 # Team status and handoff
 
+## Team A milestone 18 — polished Product demo and Technical walkthrough delivered
+
+The [submission videos](demo/README.md) are complete: Product demo **55.00 s**
+and Technical walkthrough **57.97 s**, 1920x1080/30 fps H.264/AAC MP4s, about
+2.36/2.67 MB. Both have English local narration and burned-in subtitles and
+fit the platform's per-section 60-second/1-GB limit. The competition presentation
+now emphasizes the completed real loop, result-informed follow-up choice,
+controlled validation and traceable evidence, with a consistent navy/teal design,
+large brand opener, abstract workflow lattice and pulsing decision/evidence paths.
+
+The root visually inspected both scene sheets and key full-size frames, corrected
+heading/lattice/chart label spacing, then verified full audio/video decoding,
+actual codec/duration, file/source hashes and narration/subtitle equality.
+Exact delivered hashes and sizes are in [the verification record](demo/validation.json).
+Displayed counts, interval and recorded scientific status are preserved; the
+clips visualize existing native09 evidence and make no new execution claim.
+
+A's acceptance is published in PR #26, with the [B handoff comment](https://github.com/number8868/agentic-scientific-discovery/pull/25#issuecomment-5977721127).
+The same PR carries the A-owned media recipes and status update. Generated
+MP4s/WAVs/encoder and private runtime files remain outside Git. No scientific
+source/dependency changes, new model/science calls or holdout computation were
+needed. The team can upload the documented local MP4 files now; introduction
+and final competition submissions are handled separately. Upload/browser
+completion is not claimed. Matched full-latency/cost benchmarks remain a
+separate unfinished scope.
+
+## Team A milestone 17 — native09 scientific evidence independently accepted
+
+Synced merged B PR #25 at main `11f81c1`. A independently accepts the existing
+native09 portable scientific evidence without another holdout execution. The
+[acceptance package](results/native09_science_acceptance/README.md) verifies
+all exported hashes, three Spec/Result/payload mappings, review/frozen lineage,
+event order, aggregate arithmetic and frozen quality/classification gates.
+The root reran the pure review in existing Ubuntu WSL and obtained the same
+aggregate audit bytes as the separate reviewer. All 36 isolated scientific
+source files/protocols byte-match B's actual `19a1c91` Git blobs; the Windows
+working science/dependency bytes were preserved. No model/science calls,
+bootstrap recomputation or raw/prepared outcome access occurred in this stage.
+B's 426-test Linux regression is attributed to B and was not rerun here.
+
+The holdout primary result is 1/3,282 oxide versus 3/1,354 chalcogenide passes,
+100% field coverage, difference +0.19110 percentage points, and stored 95%
+resampling interval [-0.03047, 0.48652]. Its direction matches discovery but
+the interval crosses zero: `direction_consistent_inconclusive`, not demonstrated
+replication. All frozen threshold holdout intervals cross zero. Portable
+consistency does not attest the private database/provider/OS or authorize a
+further attempt. Native09's real engineering completion remains distinct from
+scientific replication and a baseline speed/cost benefit.
+
+Initial local Product demo and Technical walkthrough clips were generated and
+passed audio/video decoding and source/subtitle checks. At the user's request,
+A is polishing both for competition presentation, with stronger visual design
+and a focus on completed, result-informed scientific decisions. The clips replay
+native09's existing evidence and retain its real scientific values. Final media
+packaging is a separate next milestone; MP4/audio/encoder files remain ignored.
+
+Shared-file change is this status entry only, after refreshing B's latest work.
+The team handles introduction; final upload and competition submissions remain
+to complete. Matched full model latency/cost baselines are still unfinished,
+and no measured acceleration or cost advantage is claimed.
+
 ## B native09 — real post-freeze holdout and export completed
 
 After the user confirmed A's early attempt was stopped with no freeze/claim or

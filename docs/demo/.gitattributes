@@ -1,0 +1,2 @@
+# Preserve the byte hashes recorded for the submission storyboard and evidence.
+*.json -text whitespace=cr-at-eol
