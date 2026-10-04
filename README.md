@@ -5,6 +5,13 @@ materials-screening workflow orchestrated with Omnigent.
 
 ## Current native orchestration evidence
 
+[Native run 06](docs/results/native_adaptive_live_06_completed/README.md) now
+passes the bounded discovery/final-review/freeze workflow with original CLI
+exit **0**, six guarded executor processes and ten completed model turns.
+The exact final PI response is persisted and verified against its freeze call
+and model turn. Holdout remains unexecuted. This is B's clean integration
+acceptance, not a completed scientific validation or full challenge.
+
 [Native run 03](docs/results/native_adaptive_live_03_frozen_cli_failed/README.md)
 adds a real final Skeptic review and PI protocol freeze; the derived holdout
 remains unexecuted. The original CLI still exited 1 at a now-corrected final

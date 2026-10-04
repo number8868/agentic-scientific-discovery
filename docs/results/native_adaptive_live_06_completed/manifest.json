@@ -1,0 +1,56 @@
+{
+  "exported_at": "2026-10-04T04:29:24.931607+00:00",
+  "files": {
+    "adaptive_evidence.json": {
+      "count": 1,
+      "sha256": "135be63cd5bfd01d34d51e1116eb477051d3793226bb6f90034c08f75b40564c"
+    },
+    "events.jsonl": {
+      "count": 25,
+      "sha256": "bb0b0669c3ba5d0b8a6aeea30b425fb7dd9eba0157b746012e3d4f9b697463fd"
+    },
+    "native-finalization-evidence.json": {
+      "count": 1,
+      "sha256": "a9631067c4648df8d1109bd5ae5e9d7e45ebda06d80898dd23e1dbd1b90d95fd"
+    },
+    "native-model-audit.jsonl": {
+      "count": 77,
+      "sha256": "80d7b203a84afbae735ca0acf42332c4a28bf077946b7a1395a578c38c7490bc"
+    },
+    "native-runtime-manifest.json": {
+      "count": 1,
+      "sha256": "c53cb6eb47e1ebb10173d7c1e1417c3335f83d3cfc731229129e0f4f98890bec"
+    },
+    "native-runtime-verification.json": {
+      "count": 1,
+      "sha256": "7ba6902a40096db7292d4d43ff58f58ad9b337d765eed9bdd11f9b79d300b852"
+    },
+    "results.json": {
+      "count": 2,
+      "sha256": "def4f2e7a43ee4e48a4a644e38e689238b770bd1f867e02d7a8567d09baf5bb0"
+    },
+    "reviews.json": {
+      "count": 2,
+      "sha256": "5562bd3de9108382f075fd32905e1e5e81d63427ce2bd3e89b9fff85d25880b3"
+    },
+    "science-artifacts.json": {
+      "count": 2,
+      "sha256": "396b4775e42186c0ebe71bc4cb9e6cdbd2346ccf7628c771865df9175138d3d7"
+    },
+    "science-artifacts/science-payload-0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1.json": {
+      "count": 1,
+      "sha256": "0b9d0c6a670491a8cecc9b13579d117bbc74d913eb69209d5057196866d450c1"
+    },
+    "science-artifacts/science-payload-aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359.json": {
+      "count": 1,
+      "sha256": "aa38e4071ca0cf2cad9a203129d2140f553a6d3efce156bed07a32314edae359"
+    },
+    "specs.json": {
+      "count": 2,
+      "sha256": "e19878804f872638f1e5fe175d0a8843a7a81b7b8d6c42f3db750cf45ad0018b"
+    }
+  },
+  "mode": "live",
+  "run_id": "native-adaptive-live-06",
+  "schema_version": 1
+}

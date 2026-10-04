@@ -42,6 +42,15 @@ availability honestly, not fabricate a ReviewPacket or frozen protocol.
 
 ## Remaining B acceptance
 
+### Clean run 06
+
+[Run 06](results/native_adaptive_live_06_completed/README.md) completed the
+bounded path with original CLI exit 0, six guarded PIDs and ten model turns.
+Raw final PI text is captured directly from the successful freeze turn and
+persisted/verified separately from CLI display. The holdout remains unexecuted.
+This closes the clean single-run discovery finalization gate, not the larger
+initial-autonomy, three-rehearsal, benchmark or submission requirements.
+
 ### Recorded run 03
 
 [Native run 03](results/native_adaptive_live_03_frozen_cli_failed/README.md)
