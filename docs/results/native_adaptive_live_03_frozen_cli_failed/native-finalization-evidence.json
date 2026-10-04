@@ -1,0 +1,134 @@
+{
+  "final_pi_response": null,
+  "final_protocol": {
+    "frozen_protocol_id": "NOVA-FINAL-cc1de78f42fd68a2",
+    "holdout_experiment_id": "NOVA-HOLDOUT-57e13139dc1893c8",
+    "protocol": {
+      "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+      "explanation": "Registered discovery Results show positive threshold contrasts, but Skeptic Final records magnitude uncertainty: only 3 oxide and 6 chalcogenide passes at 0.05 eV/atom, with delta 0.001508 and interval [0.000111, 0.003222]. Sensitivity points reuse the same snapshot. Freeze the supported native protocol and register holdout unexecuted; evidence remains discovery-only.",
+      "followup_result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b",
+      "followup_spec": {
+        "bandgap_method": "opt",
+        "bootstrap_repeats": 2000,
+        "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+        "ehull_max_ev_atom": 0.05,
+        "experiment_id": "NOVA-ab363fcb76ea2cf2",
+        "frozen_protocol_id": null,
+        "gap_window_ev": [
+          1.1,
+          1.8
+        ],
+        "groups": [
+          "oxide",
+          "chalcogenide"
+        ],
+        "hypothesis_id": "H-001",
+        "parent_result_id": "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c",
+        "review_id": "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c",
+        "schema_version": 1,
+        "seed": 1729,
+        "split": "discovery",
+        "template": "threshold_sensitivity",
+        "timeout_seconds": 120
+      },
+      "holdout_split": "holdout",
+      "holdout_template": "holdout_validation",
+      "hypothesis_id": "H-001",
+      "main_result_id": "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c",
+      "main_spec": {
+        "bandgap_method": "opt",
+        "bootstrap_repeats": 2000,
+        "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+        "ehull_max_ev_atom": 0.05,
+        "experiment_id": "NOVA-92a420ecf666206f",
+        "frozen_protocol_id": null,
+        "gap_window_ev": [
+          1.1,
+          1.8
+        ],
+        "groups": [
+          "oxide",
+          "chalcogenide"
+        ],
+        "hypothesis_id": "H-001",
+        "parent_result_id": null,
+        "review_id": null,
+        "schema_version": 1,
+        "seed": 1729,
+        "split": "discovery",
+        "template": "family_screen",
+        "timeout_seconds": 120
+      },
+      "review_refs": [
+        "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c",
+        "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+      ],
+      "schema_version": 1
+    },
+    "protocol_sha256": "cc1de78f42fd68a2f53e90d78a3730202ec3bcce12691ddcc2d12ea830628a27"
+  },
+  "finalization_state": {
+    "followup_result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b",
+    "freeze": {
+      "explanation": "Registered discovery Results show positive threshold contrasts, but Skeptic Final records magnitude uncertainty: only 3 oxide and 6 chalcogenide passes at 0.05 eV/atom, with delta 0.001508 and interval [0.000111, 0.003222]. Sensitivity points reuse the same snapshot. Freeze the supported native protocol and register holdout unexecuted; evidence remains discovery-only.",
+      "frozen_protocol_id": "NOVA-FINAL-cc1de78f42fd68a2",
+      "holdout_experiment_id": "NOVA-HOLDOUT-57e13139dc1893c8",
+      "protocol_sha256": "cc1de78f42fd68a2f53e90d78a3730202ec3bcce12691ddcc2d12ea830628a27",
+      "stage": "frozen_unexecuted"
+    },
+    "freeze_sha256": "9dbfaa5490b5009221c35305d959e5b9ad31a24884adf6bc7cf5d17f9e1ec5ee",
+    "parent_result_id": "nova-result-decffe02153f19f4f7ca36289c19453685abc353242cac00c94e0445a2b6781c",
+    "review": {
+      "followup_result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b",
+      "review": {
+        "claim_refs": [
+          "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+        ],
+        "concerns": [
+          {
+            "concern_type": "final_protocol",
+            "evidence_refs": [
+              "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+            ],
+            "severity": "medium"
+          }
+        ],
+        "experiment_id": "NOVA-ab363fcb76ea2cf2",
+        "reason": "Magnitude remains uncertain from sparse discovery endpoints: at 0.05 eV/atom, only 3/7657 oxide and 6/3158 chalcogenide compositions pass despite full coverage; delta=0.001508138314330796, bootstrap interval=[0.00011091441699668733,0.003222018323127856]. Positive intervals at 0.025, 0.05 and 0.1 reuse the same snapshot and do not independently resolve the parent review's sparse-count concern. This limitation concerns magnitude within the discovery snapshot.",
+        "recommended_template": null,
+        "result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b"
+      },
+      "stage": "reviewed"
+    },
+    "review_sha256": "b85a109694f994ddb0c8450f91b48ae5d00008417fb9ba0f22f12e1308a18e21",
+    "status": "frozen"
+  },
+  "holdout_execution_performed_by_exporter": false,
+  "holdout_result_present": false,
+  "holdout_spec": {
+    "bandgap_method": "opt",
+    "bootstrap_repeats": 2000,
+    "dataset_sha256": "f9e0a3309f0000d5de1ec9e49c93963109ea45e63f451103f8f6595d2eabf7f5",
+    "ehull_max_ev_atom": 0.05,
+    "experiment_id": "NOVA-HOLDOUT-57e13139dc1893c8",
+    "frozen_protocol_id": "NOVA-FINAL-cc1de78f42fd68a2",
+    "gap_window_ev": [
+      1.1,
+      1.8
+    ],
+    "groups": [
+      "oxide",
+      "chalcogenide"
+    ],
+    "hypothesis_id": "H-001",
+    "parent_result_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b",
+    "review_id": "nova-result-6d06192be808322d8877a1a2c25fab6a153bcd3a1386b2f2228024f4b64a0a0b",
+    "schema_version": 1,
+    "seed": 1729,
+    "split": "holdout",
+    "template": "holdout_validation",
+    "timeout_seconds": 120
+  },
+  "run_id": "native-adaptive-live-03",
+  "schema_version": 1
+}

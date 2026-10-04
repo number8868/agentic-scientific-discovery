@@ -225,6 +225,15 @@ def test_native_export_uses_persisted_state_and_sanitizes_trusted_runtime_files(
         exporter.export_adaptive_evidence(db, "native-run", output)
     assert json.loads((output / "hashes.json").read_text()) == inventory
 
+    with sqlite3.connect(db) as conn:
+        conn.execute("UPDATE native_adaptive_state SET status='completed' WHERE run_id=?", ("native-run",))
+    store.append_event("native-run", "native_adaptive_orchestration_failed", actor="host", mode=Mode.LIVE)
+    failed_output = exporter.export_adaptive_evidence(
+        db, "native-run", tmp_path / "runs" / "native-computed-cli-failed")
+    failed = json.loads((failed_output / "native-runtime-verification.json").read_text())
+    assert failed["native_workflow_status"] == "failed_after_discovery_completion"
+    assert failed["prior_failure_observed"] is True
+
 
 def test_native_export_adds_optional_hash_checked_unexecuted_finalization_bundle(tmp_path, monkeypatch):
     from nova.native_finalization_tools import _canonical
@@ -309,8 +318,10 @@ def test_native_export_adds_optional_hash_checked_unexecuted_finalization_bundle
     assert evidence["run_id"] == run_id
     assert evidence["finalization_state"]["status"] == "frozen"
     assert evidence["finalization_state"]["review"]["review"]["reason"] == "The snapshot bounds the scope."
-    assert evidence["final_pi_response"] == {
-        "response_text": pi_response, "response_sha256": response_sha}
+    assert evidence["final_pi_response"]["response_text"] == pi_response
+    assert evidence["final_pi_response"]["response_sha256"] == response_sha
+    assert evidence["final_pi_response"]["exported_response_sha256"] == response_sha
+    assert evidence["final_pi_response"]["response_redacted"] is False
     assert evidence["final_protocol"]["protocol"] == protocol
     assert evidence["holdout_spec"] == holdout.to_dict()
     assert evidence["holdout_result_present"] is False

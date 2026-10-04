@@ -5,6 +5,13 @@ materials-screening workflow orchestrated with Omnigent.
 
 ## Current native orchestration evidence
 
+[Native run 03](docs/results/native_adaptive_live_03_frozen_cli_failed/README.md)
+adds a real final Skeptic review and PI protocol freeze; the derived holdout
+remains unexecuted. The original CLI still exited 1 at a now-corrected final
+role-map check, and the failed run is preserved. This is evidence of executed
+review/freeze tools, not a clean full-workflow acceptance run. Optional fresh-run
+finalization is documented in [B's runbook](docs/B_NATIVE_FINALIZATION.md).
+
 The current integration uses open-source Omnigent 0.16.0 and its Codex harness,
 not Databricks. [Native discovery run 02](docs/results/native_adaptive_live_02_recovered/README.md)
 records four specialist executor processes, five completed model turns, two

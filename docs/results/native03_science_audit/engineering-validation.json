@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "engineering_tests": 369,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "model_calls_in_tests": false,
+  "original_live_cli_exit_code": 1,
+  "original_live_status": "frozen_cli_failed",
+  "post_failure_model_or_science_rerun": false,
+  "recorded_executor_processes_verified": 6,
+  "recorded_model_turns_completed": 7,
+  "posthoc_tool_checks": ["record_adaptive_review", "submit_native_final_review", "freeze_native_final_protocol"],
+  "final_pi_reply_text_persisted": false,
+  "holdout_executed": false,
+  "clean_cli_success_demonstrated": false,
+  "remaining_gate": "Fresh clean CLI acceptance after the role-map fix; this test result is not live workflow success."
+}

@@ -295,7 +295,8 @@ def verify_executor_trace(path: Path, host_path: Path, *,
             raise RuntimeError("native executor has an incomplete or unmatched model turn")
     if not any(row.get("event") == "turn_complete" for row in records):
         raise RuntimeError("native run has no completed model turn")
-    required_roles = {"submit_native_final_review": "skeptic",
+    required_roles = {"record_adaptive_review": "skeptic",
+                      "submit_native_final_review": "skeptic",
                       "freeze_native_final_protocol": "pi"}
     for tool in required_tools:
         role = required_roles.get(tool)

@@ -42,7 +42,30 @@ availability honestly, not fabricate a ReviewPacket or frozen protocol.
 
 ## Remaining B acceptance
 
-Before claiming finalization is demonstrated live, run the optional path with
+### Recorded run 03
+
+[Native run 03](results/native_adaptive_live_03_frozen_cli_failed/README.md)
+performed the real second Skeptic review and PI freeze, with six guarded
+executor processes and seven completed model turns. The holdout Spec is
+registered and unexecuted. Its original CLI exit code is 1: the final verifier
+omitted the primary-review tool's role mapping. That mapping is fixed and the
+original recorded tool/turn trace passes posthoc verification without any
+model/science rerun. The failure remains recorded; final-stage PI reply text
+was not persisted before the failure. No clean CLI success is claimed.
+
+The opt-in mode for a **fresh prepared run** is:
+
+```bash
+.venv-omnigent/bin/python scripts/run_native_adaptive.py --enable-native-live --finalize-discovery --model gpt-6-luna --remaining-seconds 600
+```
+
+Do not run this against completed/failed run 03, reset its budget or execute
+holdout merely to demonstrate the new launcher. Keep its original manifest
+source hashes and failure records unchanged. Future responses are printed
+before final host verification so a verification failure cannot silently
+discard captured CLI output.
+
+Before claiming clean full finalization acceptance, run the optional path with
 a fresh context and preserve its exit code, model/tool linkage, second review,
 frozen protocol and untouched holdout ID. Do not rerun failed attempts in place.
 After A reviews the supported frozen protocol and execution is approved, B can

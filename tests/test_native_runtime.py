@@ -106,7 +106,8 @@ def test_final_trace_verifier_matches_real_turn_hash_and_provider_guard(tmp_path
         {"response_sha256": digest, "response_chars": len(response)},
         sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
     rows = [{"event": "runner_bootstrap_installed", "pid": 10}]
-    for pid, role, tool, call_id in ((21, "skeptic", "submit_native_final_review", "review-1"),
+    for pid, role, tool, call_id in ((20, "skeptic", "record_adaptive_review", "primary-review-1"),
+                                     (21, "skeptic", "submit_native_final_review", "review-1"),
                                      (22, "pi", "freeze_native_final_protocol", "freeze-1")):
         rows.extend([
             {"event": "executor_guard_installed", "pid": pid, "role": role,
@@ -127,8 +128,8 @@ def test_final_trace_verifier_matches_real_turn_hash_and_provider_guard(tmp_path
     path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
     assert _valid_codex_config_overrides(rows[1]["details"]["config_overrides"])
     assert verify_executor_trace(path, host,
-                                 required_tools=("submit_native_final_review", "freeze_native_final_protocol"),
-                                 final_response=response)["completed_turns"] == 2
+                                 required_tools=("record_adaptive_review", "submit_native_final_review", "freeze_native_final_protocol"),
+                                 final_response=response)["completed_turns"] == 3
     try:
         verify_executor_trace(path, host,
                               required_tools=("submit_native_final_review", "freeze_native_final_protocol"),

@@ -278,12 +278,17 @@ def _native_finalization_evidence(db: sqlite3.Connection, run_id: str, parent_re
                 Split.HOLDOUT, Template.HOLDOUT_VALIDATION, main_spec.groups,
                 main_spec.bandgap_method, main_spec.gap_window_ev, main_spec.ehull_max_ev_atom,
                 main_spec.bootstrap_repeats, main_spec.seed, main_spec.timeout_seconds,
-                followup_spec.review_id, followup_spec.review_id, frozen_id)
+                protocol["followup_result_id"], protocol["followup_result_id"], frozen_id)
         except (KeyError, TypeError, ValueError):
             raise ValueError("native final protocol Specs are invalid") from None
-        if (followup_spec.experiment_id not in {item.experiment_id for item in store.list_specs()} or
+        followup_result_id = protocol.get("followup_result_id")
+        followup_result = store.get_result(followup_result_id) if isinstance(followup_result_id, str) else None
+        if (store.get_spec(followup_spec.experiment_id) != followup_spec or
                 followup_spec.parent_result_id != protocol.get("main_result_id") or
-                protocol.get("followup_result_id") != followup_spec.review_id or
+                followup_spec.review_id != protocol.get("main_result_id") or
+                followup_result is None or followup_result.experiment_id != followup_spec.experiment_id or
+                not any(event.actor == "runner" and event.event_type == "result" and
+                        event.payload_ref == followup_result_id for event in events) or
                 expected_holdout != holdout_spec_obj):
             raise ValueError("registered holdout Spec differs from the frozen protocol derivation")
         holdout_spec = holdout_spec_obj.to_dict()
@@ -452,6 +457,8 @@ def export_adaptive_evidence(database: Path, run_id: str, output: Path,
         recovered = bool(native_state is not None and native_state["status"] == "completed" and
                          response_recorded and recovery_event)
         native_status = ("completed_with_host_validation_recovery" if recovered else
+                         "failed_after_discovery_completion" if persisted_failed and native_state is not None
+                         and native_state["status"] == "completed" else
                          native_state["status"] if native_state is not None else
                          "failed_without_state" if persisted_failed else "state_not_persisted")
         retrospective_witness_observed = any(

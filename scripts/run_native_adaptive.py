@@ -388,6 +388,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     if not transcript:
         _record("native_adaptive_orchestration_failed")
         raise RuntimeError("Omnigent native CLI returned no supervisor response")
+    print(transcript, flush=True)
     from nova.adaptive_agent_tools import record_supervisor_response
     record_supervisor_response(transcript)
 
@@ -422,6 +423,7 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
                 raise
             if not finalization_transcript:
                 raise RuntimeError("Omnigent finalization CLI returned no PI response")
+            print(finalization_transcript, flush=True)
             from nova.native_adaptive_runtime import verify_executor_trace
             verify_executor_trace(audit_path, codex_host,
                                  required_tools=("record_adaptive_review", "submit_native_final_review",
@@ -454,10 +456,6 @@ def _run_native_adaptive_child(*, model: str | None = None, remaining_seconds: f
     # or model transcript; Planner/Skeptic/PI/Runner tool packets and Result
     # references are run-owned in SQLite.
     _record("native_adaptive_orchestration_completed")
-    if transcript:
-        print(transcript)
-    if finalization_transcript:
-        print(finalization_transcript)
     summary = {"status": "completed", "run_id": run_id, "model": model or "yaml-configured",
                       "omnigent_version": checked["omnigent_version"],
                       "guardrail_verified": True,
