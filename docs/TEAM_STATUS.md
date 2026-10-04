@@ -1,5 +1,53 @@
 # Team status and handoff
 
+## Team A milestone 11 — independent scientific closeout delivered, 2026-10-03
+
+Synced a clean worktree to B `9cda56f`, which merges A's PR #12 and includes
+the preserved failed native attempt at `fe02c2a`. Main remains `01f17db`.
+A's new branch is `codex/science-closeout`; no B orchestration, shared contract,
+frozen science file, historical result or private run state is changed.
+
+The [independent acceptance report](results/science_closeout/README.md)
+verifies all 11 manifest entries and 12 source hash-inventory entries, both
+registered and computation hashes and content-addressed Result IDs. Primary
+facts and every frozen threshold point exactly match earlier published
+science; arithmetic and stored review references pass. This is stored-evidence
+comparison without a new science/model call, prepared-data read or holdout
+outcome read. The native run remains failed; absent model traces, effective
+runtime guards and supervisor return are not repaired or certified by A.
+
+Delivered [scientific submission wording](SCIENCE_SUBMISSION_BRIEF.md),
+including exact claim/evidence boundaries and three representative-JID
+examples, and a [fixed-rule/run-all comparison plan](BASELINE_COMPARISON_PLAN.md)
+with an explicitly pending measurement template. No timing pairs, cost
+observations or video rehearsal are claimed.
+
+A coding helper used `gpt-6-luna` / `max` for the portable audit entry and
+14 focused cases. Independent review corrected strict-JSON overflow,
+clean-checkout output handling, full inventory checks and grid consistency.
+The existing scientific payload checker and guards are reused unchanged.
+Full payload validation runs on Linux/WSL; Windows covers six preflight/error
+cases and skips eight POSIX-only cases. The helper configuration is separate
+from Omnigent scientific-role model settings.
+
+Final complete Linux regression: **336 passed, no skips**, in an isolated
+checkout without prepared data or private live context. The first run had
+three test-message expectation failures (333 passed); malformed evidence
+was already rejected. Final tests verify the exact underlying checker error
+and generic safe public error. The direct published-fixture CLI audit passes,
+and its output/source hashes agree with the independent manual verification.
+See [the published audit and validation](results/science_closeout/README.md).
+
+Delivered in [PR #13](https://github.com/number8868/agentic-scientific-discovery/pull/13),
+stacked on B `9cda56f`. B still owns native feedback/guard repair, independently
+captured model review and supervisor continuation/stop. A can now review that
+actual trace when available. The benchmark remains unmeasured, the narration
+unrecorded, and real holdout still requires the original valid frozen native
+family/threshold run. No new scientific execution or scientific-role model
+call was made by this stage.
+
+---
+
 ## Team A milestone 10 — scientific review interface delivered, 2026-10-03
 
 Refreshed a clean worktree: main remains `01f17db`, and B has merged A's
