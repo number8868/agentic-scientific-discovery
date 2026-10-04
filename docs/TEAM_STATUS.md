@@ -1,5 +1,35 @@
 # Team status and handoff
 
+## Team A milestone 9 — adaptive method handoff in progress, 2026-10-03
+
+Refreshed main at `01f17db` with a clean working tree. During implementation,
+fetched B's new `codex/b-adaptive-discovery` commit `e90f689` and fast-forwarded
+it into A's `codex/method-result-integration` branch before making overlapping
+code changes. B already owns registered method requests, atomic execution and
+the threshold/method/stop choice. The combined **261-test Linux baseline
+passes** in an isolated tracked-code checkout with no real prepared data or
+private runtime context, using the existing Linux Python 3.12.13 environment.
+
+A's next change is a checksummed, shortlist-only export of completed registered
+method evidence, with precise citation references. It will retain B's rich
+method record and link its canonical parent Result; three arm statuses and a
+separate method-change estimand must not become one ambiguous Result status.
+No generic method registry, shared enum or discovery allowlist extension is
+needed. Coding helpers are explicitly `gpt-6-luna` / `max`, separate from
+Omnigent experiment model settings.
+
+The [independent interpretation audit](SCIENTIFIC_REVIEW_AUDIT.md) identifies
+the incorrect "missingness gap" wording in both the archived final Skeptic
+review and PI freeze explanation. Their original bytes remain preserved.
+Frozen real-data metadata/byte checks and B's published `luna-pilot-07`
+portable export checker pass. Read-only local runtime metadata identifies
+`luna-pilot-06` with no final freeze; it cannot authorize real holdout execution.
+No new model call or holdout result is claimed. Method evidence export,
+synthetic verification and a real registered discovery integration remain in
+progress in this milestone.
+
+---
+
 ## Team A milestone 8 — paired-method comparison and candidate evidence, 2026-10-03
 
 The user selected a concrete methods audit and candidate list from the novelty handoff. Registered the exploratory extension at `647816f` before new outcomes, then implemented the standalone executor/report. The core and report coding helpers were configured as `gpt-6-luna` / `xhigh`; the scientific execution itself made no new model calls. Synced teammate's merge of PR #9 at main `7796f6b` without conflict; the new combined Linux suite passes **217 tests** (including 14 new science and 7 new report tests).
