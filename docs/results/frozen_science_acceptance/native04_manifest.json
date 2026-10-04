@@ -1,0 +1,26 @@
+{
+  "files": {
+    "audit.json": {
+      "count": 1,
+      "sha256": "b05d3bcb39b4511598ba0db316e1d4d15282afee35796ed820928312694ea97e"
+    }
+  },
+  "schema_version": 1,
+  "source_files_sha256": {
+    "adaptive_evidence.json": "0a3f62909d15aae182322f1fd486273abbba8fb746e909b2e750ebf4b13dc9ef",
+    "events.jsonl": "4e855443111c89715eb6ba1e1b834768d45994e5cb128d21df39173af9c63f74",
+    "manifest.json": "89366094c640e21635647de63a13cad9095a7f18fb499f83b7ab511d18d6064f",
+    "native-finalization-evidence.json": "283e20b70a90a30e7647809757a4f67843c21e5de230b097b6a5af86b3c8f18d",
+    "native-model-audit.jsonl": "284e6f3a3b78a16f01cf47d904abf43869ed3182a403b508ac07b17b3ef6b4e5",
+    "native-runtime-manifest.json": "7ca57aaa271adcd882bd8e713234c184a3dbf30589c364dcb214c15f090d5406",
+    "native-runtime-verification.json": "0401ec225eb28ac68e273dfd631a696c6acbceaa520f3c8f189460d04c67aa72",
+    "results.json": "3da89399459c8478b0e7a2f5961123465d600d4b09c0132c929cf174aea77e41",
+    "reviews.json": "69bc3b4ec128683a56a5961b7121729831f41c146e2ed5d1f141ea631c2a5cf5",
+    "science-artifacts.json": "e9122dc3ac9f74bb13859d1929a1685839b7d7faccd54ff7788d3c35c9656ed0",
+    "science-artifacts/science-payload-1864ba7703d5ad43bc0e6147718b6d73aea8dfbf9c8cda47d90f03f89c1c0dd1.json": "1864ba7703d5ad43bc0e6147718b6d73aea8dfbf9c8cda47d90f03f89c1c0dd1",
+    "science-artifacts/science-payload-e1a019849ed713e4516a20a00a68feffdd7116d2cfe0959d8d080b673d163cf2.json": "e1a019849ed713e4516a20a00a68feffdd7116d2cfe0959d8d080b673d163cf2",
+    "specs.json": "02dd09dd7f887e4b25d6909d418184071edb4ea14b3b7ab330937e5f08418d75"
+  },
+  "source_manifest_sha256": "89366094c640e21635647de63a13cad9095a7f18fb499f83b7ab511d18d6064f",
+  "source_run_id": "native-adaptive-live-04"
+}
