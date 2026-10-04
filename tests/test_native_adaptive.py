@@ -22,6 +22,23 @@ def test_native_yaml_parses_and_roles_have_separate_function_allowlists():
     assert "terminal" not in json.dumps(document).lower()
 
 
+def test_holdout_agent_declares_async_wait_and_inbox_contract():
+    document = launcher._holdout_yaml()
+    prompt = document["prompt"]
+    assert document["async"] is True
+    assert "in-progress handle" in prompt
+    assert "End this turn" in prompt
+    assert "child-completion notice" in prompt
+    assert "sys_read_inbox once" in prompt
+    assert "resend the dispatch" in prompt
+    surface = launcher._check_async_dispatch_surface(launcher.AGENT_HOLDOUT)
+    assert surface["async_enabled"] is True
+    assert set(surface["required_async_tools"]) == {
+        "sys_call_async", "sys_read_inbox", "sys_cancel_async",
+    }
+    assert surface["sub_agent_dispatch_tool"] == "sys_session_send"
+
+
 def test_check_only_never_needs_model_or_science_runtime(monkeypatch):
     monkeypatch.setattr(launcher.importlib.metadata, "version", lambda _name: launcher.SDK_PIN)
     monkeypatch.setattr(launcher, "_codex_binaries", lambda *, require_host: (None, None))

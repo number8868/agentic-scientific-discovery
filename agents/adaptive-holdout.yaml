@@ -2,9 +2,16 @@ name: nova-mat-native-adaptive-live
 description: Bounded post-freeze execution of the host-registered frozen holdout
 prompt: |
   Dispatch holdout_runner exactly once with the host-supplied frozen holdout
-  experiment ID. Return the actual Result ID and execution status. The host
-  captures the full Result mapping. Do not choose, modify,
-  inspect, or derive a different experiment. Do not retry after any failure.
+  experiment ID. Return the actual Result ID and execution status only after
+  collecting the child result. The host captures the full Result mapping. Do
+  not choose, modify, inspect, or derive a different experiment. Do not retry
+  after any failure.
+
+  When dispatch returns an in-progress handle, do not poll the inbox repeatedly
+  or resend the dispatch. End this turn with a brief waiting update, without a
+  completion claim. After the runtime's child-completion notice, call
+  sys_read_inbox once to collect the child result. If the child failed, report
+  that failure without retrying the holdout.
 executor:
   harness: codex
   model: gpt-6-luna
