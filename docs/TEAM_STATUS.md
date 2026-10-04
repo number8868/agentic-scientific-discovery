@@ -1,5 +1,38 @@
 # Team status and handoff
 
+## Team A milestone 20 — Technical walkthrough matched to B's Product demo
+
+Delivered the revised [Technical walkthrough](demo/README.md) at **57.97 s**,
+1920x1080/30 fps H.264/AAC, about **2.31 MB**, with the original six English
+narration segments and a separate SRT. It follows B's team-provided Product
+demo style: dark navy, Georgia serif headlines, cyan emphasis, left explanation
+and right system diagrams, recorded-evidence badge and chapter progress.
+The recommended local file is
+`.verification-repro/demo-videos-bstyle/technical_walkthrough_bstyle.mp4`.
+
+The six chapters explain A/B ownership, Skeptic/Planner/PI/Runner review and
+choice, the registered execution interface, actual Spec/Result/payload links,
+host-owned freeze/budget/one-attempt controls and evidence export. The initial
+question remains host-seeded and the recorded method option remains unexecuted.
+Shortened IDs and hashes come from native09's existing public records; its
+recorded scientific status is preserved.
+
+The root reviewed final MP4-decoded chapter frames, actual container metadata,
+all six decoded AAC segments against their original WAVs, complete SRT/narration
+equality and rejection of altered evidence/narration or an impossible duration
+cap. The renderer completed a full audio/video decode. The [verification record](demo/technical_bstyle_validation.json)
+identifies the delivered bytes. All 13 public scientific evidence source hashes,
+the original A videos, original renderer/voice helper and B's reference video
+are unchanged. No model/science/holdout workflow was rerun.
+
+Synced B's README/architecture PR #28 and online-demo PR #27 merges at main
+`441cefa`; refreshed origin again before this status entry. A-owned changes are
+two new media recipe files and their delivery documentation/verification. The
+shared-file scope is this status entry only. Media, reference video, WAVs and
+encoder remain ignored; no raw/prepared data or private runtime file is committed.
+The team can upload the new technical MP4 alongside B's Product demo; actual
+competition-form upload or submission is not claimed.
+
 ## Team A milestone 19 — public interactive online demo deployed
 
 The [online demo](ONLINE_DEMO.md) is live at

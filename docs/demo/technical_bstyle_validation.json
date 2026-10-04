@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-10-04T09:39:38.577885+00:00",
+  "run_id": "native-adaptive-live-09",
+  "mode": "Designed technical explanation using existing real-run aggregate evidence",
+  "style_reference": {
+    "path": ".verification-repro/demo-videos-bstyle/reference/product_demo_reference.mp4",
+    "sha256": "e4120fd6fac10787188ee48e6a384d79874075e36ac61fbbc1b10c277b5c866e",
+    "required_for_render": false
+  },
+  "reference_mp4_sha256_match": true,
+  "config": {
+    "path": "docs/demo/technical_bstyle.json",
+    "sha256": "2bcd8070e0a1e702686816ca1f31eb0a702b08e9563d4051ee740ce7e36e4c21"
+  },
+  "renderer": {
+    "path": "scripts/render_technical_walkthrough_bstyle.py",
+    "working_file_sha256": "1ca107e42a6ab3e1857b932f2bba9e38c330a293b1d06ab71f1443b8800e48e6",
+    "syntax_verified": true
+  },
+  "video": {
+    "local_output": ".verification-repro/demo-videos-bstyle/technical_walkthrough_bstyle.mp4",
+    "duration_seconds": 57.97,
+    "frame_duration_seconds": 57.967,
+    "frame_count": 1739,
+    "size_bytes": 2308997,
+    "sha256": "9bb2e28023c29fdd22561acc814047fc494d0d1d4d098ed166d7a0019e6a57ce",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "video_codec": "H.264 High",
+    "pixel_format": "yuv420p",
+    "audio_codec": "AAC LC",
+    "audio_sample_rate_hz": 48000,
+    "audio_channels": 1,
+    "container_metadata_checked_with_ffmpeg": true,
+    "full_video_and_audio_decode_exit": 0,
+    "full_decode_performed_by": "renderer encode() before successful CLI completion",
+    "under_60_seconds": true,
+    "under_1_gb": true,
+    "english_narration": true,
+    "captions_burned_in": false,
+    "captions_local_output": ".verification-repro/demo-videos-bstyle/captions.srt",
+    "captions_sha256": "e0c3c7fb4662cace23a1cab14f8747e381ff017f40d10acfeab92864adefd250",
+    "caption_cue_count": 11,
+    "caption_text_matches_all_original_narrations": true,
+    "all_six_scene_midpoints_extracted_from_actual_mp4": true,
+    "encoded_contact_sheet_visually_reviewed": true,
+    "decoded_audio_segment_checks": [
+      {
+        "scene": "01-architecture",
+        "original_wav_to_decoded_aac_correlation": 0.999986,
+        "original_samples_preserved_in_timeline": 228482,
+        "start_frame": 0
+      },
+      {
+        "scene": "02-ownership",
+        "original_wav_to_decoded_aac_correlation": 0.999983,
+        "original_samples_preserved_in_timeline": 201161,
+        "start_frame": 328
+      },
+      {
+        "scene": "03-agents",
+        "original_wav_to_decoded_aac_correlation": 0.999984,
+        "original_samples_preserved_in_timeline": 210964,
+        "start_frame": 619
+      },
+      {
+        "scene": "04-contract",
+        "original_wav_to_decoded_aac_correlation": 0.999987,
+        "original_samples_preserved_in_timeline": 183961,
+        "start_frame": 923
+      },
+      {
+        "scene": "05-holdout",
+        "original_wav_to_decoded_aac_correlation": 0.99999,
+        "original_samples_preserved_in_timeline": 158275,
+        "start_frame": 1190
+      },
+      {
+        "scene": "06-limits",
+        "original_wav_to_decoded_aac_correlation": 0.999989,
+        "original_samples_preserved_in_timeline": 220660,
+        "start_frame": 1422
+      }
+    ]
+  },
+  "source_bindings": {
+    "evidence_index": {
+      "path": "docs/demo/evidence.json",
+      "sha256": "78b6b376ea42cd250d79eaeadeabefe81a49db32707a94a198e47faaaa730b88"
+    },
+    "narration_storyboard": {
+      "path": "docs/demo/storyboard.json",
+      "sha256": "5c7e313fd599ad701dcb05ef1ebd2142f966e1c4eb5630d67441f2f9450f011a"
+    },
+    "public_aggregate_exports": [
+      {
+        "path": "docs/results/native09_completed/README.md",
+        "sha256": "b128cf83d63b21b132bb60b319218ebd1f64316a30a4d2caea56eb827f66fccb"
+      },
+      {
+        "path": "docs/results/native09_completed/results.json",
+        "sha256": "5a79414648a42e79ab4141eb4c2c196bda39e6e57c96a74f1eeb325ba133a1a9"
+      },
+      {
+        "path": "docs/results/native09_completed/specs.json",
+        "sha256": "1dc42f98f4b26f545d807461f614960ab681fbb3c28c68b784ba4278cc7b0af2"
+      },
+      {
+        "path": "docs/results/native09_completed/reviews.json",
+        "sha256": "bdb8ff105ea961bceafc07a2804658d29eb0b5b6df6ded649cc90b440a09ba32"
+      },
+      {
+        "path": "docs/results/native09_completed/events.jsonl",
+        "sha256": "cdb8ef736741a77770ec0026dae6d51d98c56f7472685c21596709625efa5e02"
+      },
+      {
+        "path": "docs/results/native09_completed/final_protocol.json",
+        "sha256": "6fb91c4794855133784adf1e9ccf0e18ce7a6447f629faded292561e32258c8f"
+      },
+      {
+        "path": "docs/results/native09_completed/science-artifacts.json",
+        "sha256": "9c5ac8b86acd9f7e43fae39c712598c4245a82899e14bc960b733d203bb593ee"
+      },
+      {
+        "path": "docs/results/native09_completed/native-holdout-result.json",
+        "sha256": "a7aec06435a33d5a9d722735a15908f7bdba2cc9d69e430669b5168ffad410ff"
+      },
+      {
+        "path": "docs/results/native09_completed/manifest.json",
+        "sha256": "003825dcd51f265b61b73a4be610586c34aed7d177b1d64251906e562faa7f0d"
+      }
+    ],
+    "source_pin_count": 11,
+    "all_pinned_hashes_match": true,
+    "all_13_public_evidence_sources_byte_unchanged": true,
+    "three_spec_result_payload_lineages_match": true,
+    "two_review_references_match": true,
+    "frozen_protocol_and_holdout_references_match": true,
+    "recorded_holdout_status": "direction_consistent_inconclusive",
+    "original_two_a_video_hashes_unchanged": true,
+    "original_renderer_and_voice_helper_preserved": true
+  },
+  "narration_audio": [
+    {
+      "scene": "01-architecture",
+      "wav": "technical_walkthrough_01-architecture.wav",
+      "wav_sha256": "e925bee47a167e89b0c6430d2624348510ccbd3b82adccce5fc7ba925f072349",
+      "duration_seconds": 10.362,
+      "narration_sha256": "db4ce34a9ff271b7cc236522d6bcf252812bb299a150f098596a9a9220e58408"
+    },
+    {
+      "scene": "02-ownership",
+      "wav": "technical_walkthrough_02-ownership.wav",
+      "wav_sha256": "236b6b0e1aeac475c80768ae824a2a6cbd4fc4b68633abb6dfc94345a76cd038",
+      "duration_seconds": 9.123,
+      "narration_sha256": "5ca7f43cc252cfe54edf7767bfe634f3ca2486dfdbf12d63bca4caa3e0172f38"
+    },
+    {
+      "scene": "03-agents",
+      "wav": "technical_walkthrough_03-agents.wav",
+      "wav_sha256": "574719aa11f7604504a7bd53de4a242e706c2b116df0a7e5acadd867f86881b8",
+      "duration_seconds": 9.568,
+      "narration_sha256": "f6aa24e5c9666399c5f4c0049c67db2f3e32a90951861816808b7ae8c621526f"
+    },
+    {
+      "scene": "04-contract",
+      "wav": "technical_walkthrough_04-contract.wav",
+      "wav_sha256": "7f5861aa310d2ed3417c7f91442fa6bf66a9db6cf544b46e95ca3c8caed140f1",
+      "duration_seconds": 8.343,
+      "narration_sha256": "b1bd2907323ec7979cf71b685161bcce0a772aa257e711b7fd5b05402fadff0a"
+    },
+    {
+      "scene": "05-holdout",
+      "wav": "technical_walkthrough_05-holdout.wav",
+      "wav_sha256": "39477c9196d3c8c48c5818fd2d1462d7328db63d62fde6c249df76e759c21edb",
+      "duration_seconds": 7.178,
+      "narration_sha256": "3d850eca763fe8f021dc9f05d38f4b31bda916d27620ae2de97b560bf82db45d"
+    },
+    {
+      "scene": "06-limits",
+      "wav": "technical_walkthrough_06-limits.wav",
+      "wav_sha256": "fd962fd82ebd433c950bbf41921b109ecc2c627924e0748529032f496721227d",
+      "duration_seconds": 10.007,
+      "narration_sha256": "614e170dd683ad22c3cfc583d213aeeddb6e7b42a76dbba0f55d2b44e3a193c3"
+    }
+  ],
+  "negative_preflight_checks": {
+    "altered_evidence_hash_rejected": true,
+    "altered_narration_rejected": true,
+    "narration_exceeding_duration_cap_rejected_without_trimming": true
+  },
+  "design": {
+    "palette": "dark navy, cyan/teal, muted blue",
+    "typography": "Georgia serif headlines, Segoe UI descriptions, Consolas short identifiers",
+    "composition": "left editorial text, right technical diagram, fixed header and chapter progress",
+    "transitions": "restrained 0.38-second crossfades",
+    "clean_monogram_agent_feedback_and_closing_title_reviewed": true
+  },
+  "execution_scope": {
+    "new_science_calls": 0,
+    "new_scientific_workflow_model_calls": 0,
+    "new_holdout_calls": 0,
+    "raw_or_prepared_data_read": false,
+    "private_runtime_database_or_model_trace_read": false,
+    "browser_capture_or_upload_performed": false,
+    "science_source_or_dependency_changes": false,
+    "team_introduction_in_scope": false
+  }
+}
