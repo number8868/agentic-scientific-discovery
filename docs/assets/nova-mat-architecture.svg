@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="790" viewBox="0 0 1200 790" role="img" aria-labelledby="title desc">
+<title id="title">NOVA-MAT — evidence-bound multi-agent architecture</title>
+<desc id="desc">PI coordinates Planner, Skeptic and Runner. Registered tools write an evidence ledger feeding back into review. Initial question and primary screen are host-seeded; the host enforces freeze before one holdout attempt.</desc>
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071521"/><stop offset="1" stop-color="#102b3c"/></linearGradient>
+<marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#64e3e8"/></marker>
+<marker id="b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#8a9cff"/></marker>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#eef3f2}.heading{font-size:26px;font-weight:700}.caps{font-size:14px;letter-spacing:2px;fill:#64e3e8}.label{font-size:21px;font-weight:700}.small{font-size:16px;fill:#a4bdca}.box{fill:#10293a;stroke:#42647b;stroke-width:1.5}.pi{fill:#123046;stroke:#64e3e8;stroke-width:2}.arrow{fill:none;stroke:#64e3e8;stroke-width:2.2;marker-end:url(#a)}.feedback{fill:none;stroke:#8a9cff;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#b)}</style>
+</defs>
+<rect width="1200" height="790" rx="18" fill="url(#bg)"/>
+<text class="caps" x="48" y="43">NOVA-MAT / MATERIALS DISCOVERY</text>
+<text class="heading" x="48" y="86">A shared loop. Clear roles. Traceable decisions.</text>
+<rect x="48" y="116" width="1104" height="478" rx="18" fill="#0b1926" stroke="#426179"/>
+<text class="caps" x="78" y="152">OPEN-SOURCE OMNIGENT · COORDINATION LAYER</text>
+<rect class="pi" x="480" y="181" width="240" height="86" rx="12"/>
+<text class="label" x="600" y="216" text-anchor="middle">PI · coordinator</text>
+<text class="small" x="600" y="244" text-anchor="middle">chooses · freezes protocol</text>
+<rect class="box" x="130" y="324" width="240" height="96" rx="12"/>
+<text class="label" x="250" y="362" text-anchor="middle">Planner</text>
+<text class="small" x="250" y="391" text-anchor="middle">maps registered options</text>
+<rect class="box" x="480" y="324" width="240" height="96" rx="12"/>
+<text class="label" x="600" y="362" text-anchor="middle">Skeptic</text>
+<text class="small" x="600" y="391" text-anchor="middle">reviews evidence · challenges</text>
+<rect class="box" x="830" y="324" width="240" height="96" rx="12"/>
+<text class="label" x="950" y="362" text-anchor="middle">Runner</text>
+<text class="small" x="950" y="391" text-anchor="middle">executes selected experiment</text>
+<path class="arrow" d="M480 232C375 244 285 278 250 320"/><path class="arrow" d="M370 372H476"/>
+<path class="arrow" d="M600 267V320"/><path class="arrow" d="M720 232C825 244 915 278 950 320"/>
+<path class="feedback" d="M635 324V272"/>
+<rect class="box" x="440" y="486" width="290" height="76" rx="10"/>
+<text class="label" x="585" y="518" text-anchor="middle">Result / evidence ledger</text>
+<text class="small" x="585" y="545" text-anchor="middle">observations · reviews · provenance</text>
+<rect class="box" x="802" y="486" width="296" height="76" rx="10"/>
+<text class="label" x="950" y="518" text-anchor="middle">Registered science tools</text>
+<text class="small" x="950" y="545" text-anchor="middle">threshold sensitivity · holdout</text>
+<path class="arrow" d="M950 420V482"/><path class="arrow" d="M802 524H734"/>
+<path class="feedback" d="M530 486C484 455 492 440 536 422"/><path class="feedback" d="M466 486C355 445 338 294 478 220"/>
+<text class="small" x="230" y="527" text-anchor="middle">review feedback</text>
+<rect x="48" y="614" width="1104" height="66" rx="10" fill="#112331" stroke="#41677b"/>
+<text class="caps" x="78" y="640">HOST-ENFORCED CONTROL PLANE</text>
+<text class="small" x="78" y="663">Run / role binding · immutable Specs · shared deadline · protocol freeze before one holdout attempt</text>
+<rect x="48" y="698" width="1104" height="62" rx="10" fill="#1a2228" stroke="#a88954"/>
+<text x="78" y="723" font-size="14" letter-spacing="1.5" fill="#e5c783">OUTSIDE THE AUTONOMOUS AGENT LOOP</text>
+<text class="small" x="78" y="747">Host-seeded research question + predefined primary screen · no autonomous hypothesis-generation claim</text>
+</svg>
