@@ -40,20 +40,22 @@ validation has been performed for these examples.
 
 ## Short scientific narration
 
-This text is intended for the scientific part of a short video. It still
-needs a timed rehearsal and recording; no video-duration check is claimed.
+This draft separates the recovered multi-agent follow-up from the independently
+audited method evidence. It still needs a timed rehearsal and recording;
+no video-duration check is claimed. The [A acceptance report](results/recovered_science_acceptance/README.md)
+supports the recorded workflow statements and preserves the original failure.
 
-> NOVA-MAT audits whether a materials screening conclusion survives a change
-> in computational evidence. In our frozen JARVIS discovery snapshot, three
-> oxide and six chalcogenide representatives pass the original OPT screen.
-> The positive family difference persists across three fixed stability
-> thresholds, with sparse, correlated outcomes. Pairing OPT and MBJ on the
-> same representative IDs exposes thirteen discordant candidates and six
-> OPT candidates with missing MBJ evidence. None passes both screens.
-> Paired coverage is only about sixteen and twenty-five percent, and both
-> paired family comparisons remain inconclusive. We preserve unknowns,
-> statistical states and exact evidence references. This is a computational
-> evidence audit; holdout and workflow speed claims remain unverified.
+> NOVA-MAT audits computational materials evidence with a frozen JARVIS snapshot.
+> Omnigent's Planner presented threshold and method diagnostics plus stopping.
+> An independent Skeptic cited sparse pass counts; PI chose the frozen threshold
+> test, Runner returned its computed results, and PI summarized them. The
+> recorded run required host validation recovery. The original OPT screen has
+> three oxide and six chalcogenide passes. Its positive contrast persists across
+> three correlated thresholds. Separately, same-ID OPT/MBJ comparison finds
+> thirteen discordant candidates and six missing comparators, with no
+> both-method pass. Paired coverage is limited and family comparisons remain
+> inconclusive. Clean CLI completion, final freeze, holdout and speed gains
+> remain unverified.
 
 ## Run-specific statements for the final presentation
 
@@ -61,11 +63,12 @@ needs a timed rehearsal and recording; no video-duration check is claimed.
 | --- | --- | --- |
 | [Native finalization run 03](results/native_adaptive_live_03_frozen_cli_failed/README.md) | Real second Skeptic review and PI freeze produced an unexecuted holdout Spec. Six guarded processes completed seven model turns. Original CLI exit 1 at a now-fixed host role-map check remains preserved. | Clean fresh CLI acceptance and persisted final-stage PI prose; actual authorized holdout remains unexecuted. |
 | [Adaptive live run 02](results/adaptive_live_verification.json) | One bounded Omnigent model choice selected a threshold follow-up from recorded alternatives and the host executed it. | Independent reviewer invocation and supervisor receiving the new Result before its next decision. |
-| [Native discovery run 02](results/native_adaptive_live_02_recovered/README.md) | Four specialist processes completed five model turns, with recorded review/choice, two discovery Results and a PI final response. Original CLI exit 1 was followed by hash-bound host-only validation recovery; no model/science rerun. | A fresh clean-CLI run, initial hypothesis autonomy and final scientific review/freeze integration. No full-workflow or OS-confinement claim. |
-| [Review readiness kit](results/method_review_readiness/README.md) | A's structured reviewer validator accepts correct engineering fixtures and rejects incorrect facts/references. | An actual independent model response and a scientific reading of its free text. |
+| [First failed native attempt](NATIVE_ADAPTIVE_BLOCKERS.md) | Host records contain review, choice and two persisted discovery Results; native orchestration failed. Its separate failure remains preserved. | It remains failed; a later recovered run does not relabel it. |
+| [Recovered native run 02](results/recovered_science_acceptance/README.md) | Recorded separate Planner/Skeptic/PI/Runner turns support an evidence-grounded threshold choice, actual full-grid feedback and a matching PI summary. The original CLI exited 1; host validation recovery preserved the original work. | Clean-CLI acceptance, formal post-result review and explicit decision/freeze, original frozen holdout lineage, measured comparison. Initial hypothesis and primary screen were host seeded. |
+| [Review readiness kit](results/method_review_readiness/README.md) | A's structured reviewer validator accepts correct engineering fixtures and rejects incorrect facts/references. | An actual independent review of the method-candidate input and a scientific reading of its free text. |
 | [Holdout interface](HOLDOUT_VALIDATION.md) | The controlled frozen-protocol interface has synthetic verification. | The single real execution from the original valid native frozen run and its exported comparison evidence. |
 | [Baseline protocol](BASELINE_COMPARISON_PLAN.md) | A benchmark design and pending measurement format are available. | Matched complete runs, actual model latency/usage and cost provenance. |
 
 Before publishing a stronger statement, replace the corresponding row with
-the exact new evidence and audit. The latest native failure is preserved;
-fixing response handling must not relabel or rerun that failed attempt.
+the exact new evidence and audit. The original failed run and original CLI
+failure in the recovered run are preserved; neither is a clean-CLI success.

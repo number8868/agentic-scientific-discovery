@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "files_sha256": {
+    "README.md": "019cc3b0213ca2d283d33beccc1456bb7850b21e1e02f89363da77b6ffb6ad54",
+    "independent_verification.json": "ca6c626f75eb44ee999bd329f842327d2cff761a6a32537cf33f498c2b632984",
+    "validation.json": "305bd355808eba6d7d226576598cfaf7b3171046ee20743953f885b2531b6475"
+  }
+}
