@@ -26,3 +26,7 @@ Holdout was not executed, and no validation, replication or speedup is claimed.
 The generic portable runtime-verification sidecar intentionally remains
 conservative; executed host checks are separate from provider attestation.
 Earlier failed runs remain historical and unchanged.
+
+The [separate host acceptance record](../native06_host_acceptance.json)
+records the repeated exact-response/trace and portable-inventory checks; it is
+not a provider attestation and does not rewrite the generic export sidecar.
