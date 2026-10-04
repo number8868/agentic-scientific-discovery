@@ -2,7 +2,8 @@
 
 ## Team A milestone 13 — native frozen science accepted, runtime gate retained
 
-Synced newly merged main `c6cea09`, including A PR #15 and B PR #16. Branch:
+Started from main `c6cea09` (A PR #15 and B PR #16), then integrated B's
+concurrent PR #17 at `7da9673`, preserving both teams' status sections. Branch:
 `codex/finalization-science-acceptance`. The existing A portable discovery
 audit now optionally checks B's frozen finalization sidecar: exact original
 OPT family/threshold parameters, canonical protocol/stage hashes, both
@@ -47,6 +48,27 @@ portable export checks cannot reopen failed runs, reset budgets or replace
 the single-attempt gate. Method-specific validation remains outside the
 original freeze. Matched full-latency/cost comparisons, clean rehearsals,
 recording and both submissions remain pending.
+
+---
+
+## B run 04 update — final protocol frozen, native acceptance still failed
+
+PR #15 and #16 are merged; run 04 started from main c6cea09 with no tracked
+differences or unresolved conflicts. Actual discovery, final Skeptic review and
+PI freeze completed; holdout remains unexecuted. Original CLI exit 1 is
+preserved: final CLI output did not match the guarded freeze-turn response
+metadata hash. The captured output contains multiple PI replies. Investigation
+and a regression fix are in progress; no clean native success is claimed and
+no additional model run is being used to hide this failure. Scientific artifact
+audit passes, which is separate from native workflow acceptance. See
+[run 04 evidence](results/native_adaptive_live_04_frozen_cli_failed/README.md).
+
+The minimal launcher fix captures final CLI text before host verification,
+without writing a completion event on failure. Final combined regression: 381 tests,
+zero errors/failures/skips, 22.799 seconds. Extracted final-session text passes
+the original trace verifier posthoc; the original runtime mismatch remains
+unexplained. Strong response/tool/PID linkage is not loosened. No paid rerun
+or holdout execution followed this failure.
 
 ## B finalization update — real review/freeze, clean CLI pending
 
