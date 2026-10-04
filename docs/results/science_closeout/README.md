@@ -20,7 +20,7 @@ Source bytes and the six protected scientific source hashes are unchanged.
 | `family_screen` | `18d3c69254b8475a` | `f5eaf8c139baa0f7` | `nova-result-13c98cb8a52d8ec707c385f5bdd057aba53674c16b1c1eaf14eba9b7c812c0b5` |
 | `threshold_sensitivity` | `ecc07dd876b916ae` | `6bd6307e8d56b6ba` | `nova-result-6ba5a4a44b20423060e1527444aecc710cbb7609c350d38755660fd44057826c` |
 
-The registered hash includes run/experiment contract fields. The computation
+The registered hash includes experiment identity and registration metadata. The computation
 hash describes the minimized scientific input, including the frozen threshold
 extension where applicable. They are intentionally different. Independently
 reconstructed both hashes, verified each against its matching payload field,
@@ -92,3 +92,44 @@ Use [the scientific submission wording](../../SCIENCE_SUBMISSION_BRIEF.md)
 and [baseline comparison plan](../../BASELINE_COMPARISON_PLAN.md) while B
 completes its runtime repair. Current audit activity makes zero new model or
 science calls and claims no browser verification.
+
+## Reproduce the portable audit
+
+From a Linux/WSL source checkout using the existing Linux environment:
+
+```sh
+.venv-omnigent/bin/python scripts/audit_discovery_bundle.py \
+  --evidence-dir docs/results/native_adaptive_live_01_failed \
+  --output runs/science-audit-01
+```
+
+Choose a fresh output directory. The source package is read-only; the command
+writes just `audit.json` and `manifest.json` after every check passes. It
+checks Spec/run metadata before outcomes, hashes/counts all allowlisted
+manifest files, and validates temporary copies of the payloads with the
+existing discovery checker. Every grid point must preserve the parent's total
+and evaluable counts, and passes must not decrease as the hull limit widens.
+It creates no accepted output for rejected evidence.
+
+The existing checker requires POSIX private-file modes. Full validation is
+performed on Linux/WSL; the new CLI does not replace shared guards to simulate
+that check on Windows. It is a local evidence utility, not an ID-only execution
+tool or a native authorization gate.
+
+The [CLI report](audit.json) and [output manifest](manifest.json) reproduce
+the distinct identities and grid consistency. Independently compared their
+12 source digests and factual output to the earlier manual check. The report
+does not authenticate the raw dataset, recompute bootstrap intervals, verify
+model-role identity, interpret every prose statement, or certify native
+completion. The separate human reading in this document has that narrower
+stored-text scope. Zero-model counters refer to scientific-role/runtime
+calls; the coding helper used `gpt-6-luna` / `max` separately.
+
+The final [regression record](validation.json) reports **336 Linux tests
+passed without skips**, including 14 new audit cases and the direct clean-root
+CLI test. Re-signed wrong contract hashes, altered stored facts, changed
+primary/grid counts, nonmonotonic passes, ownership errors, missing/traversal
+paths, strict JSON errors and premature holdout are rejected. Windows covers
+six preflight/error cases and skips eight POSIX-only cases, all exercised on
+Linux. Initial Linux failures were three error-message test expectations;
+the final tests prove the underlying guard reason and generic public error.

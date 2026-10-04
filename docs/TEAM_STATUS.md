@@ -1,6 +1,6 @@
 # Team status and handoff
 
-## Team A milestone 11 — independent scientific closeout, in progress
+## Team A milestone 11 — independent scientific closeout delivered, 2026-10-03
 
 Synced a clean worktree to B `9cda56f`, which merges A's PR #12 and includes
 the preserved failed native attempt at `fe02c2a`. Main remains `01f17db`.
@@ -22,10 +22,29 @@ examples, and a [fixed-rule/run-all comparison plan](BASELINE_COMPARISON_PLAN.md
 with an explicitly pending measurement template. No timing pairs, cost
 observations or video rehearsal are claimed.
 
-A coding helper uses `gpt-6-luna` / `max` for a small portable audit entry
-that reuses the existing scientific payload validator. Implementation and
-independent Linux verification remain in progress. The helper configuration
-does not select any Omnigent experiment model.
+A coding helper used `gpt-6-luna` / `max` for the portable audit entry and
+14 focused cases. Independent review corrected strict-JSON overflow,
+clean-checkout output handling, full inventory checks and grid consistency.
+The existing scientific payload checker and guards are reused unchanged.
+Full payload validation runs on Linux/WSL; Windows covers six preflight/error
+cases and skips eight POSIX-only cases. The helper configuration is separate
+from Omnigent scientific-role model settings.
+
+Final complete Linux regression: **336 passed, no skips**, in an isolated
+checkout without prepared data or private live context. The first run had
+three test-message expectation failures (333 passed); malformed evidence
+was already rejected. Final tests verify the exact underlying checker error
+and generic safe public error. The direct published-fixture CLI audit passes,
+and its output/source hashes agree with the independent manual verification.
+See [the published audit and validation](results/science_closeout/README.md).
+
+Delivered in [PR #13](https://github.com/number8868/agentic-scientific-discovery/pull/13),
+stacked on B `9cda56f`. B still owns native feedback/guard repair, independently
+captured model review and supervisor continuation/stop. A can now review that
+actual trace when available. The benchmark remains unmeasured, the narration
+unrecorded, and real holdout still requires the original valid frozen native
+family/threshold run. No new scientific execution or scientific-role model
+call was made by this stage.
 
 ---
 
