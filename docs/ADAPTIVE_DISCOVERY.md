@@ -42,11 +42,21 @@ run these commands merely to inspect the repository.
 
 ## Boundaries and remaining work
 
-Tests use mocked model/tool calls and synthetic rows. They establish engineering
-behavior, not a new scientific outcome or live orchestration evidence. The new
-path still requires a fresh authenticated live rehearsal before being described
-as demonstrated adaptive orchestration. It is not the complete four-specialist
-workflow in the technical plan.
+Tests use mocked model/tool calls and synthetic rows; they establish engineering
+behavior, not scientific outcomes. The authenticated `adaptive-live-02` rehearsal
+also completed: the model received the real primary Result summary, chose
+threshold sensitivity from bounded alternatives, and the host executed that
+registered discovery follow-up. See `results/adaptive_live_02_with_science/`;
+the earlier failed attempt is preserved separately in
+`results/adaptive_live_01_failed_with_science/`. These portable bundles include
+the registered scientific payloads, including the complete threshold grid.
+
+This proves one evidence-informed Omnigent/Codex choice gating real host
+execution, not the complete four-specialist workflow. The primary is host-seeded;
+the persisted `skeptic` review is written by the host from that same selection
+rationale, not a separately called Skeptic model. The follow-up Result is not
+returned to this single decision turn. Requested model metadata is not provider
+attestation. No holdout execution or speedup claim follows from this rehearsal.
 
 The original pilot now has a 720-second role-sequence cancellation deadline.
 Cancellation is not a hard process-exit deadline: cleanup takes additional time,
@@ -55,7 +65,7 @@ their separate 120-second hard bound. Keep this distinction in timing claims.
 
 The paired method path has no authorized holdout protocol. The legacy frozen
 family/threshold holdout gate must not be used to validate it. Remaining acceptance
-work includes specialist integration, fresh live evidence, separately frozen
+work includes native specialist integration and its own live evidence, separately frozen
 method holdout design with A, and an honest measured comparison with manual/rule
 selection and running all inexpensive tests. No speedup or novelty-first claim
 is established by this patch.

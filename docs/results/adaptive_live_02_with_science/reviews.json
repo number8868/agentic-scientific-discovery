@@ -1,0 +1,20 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-3fadd9ed9f51d050692d468dbb3d119409bf9f5129da7678f20f1cc61f087f7d"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-3fadd9ed9f51d050692d468dbb3d119409bf9f5129da7678f20f1cc61f087f7d"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-620e4f9ad73b754d",
+    "reason": "The snapshot shows a nonzero discovery contrast (\u0394\u22480.00151), with adequate coverage and evaluable counts in both groups and a resampling interval above zero. Threshold sensitivity is a feasible, focused next check of whether that contrast changes across the registered threshold axis.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-3fadd9ed9f51d050692d468dbb3d119409bf9f5129da7678f20f1cc61f087f7d"
+  }
+]

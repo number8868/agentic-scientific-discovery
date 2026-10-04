@@ -1,0 +1,10 @@
+{
+  "adaptive_evidence.json": "2ffb34a59ee15fc1349c6d6089a73b79463727def060850f2948af0dc97f8a62",
+  "events.jsonl": "09947bd53a18b90efc201ace9b0b443125dcb8a17054e4297227af94ad5e2b45",
+  "manifest.json": "8bc024b93e1318c1e1e11ac1313ddda74f7ee63a363de89bc3a76770e7b42cfb",
+  "results.json": "e5b42731d4b57b14162a40ce8a6d3d48824809a33c7edcf9e1a9502fda6f6685",
+  "reviews.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "science-artifacts.json": "89b7aeb1f1385f5922481b614a2baa49740c9ddbbea0188021cba93c4eafacce",
+  "science-artifacts/science-payload-75d98476eb14ca1a915e7c4f4a08641dba8041718b9d6b15dee269219d5a7a7f.json": "75d98476eb14ca1a915e7c4f4a08641dba8041718b9d6b15dee269219d5a7a7f",
+  "specs.json": "3f0320fa8b5316c96397c0872dce390071328c35ffc715b92771096a35bb6e82"
+}

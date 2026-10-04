@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "review_type": "independent_read_only_evidence_audit",
+  "reviewed_at_utc": "2026-10-04",
+  "source_database": "runs/adaptive-live-02/run.sqlite",
+  "bundles": [
+    {
+      "run_id": "adaptive-live-02",
+      "bundle": "docs/results/adaptive_live_02_with_science",
+      "status": "completed_adaptive_threshold_followup",
+      "events": 18,
+      "specs": 2,
+      "results": 2,
+      "reviews": 1,
+      "parent_result_id": "nova-result-3fadd9ed9f51d050692d468dbb3d119409bf9f5129da7678f20f1cc61f087f7d",
+      "selected_choice": "threshold_sensitivity",
+      "followup_result_id": "nova-result-b64a3d45dd506504446db0fca9eb78a55b9f77dc3a1a18ddb5eeec79bc24181e",
+      "requested_model": "gpt-6-luna",
+      "provider_attestation": null,
+      "packet_source": "recorded_decision_packet",
+      "science_payloads_portable": true,
+      "science_payload_count": 2,
+      "threshold_grid": [0.025, 0.05, 0.1],
+      "hash_inventory_verified": true,
+      "run_scope_verified": true
+    },
+    {
+      "run_id": "adaptive-live-01",
+      "bundle": "docs/results/adaptive_live_01_failed_with_science",
+      "status": "decision_failed_after_completed_parent_result",
+      "events": 9,
+      "specs": 1,
+      "results": 1,
+      "reviews": 0,
+      "selected_choice": null,
+      "packet_source": "reconstructed_for_inspection_not_recorded_model_input",
+      "requested_model": "operator-reported gpt-6-luna; not attested",
+      "provider_attestation": null,
+      "science_payloads_portable": true,
+      "science_payload_count": 1,
+      "hash_inventory_verified": true,
+      "run_scope_verified": true
+    }
+  ],
+  "scientific_readout": {
+    "scope": "observed discovery representatives in this dataset snapshot only",
+    "parent_delta": 0.001508138314330796,
+    "parent_resampling_interval": [
+      0.00011091441699668733,
+      0.003222018323127856
+    ],
+    "oxide": {
+      "n_total": 7657,
+      "n_observed": 7657,
+      "n_pass": 3,
+      "coverage": 1.0
+    },
+    "chalcogenide": {
+      "n_total": 3158,
+      "n_observed": 3158,
+      "n_pass": 6,
+      "coverage": 1.0
+    },
+    "parent_scientific_status": "supported_in_snapshot",
+    "holdout_executed": false,
+    "replication_claim": false
+  },
+  "limitations": [
+    "The adaptive invocation is one bounded Omnigent Codex model choice; this trace does not demonstrate a supervisor calling a child agent and receiving a function result back.",
+    "The skeptic review event is host-created by submit_live_review from the adaptive selection rationale; no separate Skeptic model invocation is evidenced.",
+    "The payloads are included and hash-bound to Results; the source dataset snapshot is not included, so the bundle is not a standalone rebuild environment.",
+    "The model value is the requested model identifier recorded by the runner, not provider-attested model identity."
+  ]
+}

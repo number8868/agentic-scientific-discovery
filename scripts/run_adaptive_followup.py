@@ -192,7 +192,7 @@ async def _ask_codex(packet: dict[str, Any], model: str, timeout: int,
     from omnigent.inner.executor import ExecutorConfig, ExecutorError, ToolCallComplete, ToolCallRequest, TurnComplete
     from omnigent.inner.codex_executor import CodexExecutor
     from importlib.metadata import version
-    from scripts.run_omnigent_live import _minimal_codex_config, _new_codex_executor
+    from scripts.run_omnigent_live import _minimal_codex_config, _new_codex_executor, _safe_text
     import tempfile
 
     tool = _tool(packet)
@@ -248,7 +248,7 @@ async def _ask_codex(packet: dict[str, Any], model: str, timeout: int,
                             completion_count += 1
                             tool_status = getattr(event.status, "value", str(event.status))
                         if isinstance(event, ExecutorError):
-                            raise RuntimeError("Codex decision call failed")
+                            raise RuntimeError(f"Codex decision call failed: {_safe_text(str(event.message))}")
                         if isinstance(event, TurnComplete):
                             completed = True
                 with _minimal_codex_config():

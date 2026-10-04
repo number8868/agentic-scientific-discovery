@@ -1,0 +1,11 @@
+{
+  "adaptive_evidence.json": "adf2acd8d92539a6a5dbfe7e9373c60028dacc3f01c793a78a9c2437d8716f6d",
+  "events.jsonl": "36ec91d17fca5b613812ca7d3b4aeffce45e596d60ac6a0668c3e3a0331c15e6",
+  "manifest.json": "a41fdfdc7206ee0f74565abdeb22488921f61e5abbb4613a8b24402573d6b692",
+  "results.json": "007147b4c4aca275201d641edec6056579d5cf592188e8d41f2ee28799a205d5",
+  "reviews.json": "bc1887531fe3e04dab9feb276e4e87d5b9863aa0a80b72328112a4bcc552d6fd",
+  "science-artifacts.json": "347156fde3a0c8d0016f0b4aabf5a3fd46458626fcc2f1c852016bc738b26c40",
+  "science-artifacts/science-payload-0f0af36d9dd4a9325cb3c5943956abd62c22a802e04455750f55ace4051e09c3.json": "0f0af36d9dd4a9325cb3c5943956abd62c22a802e04455750f55ace4051e09c3",
+  "science-artifacts/science-payload-2dc9a1c7049500510c166a50fecfbe38af90e3447791deff3650251b801e20a5.json": "2dc9a1c7049500510c166a50fecfbe38af90e3447791deff3650251b801e20a5",
+  "specs.json": "35cfea8dd5d85fbf6547a0599cd0a924a4abe961b2958a91d2ffc0e6ad8c90b9"
+}
