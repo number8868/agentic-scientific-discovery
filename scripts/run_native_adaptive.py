@@ -113,6 +113,28 @@ def _validate_agent(path: Path = AGENT) -> dict[str, Any]:
     return raw
 
 
+def _check_async_dispatch_surface(path: Path) -> dict[str, Any]:
+    """Validate the pinned SDK's real translated async/sub-agent tool surface."""
+    from omnigent.inner.loader import load_agent_def_from_path
+    from omnigent.spec.omnigent import agent_def_to_agent_spec
+    from omnigent.tools.manager import ToolManager
+
+    raw = _load_yaml(path)
+    if raw.get("async") is not True:
+        raise ValueError(f"{path.name} must explicitly enable async sub-agent completion delivery")
+    definition = load_agent_def_from_path(str(path))
+    spec = agent_def_to_agent_spec(definition, raw_yaml=raw)
+    manager = ToolManager(spec, sandbox_enabled=False)
+    tools = set(manager._tools)
+    required_async = {"sys_call_async", "sys_read_inbox", "sys_cancel_async"}
+    if spec.name != "nova-mat-native-adaptive-live" or spec.async_enabled is not True:
+        raise RuntimeError("pinned Omnigent conversion did not preserve the native PI async surface")
+    if not required_async.issubset(tools) or "sys_session_send" not in tools:
+        raise RuntimeError("pinned Omnigent PI tool manager lacks async inbox or declared sub-agent dispatch tools")
+    return {"async_enabled": True, "required_async_tools": sorted(required_async),
+            "sub_agent_dispatch_tool": "sys_session_send"}
+
+
 def _finalization_yaml() -> dict[str, Any]:
     """Validate the native finalization stage run after adaptive response persistence."""
     from omnigent.inner.loader import load_agent_def_from_path
@@ -174,8 +196,10 @@ def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
     if version != SDK_PIN:
         raise RuntimeError(f"native security bootstrap is pinned to omnigent=={SDK_PIN}, found {version}")
     _validate_agent()
+    async_dispatch_surface = _check_async_dispatch_surface(AGENT)
     if finalize_discovery:
         _finalization_yaml()
+        _check_async_dispatch_surface(AGENT_FINALIZE)
     codex, host = _codex_binaries(require_host=False)
     route_available = False
     if host is not None:
@@ -192,6 +216,7 @@ def check_only(*, finalize_discovery: bool = False) -> dict[str, Any]:
             "agent_yaml": ([str(AGENT.relative_to(ROOT)), str(AGENT_FINALIZE.relative_to(ROOT))]
                            if finalize_discovery else str(AGENT.relative_to(ROOT))),
             "finalize_discovery": finalize_discovery,
+            "async_dispatch_surface": async_dispatch_surface,
             "codex_cli": str(codex) if codex else None,
             "codex_code_mode_host": str(host) if host else None, "native_agent_tools": True,
             "model_calls": False, "science_calls": False}

@@ -1,5 +1,25 @@
 # Team status and handoff
 
+## B native06 — clean bounded finalization accepted
+
+Fresh run06 on 955aaea exited **0**: real adaptive choice/Runner feedback,
+final Skeptic review and PI freeze completed, with six guarded PIDs and ten
+model turns. Exact raw final PI text persisted and passed freeze-call/PID/turn
+hash verification. No failure/recovery event; holdout is registered and
+unexecuted. Portable scientific audit passes separately. Full preflight suite:
+405 tests, zero errors/failures/skips, 23.083 seconds. See
+[run06 evidence](results/native_adaptive_live_06_completed/README.md).
+
+SDK 0.16.0's converter omits the false async setting; simply enforcing false
+would also remove the inbox needed for child delivery. YAML now explicitly
+enables the supported async surface and prompts wait for runtime completion
+notices rather than busy polling. Check-only validates the actual converter
+and tool manager, not just YAML parsing. No SDK install files, A science or
+tool-call limits were changed. This does not prove the historical native05
+ExecutorError cause. Historical failures stay unchanged; initial hypothesis
+and primary are still host-seeded, and three clean rehearsals, benchmarks and
+recording remain unestablished. A owns frozen-protocol review and holdout.
+
 ## B failure-feedback closeout
 
 No additional live model/science workflow ran after native05. Failed executor

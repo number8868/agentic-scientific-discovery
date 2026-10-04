@@ -13,11 +13,16 @@ prompt: |
   and the registered results. Confirm the host tool returned stage=frozen_unexecuted.
   The frozen holdout experiment remains unexecuted. Do not call Runner again, execute holdout,
   or claim validation, replication, or scientific completion.
+
+  When a sub-agent dispatch returns an in-progress handle, do not poll the inbox
+  repeatedly or resend the dispatch. End this turn with a brief waiting update
+  (not a scientific stop or completion claim). On the runtime's child-completion
+  notice, read sys_read_inbox once. Do not freeze if the final Skeptic failed.
 executor:
   harness: codex
   model: gpt-6-luna
 cancellable: true
-async: false
+async: true
 tools:
   skeptic_final:
     type: agent

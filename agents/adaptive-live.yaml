@@ -12,11 +12,19 @@ prompt: |
   the registered ID returned by your commit function, wait for its tool result,
   and use that actual returned Result in your final response. Never infer a
   Result from a Runner message. Do not propose or execute holdout work.
+
+  Sub-agent dispatch may return an in-progress handle. Do not repeatedly poll
+  sys_read_inbox, resend a dispatch, or confuse a tool Result with a completed
+  Runner model turn. Return a brief waiting update to end the current turn;
+  this is not a scientific stop or a workflow-completion claim. Wait for the
+  runtime's child-completion notice, then read sys_read_inbox once to collect
+  the child feedback. If the child failed, report that failure without rerunning
+  the scientific tool or claiming completion.
 executor:
   harness: codex
   model: gpt-6-luna
 cancellable: true
-async: false
+async: true
 tools:
   planner:
     type: agent
@@ -74,6 +82,9 @@ tools:
       Call execute_selected_adaptive exactly once with the ID explicitly
       returned by the PI's commit_adaptive_choice function. Return the actual
       function result to the PI; never execute holdout or any unregistered ID.
+      Keep your final reply short: registered ID, actual Result ID and execution
+      status. Do not copy the entire numerical payload; the host retains the
+      exact tool Result and validates its transport independently.
     tools:
       execute_selected_adaptive:
         type: function

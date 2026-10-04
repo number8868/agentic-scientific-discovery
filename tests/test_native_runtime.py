@@ -96,6 +96,25 @@ def test_native_function_result_decoder_handles_bounded_sdk_envelopes():
         "stage": True, "x": None}
 
 
+def test_pinned_sdk_conversion_keeps_native_pi_async_handoff_surface():
+    pytest.importorskip("omnigent")
+    from scripts.run_native_adaptive import AGENT, _check_async_dispatch_surface, _validate_agent
+    from omnigent.inner.loader import load_agent_def_from_path
+    from omnigent.spec.omnigent import agent_def_to_agent_spec
+    import yaml
+
+    raw = yaml.safe_load(AGENT.read_text(encoding="utf-8"))
+    assert raw["async"] is True
+    definition = load_agent_def_from_path(str(AGENT))
+    spec = agent_def_to_agent_spec(definition, raw_yaml=raw)
+    assert spec.async_enabled is True
+    assert _check_async_dispatch_surface(AGENT)["sub_agent_dispatch_tool"] == "sys_session_send"
+    # Keep the function allowlists and registered science host calls under the
+    # existing structural checks while exercising the real SDK conversion.
+    assert _validate_agent(AGENT)["tools"]["runner"]["tools"]["execute_selected_adaptive"]["callable"] == (
+        "nova.adaptive_agent_tools.execute_selected_adaptive")
+
+
 def test_final_trace_verifier_matches_real_turn_hash_and_provider_guard(tmp_path):
     from nova.native_adaptive_runtime import verify_executor_trace
     from nova.adaptive_agent_tools import _valid_codex_config_overrides

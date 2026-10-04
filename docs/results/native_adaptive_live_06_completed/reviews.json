@@ -1,0 +1,38 @@
+[
+  {
+    "claim_refs": [
+      "nova-result-fa4fe2a22bcbca828487170f3f0ba2ce6702501eea149e397e5e68a28412392c"
+    ],
+    "concerns": [
+      {
+        "concern_type": "protocol_weakness",
+        "evidence_refs": [
+          "nova-result-fa4fe2a22bcbca828487170f3f0ba2ce6702501eea149e397e5e68a28412392c"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-2b3a480941d5eafa",
+    "reason": "The positive discovery contrast rests on only 3 oxide and 6 chalcogenide passes despite complete coverage; its resampling interval has a lower bound close to zero (0.0001109 versus delta 0.0015081). This supports the snapshot finding but leaves robustness to threshold or method changes unresolved.",
+    "recommended_template": "threshold_sensitivity",
+    "result_id": "nova-result-fa4fe2a22bcbca828487170f3f0ba2ce6702501eea149e397e5e68a28412392c"
+  },
+  {
+    "claim_refs": [
+      "nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f"
+    ],
+    "concerns": [
+      {
+        "concern_type": "final_protocol",
+        "evidence_refs": [
+          "nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f"
+        ],
+        "severity": "medium"
+      }
+    ],
+    "experiment_id": "NOVA-6438209c46bb471a",
+    "reason": "Sparse endpoints limit discovery precision: primary passes are 3/7657 oxide and 6/3158 chalcogenide. The follow-up and Runner feedback address the primary threshold concern: intervals remain positive at 0.025, 0.05, and 0.1 eV/atom, but passes remain only 2\u20133 oxide and 5\u20138 chalcogenide, with the lowest interval bound 0.00005546. This supports the snapshot contrast while leaving generalization uncertain; same-discovery sensitivity is not independent replication.",
+    "recommended_template": null,
+    "result_id": "nova-result-ceb383e085a1a825c9b2c7f55441499ba1d3d626e0f6e060e7466b6a31b9ae5f"
+  }
+]

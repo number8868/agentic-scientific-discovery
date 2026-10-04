@@ -1,5 +1,10 @@
 # Team B submission handoff
 
+Latest: [native run06](results/native_adaptive_live_06_completed/README.md)
+completed bounded discovery/final review/freeze with original CLI exit 0.
+Raw final PI reply is persisted and verified; holdout remains unexecuted.
+The older progress notes below are historical, not the latest live status.
+
 Status at main `7da9673` (PR #17 merged): B's bounded native final-review and
 freeze path is implemented. The final response is captured before verification,
 and a verifier failure does not write a completion event. The combined
@@ -39,15 +44,14 @@ acceptance.
   because the final CLI output did not match the guarded response metadata hash.
   The mismatch remains unexplained. The preserved failure and posthoc text
   checks are documented in [team status](TEAM_STATUS.md) and [run 04 evidence](results/native_adaptive_live_04_frozen_cli_failed/README.md).
-- Structured raw PI response capture and diagnosis are in progress. This is
-  follow-up work; it does not change the preserved run 04 failure or establish
-  acceptance until a fresh run passes the full native checks.
+- Structured raw PI capture is implemented and passed run06's host acceptance;
+  it does not change the preserved run04 failure or establish its root cause.
 - Do not call run 03 or run 04 a clean CLI success. The 381 passing tests are
   historical regression evidence, not a clean live acceptance run.
-- A fresh-context native finalization run with preserved successful exit code,
-  linked model/tool trace, second review, frozen protocol, and untouched
-  holdout ID is still required for clean acceptance. Do not replay or reset a
-  failed run, and do not execute holdout as a demonstration.
+- Run06 satisfies the single fresh-context finalization gate with original
+  exit 0, linked model/tool trace, final review/freeze and untouched holdout.
+  Additional clean reliability rehearsals remain unestablished. Do not replay
+  or reset a failed run, and do not execute holdout as a demonstration.
 - Full challenge completion, three engineering rehearsals, a final demo gate,
   and measured speedup remain unestablished. Do not claim “10x” or any other
   acceleration without the paired measurement.
@@ -92,7 +96,8 @@ run/database paths and an authorized local model login.
   remain A's scientific review responsibilities.
 - [ ] Keep the sparse nine-pass result, snapshot scope, correlated threshold
   sensitivity, and screening-only meaning explicit. Do not imply a material
-  performance result, clean success, or 10x acceleration.
+  performance result, scientific validation or 10x acceleration. Run06 alone
+  may be described as clean bounded B workflow completion.
 - [ ] Keep `.nova/live_context.json`, local SQLite databases, prepared/raw data,
   credentials, private auth/session files, and local environments out of Git.
   Share private data only through the separately documented private release
