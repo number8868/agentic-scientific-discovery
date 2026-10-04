@@ -1,5 +1,19 @@
 # Team status and handoff
 
+## B failure-feedback closeout
+
+No additional live model/science workflow ran after native05. Failed executor
+messages now receive bounded private 0600 diagnostics; public trace contains
+only category, message SHA and retryable flag. Parent nonzero/timeout paths
+preserve private bounded terminal output plus a safe run-owned failure summary,
+last confirmed stage and side-effect event refs. Diagnostics cannot overwrite
+existing feedback or replace the original child error. Offline mock injection
+covers failure/timeout, raw-message privacy and diagnostic write failure.
+Full regression: 386 passed, zero errors/failures/skips, 22.695 seconds.
+This improves diagnosability; it does not retrospectively explain native05's
+missing error message or establish clean native completion. Do not add retries
+or raise tool limits without cause evidence and offline regression.
+
 ## B run 05 update — structured reply fix implemented, Runner feedback failed
 
 PR #17 is merged. B now records exact post-freeze guarded PI TurnComplete text

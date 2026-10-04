@@ -34,6 +34,56 @@ def _trace(event: str, **fields: Any) -> None:
                         pid=pid, role=role, details=fields)
 
 
+def _record_private_executor_error(trace_path: Path, *, pid: int, role: str | None,
+                                  error: Any) -> dict[str, Any]:
+    """Append bounded provider diagnostics privately; return only safe summary fields."""
+    message = error.message if isinstance(getattr(error, "message", None), str) else ""
+    summary = {"error_category": "executor_error",
+               "error_message_sha256": hashlib.sha256(message.encode("utf-8")).hexdigest(),
+               "retryable": bool(getattr(error, "retryable", False))}
+    run_dir = trace_path.parent.resolve()
+    runs_root = RUNS_ROOT.resolve()
+    if (not run_dir.is_relative_to(runs_root) or trace_path.name != "native-model-audit.jsonl" or
+            trace_path.is_symlink() or not trace_path.is_file()):
+        raise ValueError("executor error trace is outside the run-owned evidence directory")
+    raw_usage = getattr(error, "usage", None)
+    usage = {}
+    if isinstance(raw_usage, dict):
+        for key, value in list(raw_usage.items())[:32]:
+            if isinstance(key, str) and isinstance(value, (str, int, float, bool, type(None))):
+                usage[key[:100]] = value[:500] if isinstance(value, str) else value
+    record = {"schema_version": 1, "pid": pid, "role": role,
+              "message": message[:4096], "message_truncated": len(message) > 4096,
+              "full_message_sha256": summary["error_message_sha256"],
+              "retryable": summary["retryable"], "usage": usage}
+    path = run_dir / "native-executor-errors.jsonl"
+    fd = os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0) |
+                 getattr(os, "O_NONBLOCK", 0), 0o600)
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError("executor error log is not a regular file")
+        os.fchmod(fd, 0o600)
+        body = (json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n").encode("utf-8")
+        if os.write(fd, body) != len(body):
+            raise OSError("short write while recording executor error")
+    finally:
+        os.close(fd)
+    return summary
+
+
+def _trace_executor_failure(trace_path: Path, *, pid: int, role: str | None,
+                            model: str | None, error: Any) -> None:
+    try:
+        summary = _record_private_executor_error(trace_path, pid=pid, role=role, error=error)
+    except Exception:
+        summary = {"error_category": "executor_error",
+                   "retryable": bool(getattr(error, "retryable", False))}
+    from nova.adaptive_agent_tools import record_native_trace
+
+    record_native_trace("turn_failed", actor="codex-model", model=model, pid=pid,
+                        role=role, status="error", details=summary)
+
+
 def _write_final_pi_response(trace_path: Path, *, pid: int, role: str,
                              freeze_call_id: str, response: str) -> Path:
     """Write the exact post-freeze TurnComplete response once beside its trace."""
@@ -243,8 +293,8 @@ def install_codex_guardrails(host_path: str | Path) -> dict[str, Any]:
                                              freeze_call_id=successful_freeze_call_id,
                                              response=response)
             elif isinstance(event, ExecutorError):
-                record_native_trace("turn_failed", actor="codex-model", model=model, pid=os.getpid(),
-                                    role=role, status="error")
+                _trace_executor_failure(Path(os.environ["NOVA_ADAPTIVE_TRACE_PATH"]), pid=os.getpid(),
+                                        role=role, model=model, error=event)
             yield event
 
     cls.__init__ = guarded_init

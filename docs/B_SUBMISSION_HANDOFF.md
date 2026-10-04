@@ -18,6 +18,14 @@ acceptance.
   tranche.
 - The launcher captures final CLI text before host verification; verification
   failure cannot silently turn into a completion event.
+- Parent-detected child nonzero exit and deadline now produce a non-overwriting,
+  mode-0600 `failure-feedback.json` with event-derived stage/side-effect refs;
+  absent holdout events are marked `not_attested`, without reading holdout
+  Specs or Results. Raw terminal output is kept only in an optional bounded
+  mode-0600 `terminal-capture.txt`; the summary contains its hash and character
+  count, and diagnostic-write errors do not replace the original child error.
+- Diagnose from the event summary and private capture with mock/offline checks
+  before any new authorized run; never retry a failed run in place.
 
 ## Acceptance still open
 
