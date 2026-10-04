@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07131f">
+  <meta name="description" content="Explore NOVA-MAT's self-contained replay of a recorded scientific evidence run.">
+  <title>NOVA-MAT · Evidence replay</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <canvas id="ambient" aria-hidden="true"></canvas>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="NOVA-MAT home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>NOVA<span class="brand-dash">—</span>MAT</span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="#replay">Replay</a>
+        <a href="#results">Results</a>
+        <button class="nav-evidence" id="openEvidenceTop" type="button">Explore evidence <span aria-hidden="true">↗</span></button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> Recorded evidence replay <span class="eyebrow-sep">/</span> native-adaptive-live-09</div>
+          <h1 id="heroTitle">From a discovery <em>Result</em><br>to controlled validation.</h1>
+          <p class="hero-lede">Explore the decisions and evidence in one completed NOVA-MAT run. Every count, interval, and identifier below comes from the exported record.</p>
+          <div class="hero-actions">
+            <button class="button button-primary" id="heroReplay" type="button"><span class="play-glyph" aria-hidden="true">▶</span> Replay verified run</button>
+            <button class="button button-secondary" id="openEvidenceHero" type="button">Explore evidence <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="hero-note"><span class="shield-icon" aria-hidden="true">◇</span> Explore the completed run and its linked evidence</div>
+        </div>
+        <div class="hero-visual" aria-label="Abstract schematic of a traceable scientific workflow">
+          <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+          <div class="orbit-core"><span>N</span><small>MAT</small></div>
+          <span class="orbit-node node-q">QUESTION</span><span class="orbit-node node-r">RESULT</span>
+          <span class="orbit-node node-v">REVIEW</span><span class="orbit-node node-p">PI CHOICE</span>
+          <span class="orbit-node node-x">EXPORT</span><span class="orbit-node node-run">RUN</span>
+          <span class="orbit-caption">A recorded decision path</span>
+        </div>
+      </section>
+
+      <section class="run-strip" id="runSummary" aria-label="Run summary"></section>
+
+      <section class="section panel replay-panel" id="replay" aria-labelledby="replayTitle">
+        <div class="section-heading">
+          <div><div class="section-kicker">01 · RECORDED RUN</div><h2 id="replayTitle">Follow the evidence trail</h2><p>Choose any phase to inspect its recorded actors, event sequence, and linked evidence.</p></div>
+          <div class="recorded-stamp"><span class="stamp-dot"></span><span>ACTUAL RUN<br><b>Recorded replay</b></span></div>
+        </div>
+        <div class="replay-controls">
+          <div class="control-buttons">
+            <button class="button button-primary replay-button" id="replayToggle" type="button" aria-pressed="false"><span class="play-glyph" aria-hidden="true">▶</span><span>Replay verified run</span></button>
+            <button class="icon-button" id="replayRestart" type="button" aria-label="Restart replay" title="Restart replay">↺</button>
+          </div>
+          <div class="replay-status" id="replayStatus" aria-live="polite">Ready · select a stage or start the recorded sequence.</div>
+          <div class="replay-time"><span id="activeBeat">—</span><span class="time-divider">/</span><span id="totalBeats">7 beats</span></div>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline-progress" aria-hidden="true"><span id="timelineProgress"></span></div>
+          <ol class="timeline" id="timeline" aria-label="Recorded run stages"></ol>
+        </div>
+        <div class="stage-detail" id="stageDetail" aria-live="polite" aria-atomic="true"></div>
+        <p class="timeline-footnote"><span>UTC timestamps and event numbers are from the exported native09 event log.</span><span>Playback pacing is illustrative; it does not represent model latency or a performance benchmark.</span></p>
+      </section>
+
+      <section class="section panel results-panel" id="results" aria-labelledby="resultsTitle">
+        <div class="section-heading results-heading">
+          <div><div class="section-kicker">02 · REGISTERED OUTCOMES</div><h2 id="resultsTitle">Compare the recorded thresholds</h2><p>Switch the cohort and threshold to inspect the stored counts, contrast, confidence interval, and scientific status.</p></div>
+          <div class="result-legend"><span><i class="legend-dot discovery"></i> Discovery</span><span><i class="legend-dot holdout"></i> Holdout</span></div>
+        </div>
+        <div class="explorer-controls">
+          <div class="control-group">
+            <span class="control-label" id="cohortLabel">Cohort</span>
+            <div class="segmented" role="group" aria-labelledby="cohortLabel">
+              <button type="button" class="cohort-choice" data-cohort="discovery" aria-pressed="true">Discovery</button>
+              <button type="button" class="cohort-choice" data-cohort="holdout" aria-pressed="false">Holdout</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label" id="thresholdLabel">ehull threshold</span>
+            <div class="threshold-choices" role="group" aria-labelledby="thresholdLabel">
+              <button type="button" class="threshold-choice" data-threshold="0.025" aria-pressed="false">0.025</button>
+              <button type="button" class="threshold-choice is-active" data-threshold="0.05" aria-pressed="true">0.05</button>
+              <button type="button" class="threshold-choice" data-threshold="0.1" aria-pressed="false">0.10</button>
+              <span class="threshold-unit">eV/atom</span>
+            </div>
+          </div>
+        </div>
+        <div class="result-view" id="resultView" aria-live="polite" aria-atomic="true"></div>
+        <p class="cohort-note"><span aria-hidden="true">ⓘ</span> The 100% coverage recorded here applies to the original OPT-selected cohort; it is not MBJ coverage or an independent MBJ validation.</p>
+      </section>
+
+      <section class="two-column">
+        <section class="panel options-panel" aria-labelledby="optionsTitle">
+          <div class="section-kicker">03 · RESULT-INFORMED CHOICE</div>
+          <h2 id="optionsTitle">What was considered?</h2>
+          <p class="section-intro">After review of the primary Result, the PI selected the registered threshold follow-up.</p>
+          <div class="option-list" id="optionList"></div>
+          <div class="selection-ribbon"><span class="selection-icon">✓</span><span><b>Recorded selection</b><br>Threshold sensitivity · Result-informed · PI committed at events 12–13</span></div>
+        </section>
+        <section class="panel roles-panel" aria-labelledby="rolesTitle">
+          <div class="section-kicker">04 · RECORDED ACTORS</div>
+          <h2 id="rolesTitle">Who moved the run forward?</h2>
+          <p class="section-intro">Select a role to see its actual event entries in this run.</p>
+          <div class="role-list" id="roleList" role="group" aria-label="Recorded roles"></div>
+          <div class="role-detail" id="roleDetail" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="closing-band">
+        <div class="closing-mark" aria-hidden="true">N</div>
+        <div><div class="section-kicker">NOVA-MAT · NATIVE09</div><h2>From evidence to the next scientific decision.</h2><p>Three registered Results. Two reviews. One frozen protocol. One controlled holdout.</p></div>
+        <button class="button button-secondary" id="openEvidenceBottom" type="button">Explore evidence <span aria-hidden="true">↗</span></button>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>NOVA-MAT · recorded evidence replay</span><span>Self-contained summary · no live science execution</span><span>Data: <a href="https://doi.org/10.6084/m9.figshare.6815699" target="_blank" rel="noopener noreferrer">JARVIS-DFT, NIST</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span><a href="./data.json" download>Download aggregate evidence JSON ↓</a></footer>
+  </div>
+
+  <dialog class="evidence-dialog" id="evidenceDialog" aria-labelledby="evidenceTitle">
+    <div class="dialog-head"><div><div class="section-kicker">EVIDENCE PACKAGE</div><h2 id="evidenceTitle">Traceable records</h2></div><button class="icon-button dialog-close" id="closeEvidence" type="button" aria-label="Close evidence details">×</button></div>
+    <p class="dialog-intro">This view is self-contained for review. IDs and hashes below match the published native09 export. Repository evidence files are private; you do not need GitHub access to inspect this summary.</p>
+    <div id="lineageView"></div>
+    <div class="source-block"><h3>Source files &amp; integrity</h3><p>SHA-256 values are copied from the approved evidence manifest and exported inventory.</p><div id="sourceList"></div></div>
+    <div class="boundary-block"><h3>Reading the result accurately</h3><ul id="boundaryList"></ul></div>
+    <div class="dialog-actions"><a class="button button-primary" href="./data.json" download>Download evidence JSON</a><button class="button button-secondary" id="closeEvidenceBottom" type="button">Close</button></div>
+  </dialog>
+</body>
+</html>
