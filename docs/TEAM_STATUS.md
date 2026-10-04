@@ -24,7 +24,8 @@ text. Initial hypothesis/primary were host seeded; no method-candidate model
 review is established. Neither offline acceptance nor recorded guard settings
 prove runtime authorization, provider identity or OS confinement.
 
-Final complete Linux regression: **397 passed, zero skips**, 44.74 seconds,
+Final complete Linux regression after B PR #17: **399 passed, zero skips**,
+44.20 seconds; the preceding A check passed 397 tests in 44.74 seconds,
 using the existing Linux environment and a clean source-only checkout. The
 new module has 18 acceptance cases. First full check: 395 passed / 1 failed
 because an old metadata test allowed an unsupported finalization placeholder;
@@ -33,6 +34,11 @@ rejection test. All three changed source/test files match the tested bytes.
 Native run03 numerical fields equal B's historical audit; both earlier failed
 and recovered audit/manifest pairs remain byte-identical. Coding helper is
 `gpt-6-luna` / `max`, separate from Omnigent scientific-role configuration.
+The unchanged A validator also accepts run04's frozen science; its original
+CLI failure and null PI export remain preserved. B's concurrent launcher/test
+bytes are tested as integrated, without A changes. Run04 presentation should
+use "OPT computational gap" and the canonical Result ID, rather than calling
+its `NOVA-3b16648b7eb16bdb` experiment ID a Result. Original text is retained.
 
 The submission draft now describes recorded native final review/freeze and
 preserves the failure boundary. Narration is 108 words, unrecorded/untimed.

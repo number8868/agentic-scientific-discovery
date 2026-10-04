@@ -26,6 +26,18 @@ authorization. Candidate-JID model review and autonomous initial hypothesis
 selection remain unproved. Native context, ownership, deadline and the
 single-attempt gate still apply to any eventual real validation.
 
+B's concurrent PR #17 is integrated at `7da9673`. The same A preflight
+accepts [run04's frozen scientific records](results/frozen_science_acceptance/native04_audit.json)
+while leaving the original runtime failure, null final PI export and exact
+failed-verifier input unresolved. Its final review's sparse 2–3 oxide / 5–8
+chalcogenide pass range, primary 3/7,657 versus 6/3,158 counts and snapshot-only
+interval interpretation agree with the recorded science. For presentation,
+use "OPT computational gap" for its "optical gap" phrase. Its PI freeze
+explanation names experiment ID `NOVA-3b16648b7eb16bdb` as a Result; cite the
+canonical `nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86`
+instead. These are wording corrections for future summaries; the historical
+model-authored evidence remains byte-for-byte preserved.
+
 ## Recovered native discovery acceptance — 2026-10-03
 
 First inspected B integration `fc41d23`, then synced main `359de7a`. A

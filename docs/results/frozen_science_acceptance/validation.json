@@ -1,22 +1,25 @@
 {
   "schema_version": 1,
   "stage": "A native frozen discovery science acceptance",
-  "base_commit": "c6cea09",
+  "base_commit": "7da9673",
+  "initial_A_acceptance_base": "c6cea09",
+  "integrated_concurrent_B_PR": 17,
   "source_run_id": "native-adaptive-live-03",
   "linux_complete_regression": {
-    "tests": 397,
-    "passed": 397,
+    "tests": 399,
+    "passed": 399,
     "errors": 0,
     "failures": 0,
     "skipped": 0,
-    "seconds": 44.731,
-    "junit_sha256": "dcc59ec21f5aa9d5cc715dcd6744f7861dcc3c6a5dd236794a789a04fa20cf6d",
+    "seconds": 44.191,
+    "junit_sha256": "b85462fc10e126aea309cae3f73ddc83301621cd99730007728ee486872c36c7",
     "environment": "Ubuntu WSL; Python3.12.13; NumPy2.5.3; existing Linux venv",
     "command": "python -m pytest -q -o addopts= --junitxml=frozen-regression.xml",
     "prepared_data_or_private_context_in_checkout": false
   },
   "direct_cli_replays": {
     "native03_freeze_science_preflight_passed": true,
+    "native04_freeze_science_preflight_passed": true,
     "native03_numerical_report_unchanged_from_B": true,
     "legacy_failed_and_recovered_audit_manifest_pairs_byte_identical": true
   },
@@ -24,7 +27,10 @@
   "source_sha256": {
     "scripts/audit_discovery_bundle.py": "fb2ebf3a71f76d345879d6782e617dd0d5cacd2221afb48f0b2c82141ca025e9",
     "tests/test_frozen_discovery_audit.py": "4f4b87b5ff2dd87cc7ca4e8da45a265b4a0b57df8e4bf085e15f3bd7059f8ab5",
-    "tests/test_audit_discovery_bundle.py": "c51906c7a639e9fb0c2633c451b203d18d966215f6c6c59022a9b41a87737691"
+    "tests/test_audit_discovery_bundle.py": "c51906c7a639e9fb0c2633c451b203d18d966215f6c6c59022a9b41a87737691",
+    "scripts/run_native_adaptive.py": "698f3c94d14a8e677d5d1c5dbea2307439b9db7af105cf7743aacb48fbf9cb67",
+    "tests/test_native_adaptive.py": "fc84409b9a2f4dc0776d03fdfcd1647b951a853f29a197b5ab898cfac80ef834",
+    "tests/test_native_runtime.py": "55fa57f056a4d499a6ded37eebd66e0ae60efcf18672afdb337ded35bed82d5d"
   },
   "protected_source_hashes_unchanged": {
     "docs/METHOD_AUDIT_PROTOCOL.json": "ef09b94e6eebec20974ae4d05647f718471880e44cecb0bbaee55f2c2d050b03",
@@ -71,5 +77,13 @@
   },
   "new_frozen_acceptance_cases_in_complete_regression": 18,
   "existing_audit_cases_in_complete_regression": 25,
-  "local_document_links_checked": 77
+  "pre_B17_complete_regression": {
+    "tests": 397,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 44.731,
+    "junit_sha256": "dcc59ec21f5aa9d5cc715dcd6744f7861dcc3c6a5dd236794a789a04fa20cf6d"
+  },
+  "local_document_links_checked": 80
 }

@@ -1,7 +1,8 @@
 # A acceptance of recorded native review and freeze
 
 Source: [native run 03](../native_adaptive_live_03_frozen_cli_failed/README.md),
-merged with B PR #16 on main `c6cea09`. This stage checks published discovery
+merged with B PR #16 on main `c6cea09`. B's concurrent PR #17 at `7da9673`
+is integrated before the final regression. This stage checks published discovery
 records only. It does not execute the holdout, open private context/SQLite,
 reconstruct native authorization or make scientific-role model calls.
 
@@ -37,7 +38,8 @@ completion and runtime permission to execute holdout are separate gates.
 This report does not reopen, rerun or extend the failed run's deadline.
 
 The [automated preflight](audit.json) passes, and the final complete Linux
-suite passes **397 tests, zero skips**, in 44.74 seconds. The source-only
+suite passes **399 tests, zero skips**, in 44.20 seconds. Before B PR #17,
+397 tests passed in 44.74 seconds. The source-only
 checkout contains no prepared data or private context. The new module has 18
 cases covering rehashed tampering, correct-Result references, integer/boolean
 types, Unicode hashing and synthetic clean/null/redacted PI exports; these
@@ -51,6 +53,18 @@ coverage and adds explicit invalid-freeze rejection. Production checks were
 not weakened. B's existing [numerical audit](../native03_science_audit/audit.json)
 is exactly preserved after removing the new scoped fields; legacy failed and
 recovered audit/manifest pairs still reproduce byte-for-byte.
+
+The same [automated preflight on run 04](native04_audit.json) also passes
+without changing A code. Its original CLI failure and null final PI export
+remain preserved; native completion and execution authorization are unverified.
+This supplementary structural check
+does not independently establish the exact input that failed B's runtime
+verifier or replace run 03's separate three-tool trace inspection. Run 04's
+scientific review retains correct sparse counts and snapshot scope. Its
+"optical gap" wording should be presented as the OPT computational gap, and
+PI's reference to `NOVA-3b16648b7eb16bdb` is an experiment ID; the corresponding
+Result ID is `nova-result-298fbfdcd574bc467752f4ea71e3b7f189f9db6752af9bd9b810fa8375fd4a86`.
+Original model text is retained unchanged.
 
 To replay this read-only check in the verified Linux environment, choose a
 fresh output directory under `runs/`:
