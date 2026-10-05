@@ -5,6 +5,10 @@ actual core fixture runtime. It is **not** a multi-agent performance benchmark,
 native Omnigent acceptance, real-data result, or independent scientific validation.
 Fixture outputs must not be combined with native09 outcomes or used as a speedup.
 
+[Accepted smoke report](results/benchmark_smoke_20261005/README.md): 3/3 legal
+fixture paths and 21/21 expected rejections across seven negative-control
+classes. These small deterministic checks are not a model performance study.
+
 From the repository root, with the fixture or full Python environment:
 
 ```bash

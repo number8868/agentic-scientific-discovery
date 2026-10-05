@@ -1,0 +1,244 @@
+{
+  "billing_cost": null,
+  "created_at_utc": "2026-10-05T19:00:56.935516+00:00",
+  "environment": {
+    "platform": "macOS-26.4.1-arm64-arm-64bit",
+    "python": "3.12.13"
+  },
+  "guard_counts": {
+    "negative_controls_rejected": 21,
+    "negative_controls_total": 21,
+    "positive_fixture_paths_passed": 3,
+    "positive_fixture_paths_total": 3
+  },
+  "human_time": null,
+  "limitations": [
+    "Fixture data and outputs are non-scientific and do not represent NOVA-MAT scientific performance.",
+    "This does not exercise a native host, Omnigent, live models, or a completed scientific workflow.",
+    "The runtime path ends at SECOND_RESULT_READY; it is not labeled a completed end-to-end workflow.",
+    "Negative controls are actual runtime guard calls, not policy arms or agent comparisons.",
+    "No multi-agent speedup or model performance is measured."
+  ],
+  "model_usage": null,
+  "model_usage_status": "not_applicable_no_model_calls",
+  "observations": [
+    {
+      "fixture_runtime_path": {
+        "bootstrap_repeats": 25,
+        "duration_seconds": 0.0002685419749468565,
+        "modes": [
+          "fixture",
+          "fixture"
+        ],
+        "outcome": "fixture_steps_completed",
+        "result_ids": [
+          "FIX-798423b3911c",
+          "FIX-0dd9d3a964e1"
+        ],
+        "run_id": "run-cccef7788806",
+        "seed": 1729,
+        "state": "second_result_ready",
+        "templates": [
+          "family_screen",
+          "threshold_sensitivity"
+        ]
+      },
+      "negative_controls": [
+        {
+          "duration_seconds": 9.159557521343231e-07,
+          "exception": "PermissionError",
+          "name": "unregistered_experiment_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 1.625041477382183e-06,
+          "exception": "RuntimeError",
+          "name": "second_experiment_without_review",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 9.580980986356735e-07,
+          "exception": "ValueError",
+          "name": "review_references_wrong_result_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 1.00000761449337e-06,
+          "exception": "ValueError",
+          "name": "second_experiment_reuses_template_under_new_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 8.329516276717186e-07,
+          "exception": "ValueError",
+          "name": "second_experiment_disagrees_with_review_next_template",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 7.919734343886375e-07,
+          "exception": "RuntimeError",
+          "name": "proposal_exceeds_budget",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 5.420297384262085e-07,
+          "exception": "KeyError",
+          "name": "choice_is_not_registered",
+          "outcome": "rejected_as_expected"
+        }
+      ],
+      "repetition": 1
+    },
+    {
+      "fixture_runtime_path": {
+        "bootstrap_repeats": 25,
+        "duration_seconds": 0.00021245807874947786,
+        "modes": [
+          "fixture",
+          "fixture"
+        ],
+        "outcome": "fixture_steps_completed",
+        "result_ids": [
+          "FIX-0960041191d3",
+          "FIX-42332a56b3e9"
+        ],
+        "run_id": "run-1acb704ede35",
+        "seed": 1729,
+        "state": "second_result_ready",
+        "templates": [
+          "family_screen",
+          "threshold_sensitivity"
+        ]
+      },
+      "negative_controls": [
+        {
+          "duration_seconds": 5.420297384262085e-07,
+          "exception": "PermissionError",
+          "name": "unregistered_experiment_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 3.7509016692638397e-07,
+          "exception": "RuntimeError",
+          "name": "second_experiment_without_review",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 5.830079317092896e-07,
+          "exception": "ValueError",
+          "name": "review_references_wrong_result_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 7.079215720295906e-07,
+          "exception": "ValueError",
+          "name": "second_experiment_reuses_template_under_new_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 6.669433787465096e-07,
+          "exception": "ValueError",
+          "name": "second_experiment_disagrees_with_review_next_template",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 5.83939254283905e-07,
+          "exception": "RuntimeError",
+          "name": "proposal_exceeds_budget",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 4.998873919248581e-07,
+          "exception": "KeyError",
+          "name": "choice_is_not_registered",
+          "outcome": "rejected_as_expected"
+        }
+      ],
+      "repetition": 2
+    },
+    {
+      "fixture_runtime_path": {
+        "bootstrap_repeats": 25,
+        "duration_seconds": 0.0002079999540001154,
+        "modes": [
+          "fixture",
+          "fixture"
+        ],
+        "outcome": "fixture_steps_completed",
+        "result_ids": [
+          "FIX-d53aaad4a5ea",
+          "FIX-c7971a7a314f"
+        ],
+        "run_id": "run-1488667994f1",
+        "seed": 1729,
+        "state": "second_result_ready",
+        "templates": [
+          "family_screen",
+          "threshold_sensitivity"
+        ]
+      },
+      "negative_controls": [
+        {
+          "duration_seconds": 3.7497375160455704e-07,
+          "exception": "PermissionError",
+          "name": "unregistered_experiment_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 3.7497375160455704e-07,
+          "exception": "RuntimeError",
+          "name": "second_experiment_without_review",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 4.169996827840805e-07,
+          "exception": "ValueError",
+          "name": "review_references_wrong_result_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 5.419133231043816e-07,
+          "exception": "ValueError",
+          "name": "second_experiment_reuses_template_under_new_id",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 7.910421118140221e-07,
+          "exception": "ValueError",
+          "name": "second_experiment_disagrees_with_review_next_template",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 6.249174475669861e-07,
+          "exception": "RuntimeError",
+          "name": "proposal_exceeds_budget",
+          "outcome": "rejected_as_expected"
+        },
+        {
+          "duration_seconds": 4.169996827840805e-07,
+          "exception": "KeyError",
+          "name": "choice_is_not_registered",
+          "outcome": "rejected_as_expected"
+        }
+      ],
+      "repetition": 3
+    }
+  ],
+  "repetitions": 3,
+  "report_type": "offline_fixture_runtime_smoke",
+  "runner_script_sha256": "b09498fb952896c38c0ca3d05116c21d43ab92eca0672216eb9345f071f506b8",
+  "scope": "in_process_fixture_runtime_only",
+  "source_commit": "251a1e1172cc0d94561eda4de18fac38729b77dc",
+  "timing": {
+    "clock": "time.perf_counter",
+    "durations_seconds": [
+      0.0002685419749468565,
+      0.00021245807874947786,
+      0.0002079999540001154
+    ],
+    "max_seconds": 0.0002685419749468565,
+    "mean_seconds": 0.00022966666923214993,
+    "min_seconds": 0.0002079999540001154,
+    "scope": "Run state transitions and two registered fixture executions, including deterministic fixture bootstrap computation; excludes process startup and JSON writing"
+  }
+}
