@@ -84,7 +84,19 @@ human-selected work, **not the follow-up executed in native09**.
 
 These are computational snapshot screening outcomes, not new materials,
 synthesis, physical device performance or safety validation. No matched
-latency/cost benchmark or **10× speedup** has been established.
+native-scientific-workflow latency/cost benchmark or **10× speedup** has been established.
+
+## Decision-audit evaluation
+
+The separate [equal-budget comparison](docs/results/quality_comparison_20261005/README.md)
+completed **84 requested Luna SDK turns / 36 evaluations**, with no execution
+failures or retries. Twelve matched groups compare one-shot, three-turn
+self-review, and Planner/Skeptic/PI decisions on six fixed engineering cases.
+The primary equal-budget comparison **did not establish a multi-role quality
+or efficiency improvement**. Some strict-score differences are output-format
+mismatches, not scientific errors. Raw responses, timing, failure accounting,
+frozen scoring and limitations are published; this is not a native science
+workflow or discovery-speed benchmark. See the [reproduction protocol](docs/QUALITY_BENCHMARK.md).
 
 ## Setup
 
@@ -175,6 +187,7 @@ See [security review](docs/B_SECURITY_REVIEW.md) and
 | [Team status](docs/TEAM_STATUS.md) | Milestone history and verification boundaries |
 | [Baseline protocol](docs/BASELINE_COMPARISON_PLAN.md) | Proposed matched comparison; measurement remains pending |
 | [Offline benchmark smoke](docs/results/benchmark_smoke_20261005/README.md) | Runnable fixture measurement and seven guard controls; not a model comparison or speedup |
+| [Equal-budget decision audit](docs/results/quality_comparison_20261005/README.md) | 84 requested turns / 36 evaluations; no established multi-role advantage |
 
 Historical run reports and failures remain under `docs/results/`. Their
 “holdout unexecuted” statements apply to those runs, not native09. Team A owns

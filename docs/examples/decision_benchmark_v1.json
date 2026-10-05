@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "scope": "frozen_discovery_only_decision_structural_evaluation",
+  "corpus_id": "nova_decision_benchmark_v1",
+  "decision_rule": "threshold_first_then_method_then_stop_within_same_packet",
+  "scoring_note": "Action validity, exact result-reference citation, and claim-tag support are structural checks only; prose semantic accuracy is not scored.",
+  "evidence": {
+    "reference": "native09-main",
+    "reference_note": "Benchmark-local alias for the supplied discovery aggregate result reference; not a canonical NOVA Result ID.",
+    "split": "discovery",
+    "type": "aggregate_counts_only",
+    "groups": {
+      "oxide": {"n_observed": 7657, "n_pass": 3},
+      "chalcogenide": {"n_observed": 3158, "n_pass": 6}
+    },
+    "permitted_claim_tags": ["discovery_aggregate_counts", "snapshot_scope", "no_replication_claim"]
+  },
+  "cases": [
+    {"id":"case01_threshold_only","context":"Threshold sensitivity is registered and budget permits one follow-up; method sensitivity is unavailable.","available_actions":["threshold_sensitivity","stop"],"available_citations":["native09-main"],"available_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"],"remaining_experiment_slots":1,"acceptable_actions":["threshold_sensitivity","stop"],"required_result_refs":["native09-main"],"supported_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"]},
+    {"id":"case02_both_sensitivities","context":"Threshold and method sensitivity are both registered; budget permits one follow-up.","available_actions":["threshold_sensitivity","method_sensitivity","stop"],"available_citations":["native09-main"],"available_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"],"remaining_experiment_slots":1,"acceptable_actions":["threshold_sensitivity","method_sensitivity","stop"],"required_result_refs":["native09-main"],"supported_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"]},
+    {"id":"case03_method_only","context":"Threshold sensitivity is unavailable; method sensitivity is registered and budget permits one follow-up.","available_actions":["method_sensitivity","stop"],"available_citations":["native09-main"],"available_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"],"remaining_experiment_slots":1,"acceptable_actions":["method_sensitivity","stop"],"required_result_refs":["native09-main"],"supported_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"]},
+    {"id":"case04_no_budget_stop","context":"Sensitivity actions are available but the remaining experiment budget is zero.","available_actions":["threshold_sensitivity","method_sensitivity","stop"],"available_citations":["native09-main"],"available_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"],"remaining_experiment_slots":0,"acceptable_actions":["stop"],"required_result_refs":["native09-main"],"supported_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"]},
+    {"id":"case05_both_sensitivities_unavailable","context":"Neither sensitivity action is registered; no further experiment can be authorized.","available_actions":["stop"],"available_citations":["native09-main"],"available_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"],"remaining_experiment_slots":2,"acceptable_actions":["stop"],"required_result_refs":["native09-main"],"supported_claim_tags":["discovery_aggregate_counts","snapshot_scope","no_replication_claim"]},
+    {"id":"case06_packet_missing_result_reference","context":"A decision packet has no provided result reference, so no evidence-based action can be selected.","available_actions":["threshold_sensitivity","method_sensitivity","stop"],"available_citations":[],"available_claim_tags":["snapshot_scope","no_replication_claim"],"remaining_experiment_slots":1,"acceptable_actions":["stop"],"required_result_refs":[],"supported_claim_tags":["snapshot_scope","no_replication_claim"]}
+  ]
+}
