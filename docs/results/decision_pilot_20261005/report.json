@@ -1,0 +1,343 @@
+{
+  "arms": [
+    {
+      "case_id": "case01_threshold_only",
+      "decision": {
+        "action": "threshold_sensitivity",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case01_threshold_only",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case02_both_sensitivities",
+      "decision": {
+        "action": "threshold_sensitivity",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case02_both_sensitivities",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case03_method_only",
+      "decision": {
+        "action": "method_sensitivity",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case03_method_only",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case04_no_budget_stop",
+      "decision": {
+        "action": "stop",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case04_no_budget_stop",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case05_both_sensitivities_unavailable",
+      "decision": {
+        "action": "stop",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case05_both_sensitivities_unavailable",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case06_packet_missing_result_reference",
+      "decision": {
+        "action": "stop",
+        "citations": [],
+        "claim_tags": [
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "fixed_rule",
+      "score": {
+        "action_valid": true,
+        "case_id": "case06_packet_missing_result_reference",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      }
+    },
+    {
+      "case_id": "case01_threshold_only",
+      "claim_scope": "sdk_hosted_role_decision_only_not_native_dispatch_or_full_workflow",
+      "decision": {
+        "action": "threshold_sensitivity",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "kind": "omnigent_sdk_decision_benchmark",
+      "model": "gpt-6-luna",
+      "multi_role_decisions": {
+        "pi": {
+          "action": "threshold_sensitivity",
+          "citations": [
+            "native09-main"
+          ],
+          "claim_tags": [
+            "discovery_aggregate_counts",
+            "snapshot_scope",
+            "no_replication_claim"
+          ]
+        },
+        "planner": {
+          "action": "threshold_sensitivity",
+          "citations": [
+            "native09-main"
+          ],
+          "claim_tags": [
+            "discovery_aggregate_counts",
+            "snapshot_scope",
+            "no_replication_claim"
+          ]
+        },
+        "skeptic": {
+          "action": "threshold_sensitivity",
+          "citations": [
+            "native09-main"
+          ],
+          "claim_tags": [
+            "discovery_aggregate_counts",
+            "snapshot_scope",
+            "no_replication_claim"
+          ]
+        }
+      },
+      "multi_role_error": null,
+      "role_scores": {
+        "pi": {
+          "action_valid": true,
+          "case_id": "case01_threshold_only",
+          "citation_valid": true,
+          "no_unsupported_claim_tags": true,
+          "scoring_scope": "structural_check_only_not_semantic_accuracy",
+          "structural_pass": true
+        },
+        "planner": {
+          "action_valid": true,
+          "case_id": "case01_threshold_only",
+          "citation_valid": true,
+          "no_unsupported_claim_tags": true,
+          "scoring_scope": "structural_check_only_not_semantic_accuracy",
+          "structural_pass": true
+        },
+        "skeptic": {
+          "action_valid": true,
+          "case_id": "case01_threshold_only",
+          "citation_valid": true,
+          "no_unsupported_claim_tags": true,
+          "scoring_scope": "structural_check_only_not_semantic_accuracy",
+          "structural_pass": true
+        }
+      },
+      "roles": [
+        {
+          "decision": {
+            "action": "threshold_sensitivity",
+            "citations": [
+              "native09-main"
+            ],
+            "claim_tags": [
+              "discovery_aggregate_counts",
+              "snapshot_scope",
+              "no_replication_claim"
+            ]
+          },
+          "elapsed_seconds": 4.329,
+          "error": null,
+          "model_requested": "gpt-6-luna",
+          "raw_response": "{\"action\":\"threshold_sensitivity\",\"citations\":[\"native09-main\"],\"claim_tags\":[\"discovery_aggregate_counts\",\"snapshot_scope\",\"no_replication_claim\"]}",
+          "role": "single",
+          "usage": null
+        },
+        {
+          "decision": {
+            "action": "threshold_sensitivity",
+            "citations": [
+              "native09-main"
+            ],
+            "claim_tags": [
+              "discovery_aggregate_counts",
+              "snapshot_scope",
+              "no_replication_claim"
+            ]
+          },
+          "elapsed_seconds": 4.024,
+          "error": null,
+          "model_requested": "gpt-6-luna",
+          "raw_response": "{\"action\":\"threshold_sensitivity\",\"citations\":[\"native09-main\"],\"claim_tags\":[\"discovery_aggregate_counts\",\"snapshot_scope\",\"no_replication_claim\"]}",
+          "role": "planner",
+          "usage": null
+        },
+        {
+          "decision": {
+            "action": "threshold_sensitivity",
+            "citations": [
+              "native09-main"
+            ],
+            "claim_tags": [
+              "discovery_aggregate_counts",
+              "snapshot_scope",
+              "no_replication_claim"
+            ]
+          },
+          "elapsed_seconds": 3.911,
+          "error": null,
+          "model_requested": "gpt-6-luna",
+          "raw_response": "{\"action\":\"threshold_sensitivity\",\"citations\":[\"native09-main\"],\"claim_tags\":[\"discovery_aggregate_counts\",\"snapshot_scope\",\"no_replication_claim\"]}",
+          "role": "skeptic",
+          "usage": null
+        },
+        {
+          "decision": {
+            "action": "threshold_sensitivity",
+            "citations": [
+              "native09-main"
+            ],
+            "claim_tags": [
+              "discovery_aggregate_counts",
+              "snapshot_scope",
+              "no_replication_claim"
+            ]
+          },
+          "elapsed_seconds": 4.647,
+          "error": null,
+          "model_requested": "gpt-6-luna",
+          "raw_response": "{\"action\":\"threshold_sensitivity\",\"citations\":[\"native09-main\"],\"claim_tags\":[\"discovery_aggregate_counts\",\"snapshot_scope\",\"no_replication_claim\"]}",
+          "role": "pi",
+          "usage": null
+        }
+      ],
+      "score": {
+        "action_valid": true,
+        "case_id": "case01_threshold_only",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      },
+      "single_decision": {
+        "action": "threshold_sensitivity",
+        "citations": [
+          "native09-main"
+        ],
+        "claim_tags": [
+          "discovery_aggregate_counts",
+          "snapshot_scope",
+          "no_replication_claim"
+        ]
+      },
+      "single_error": null,
+      "single_score": {
+        "action_valid": true,
+        "case_id": "case01_threshold_only",
+        "citation_valid": true,
+        "no_unsupported_claim_tags": true,
+        "scoring_scope": "structural_check_only_not_semantic_accuracy",
+        "structural_pass": true
+      },
+      "status": "completed"
+    }
+  ],
+  "benchmark": "nova_decision_benchmark_v1",
+  "corpus_sha256": "b6902af180e303204352cc71e94e8a2770fca03c6e224c1cb744842b831a786a",
+  "created_at": "2026-10-05T19:14:00.214761+00:00",
+  "limits": {
+    "max_cases": 1,
+    "max_model_calls": 4,
+    "per_call_timeout_seconds": 45,
+    "repetitions": 1,
+    "total_timeout_seconds": 180
+  },
+  "model_calls_enabled": true,
+  "model_calls_used": 4,
+  "schema_version": 1,
+  "provenance": {
+    "source_commit": "8ec1792",
+    "model_requested": "gpt-6-luna",
+    "evaluation_scope": "one_case_structural_pilot_not_scientific_quality"
+  }
+}
