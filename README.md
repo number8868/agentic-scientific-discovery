@@ -174,6 +174,7 @@ See [security review](docs/B_SECURITY_REVIEW.md) and
 | [Technical plan](NOVA-MAT_Technical_Plan.md) | Original scope and A/B ownership; planned features are not all completed claims |
 | [Team status](docs/TEAM_STATUS.md) | Milestone history and verification boundaries |
 | [Baseline protocol](docs/BASELINE_COMPARISON_PLAN.md) | Proposed matched comparison; measurement remains pending |
+| [Offline benchmark smoke](docs/results/benchmark_smoke_20261005/README.md) | Runnable fixture measurement and seven guard controls; not a model comparison or speedup |
 
 Historical run reports and failures remain under `docs/results/`. Their
 “holdout unexecuted” statements apply to those runs, not native09. Team A owns
