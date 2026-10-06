@@ -98,6 +98,12 @@ mismatches, not scientific errors. Raw responses, timing, failure accounting,
 frozen scoring and limitations are published; this is not a native science
 workflow or discovery-speed benchmark. See the [reproduction protocol](docs/QUALITY_BENCHMARK.md).
 
+The new [persistent-versus-parallel development run](docs/results/parallel_development_20261006/README.md)
+completed **24 SDK turns / 8 valid deliveries** with correct structured answers
+in both arms. Real thread traces verify persistent self-review versus independent
+parallel reviewers followed by PI. This is plumbing validation, **not evidence
+of a speed or quality gain**; the larger exploratory corpus remains unapproved.
+
 ## Setup
 
 Start here for a new clone: **[complete Setup guide](docs/SETUP.md)** covers
@@ -188,6 +194,7 @@ See [security review](docs/B_SECURITY_REVIEW.md) and
 | [Baseline protocol](docs/BASELINE_COMPARISON_PLAN.md) | Proposed matched comparison; measurement remains pending |
 | [Offline benchmark smoke](docs/results/benchmark_smoke_20261005/README.md) | Runnable fixture measurement and seven guard controls; not a model comparison or speedup |
 | [Equal-budget decision audit](docs/results/quality_comparison_20261005/README.md) | 84 requested turns / 36 evaluations; no established multi-role advantage |
+| [Persistent/parallel development run](docs/results/parallel_development_20261006/README.md) | 24 SDK turns / 8 valid deliveries; request-chain validation, no established gain |
 
 Historical run reports and failures remain under `docs/results/`. Their
 “holdout unexecuted” statements apply to those runs, not native09. Team A owns
