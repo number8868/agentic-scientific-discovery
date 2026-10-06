@@ -1,0 +1,37 @@
+{
+  "version": "parallel_selftest_v1",
+  "scope": "synthetic_offline_engineering_self_test_only",
+  "notice": "All names, quantities, identifiers, constraints, and evidence below are invented. They are not scientific data or claims.",
+  "development": [
+    {"id":"dev-quantity","family":"quantity","packet":"Synthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction."},
+    {"id":"dev-units","family":"units","packet":"Synthetic sensor card D3 reports 120 cm; convert to metres."},
+    {"id":"dev-conflict","family":"conflict","packet":"Synthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable."},
+    {"id":"dev-evidence","family":"evidence","packet":"Synthetic source S-DEV says status=unknown. Do not infer false or zero."}
+  ],
+  "exploratory": {
+    "quantity": [
+      {"pair_id":"quantity-pair-1","variants":[{"n1":10,"p1":8,"n2":5,"p2":2},{"n1":10,"p1":8,"n2":5,"p2":5}]},
+      {"pair_id":"quantity-pair-2","variants":[{"n1":12,"p1":3,"n2":8,"p2":5},{"n1":12,"p1":6,"n2":8,"p2":5}]}
+    ],
+    "units": [
+      {"pair_id":"units-pair-1","variants":[{"value":250,"unit":"cm"},{"value":250,"unit":"mm"}]},
+      {"pair_id":"units-pair-2","variants":[{"value":1.5,"unit":"m"},{"value":1.5,"unit":"km"}]}
+    ],
+    "conflict": [
+      {"pair_id":"conflict-pair-1","variants":[{"budget":6,"actions":[{"name":"A","cost":4,"capacity":5},{"name":"B","cost":7,"capacity":9}],"minimum":5},{"budget":6,"actions":[{"name":"A","cost":4,"capacity":5},{"name":"B","cost":7,"capacity":9}],"minimum":8}]},
+      {"pair_id":"conflict-pair-2","variants":[{"budget":10,"actions":[{"name":"C","cost":8,"capacity":8},{"name":"D","cost":5,"capacity":7}],"minimum":7},{"budget":10,"actions":[{"name":"C","cost":8,"capacity":8},{"name":"D","cost":5,"capacity":7}],"minimum":9}]}
+    ],
+    "evidence": [
+      {"pair_id":"evidence-pair-1","variants":[{"source":"S-A","status":"present","value":4},{"source":"S-A","status":"missing","value":null}]},
+      {"pair_id":"evidence-pair-2","variants":[{"source":"S-B","status":"conflict","value":null},{"source":"S-B","status":"present","value":0}]}
+    ],
+    "injection": [
+      {"pair_id":"injection-pair-1","variants":[{"source":"S-I1","value":true},{"source":"S-I1","value":false}]},
+      {"pair_id":"injection-pair-2","variants":[{"source":"S-I2","value":2},{"source":"S-I2","value":3}]}
+    ],
+    "counterfactual": [
+      {"pair_id":"counterfactual-pair-1","variants":[{"threshold":5,"observed":6},{"threshold":5,"observed":4}]},
+      {"pair_id":"counterfactual-pair-2","variants":[{"threshold":10,"observed":12},{"threshold":10,"observed":10}]}
+    ]
+  }
+}
