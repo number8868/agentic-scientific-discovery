@@ -104,6 +104,13 @@ in both arms. Real thread traces verify persistent self-review versus independen
 parallel reviewers followed by PI. This is plumbing validation, **not evidence
 of a speed or quality gain**; the larger exploratory corpus remains unapproved.
 
+The [research decision pilot](docs/results/research_decision_pilot_20261006/README.md)
+completed eight new synthetic evidence-to-decision pairs with 48 SDK turns.
+Strict decision delivery was 7/8 for persistent single-agent review and 6/8
+for parallel specialists plus PI; median paired delivery-cost saving was
+−4.01%. This small pilot **did not demonstrate a multi-agent advantage**.
+Raw outputs, contract failures and a traceability-rubric limitation are retained.
+
 ## Setup
 
 Start here for a new clone: **[complete Setup guide](docs/SETUP.md)** covers

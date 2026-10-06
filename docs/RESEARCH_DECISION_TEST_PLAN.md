@@ -28,3 +28,19 @@ If results show no advantage, retain the single-agent or fixed-policy option for
 ## Pre-run review record
 
 An independent Luna reviewer and the primary agent checked the case rubric and reused runner before model calls. They identified and resolved a nonexistent grader argument, leaked conclusion labels in the public packet, an ambiguous choice between two new tests, and missing or inconsistent directional quality criteria. The final cases expose evidence and criteria, keep answer keys out of the model packet, specify completed method work in the easy case, and give explicit missingness bounds. The reviewer confirmed the targeted corpus blockers were resolved. This is an implementation and rubric review; it does not constitute blinded review of live model prose.
+
+## Reproduction
+
+After the repository setup, create a zero-call manifest with:
+
+```sh
+python scripts/run_research_decision_benchmark.py --limit-cases 8
+```
+
+To execute the complete bounded pilot using a configured, authenticated Omnigent/Codex environment:
+
+```sh
+python scripts/run_research_decision_benchmark.py --limit-cases 8 --enable-model-calls --model gpt-6-luna --reasoning-effort medium
+```
+
+The default without `--limit-cases 8` selects four cases; the manifest always records the selected scope. A compatible explicit `CODEX_CODE_MODE_HOST_PATH` may be required by the pinned SDK environment. See the existing Omnigent setup instructions for authentication and host configuration. Each invocation creates a fresh run directory and writes `report.json` and `events.jsonl`. Model and reasoning effort are configurable; changing them creates a different evaluation setting.
