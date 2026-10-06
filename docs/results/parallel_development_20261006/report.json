@@ -1,0 +1,1041 @@
+{
+  "benchmark": "nova_parallel_selftest_v1",
+  "billed_cost": null,
+  "blind_prose_review_status": "pending",
+  "case_grader_sha256": "48122a4aab137950fffbf4eb0721b22e60ee87e778302060eeb2495e882bc4e4",
+  "case_summaries": [
+    {
+      "C_parallel_review": 11.925409707939252,
+      "C_single_self_review": 8.968169499887154,
+      "T_parallel_review": 11.925409707939252,
+      "T_single_self_review": 8.968169499887154,
+      "U_parallel_review": 1.0,
+      "U_single_self_review": 1.0,
+      "case_id": "dev-quantity",
+      "complete": true,
+      "family": "quantity",
+      "pair_complete": true,
+      "pair_id": "dev-quantity",
+      "relative_time_gain": -0.32974847409934765,
+      "structured_utility_delta": 0.0,
+      "variants": 1
+    },
+    {
+      "C_parallel_review": 11.53492220910266,
+      "C_single_self_review": 13.059672166942619,
+      "T_parallel_review": 11.53492220910266,
+      "T_single_self_review": 13.059672166942619,
+      "U_parallel_review": 1.0,
+      "U_single_self_review": 1.0,
+      "case_id": "dev-units",
+      "complete": true,
+      "family": "units",
+      "pair_complete": true,
+      "pair_id": "dev-units",
+      "relative_time_gain": 0.11675254465418296,
+      "structured_utility_delta": 0.0,
+      "variants": 1
+    },
+    {
+      "C_parallel_review": 9.49755383306183,
+      "C_single_self_review": 8.728324541007169,
+      "T_parallel_review": 9.49755383306183,
+      "T_single_self_review": 8.728324541007169,
+      "U_parallel_review": 1.0,
+      "U_single_self_review": 1.0,
+      "case_id": "dev-conflict",
+      "complete": true,
+      "family": "conflict",
+      "pair_complete": true,
+      "pair_id": "dev-conflict",
+      "relative_time_gain": -0.08813023489682231,
+      "structured_utility_delta": 0.0,
+      "variants": 1
+    },
+    {
+      "C_parallel_review": 9.367340375087224,
+      "C_single_self_review": 9.27313745894935,
+      "T_parallel_review": 9.367340375087224,
+      "T_single_self_review": 9.27313745894935,
+      "U_parallel_review": 1.0,
+      "U_single_self_review": 1.0,
+      "case_id": "dev-evidence",
+      "complete": true,
+      "family": "evidence",
+      "pair_complete": true,
+      "pair_id": "dev-evidence",
+      "relative_time_gain": -0.010158688637464386,
+      "structured_utility_delta": 0.0,
+      "variants": 1
+    }
+  ],
+  "cases": [
+    {
+      "family": "quantity",
+      "id": "dev-quantity",
+      "packet": "Synthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.",
+      "pair_id": "dev-quantity",
+      "questions": [
+        {
+          "expected": 0.5,
+          "id": "fraction",
+          "tolerance": 1e-12,
+          "type": "number",
+          "unit": "fraction",
+          "weight": 1.0
+        }
+      ],
+      "required_citations": [
+        "D1",
+        "D2"
+      ],
+      "scope_phrase": "synthetic-only",
+      "variant": 1
+    },
+    {
+      "family": "units",
+      "id": "dev-units",
+      "packet": "Synthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.",
+      "pair_id": "dev-units",
+      "questions": [
+        {
+          "expected": 1.2,
+          "id": "metres",
+          "tolerance": 1e-12,
+          "type": "number",
+          "unit": "m",
+          "weight": 1.0
+        }
+      ],
+      "required_citations": [
+        "D3"
+      ],
+      "scope_phrase": "synthetic-only",
+      "variant": 1
+    },
+    {
+      "family": "conflict",
+      "id": "dev-conflict",
+      "packet": "Synthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.",
+      "pair_id": "dev-conflict",
+      "questions": [
+        {
+          "expected": "A",
+          "id": "action",
+          "tolerance": 0,
+          "type": "string",
+          "unit": null,
+          "weight": 1.0
+        }
+      ],
+      "required_citations": [
+        "D4"
+      ],
+      "scope_phrase": "synthetic-only",
+      "variant": 1
+    },
+    {
+      "family": "evidence",
+      "id": "dev-evidence",
+      "packet": "Synthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.",
+      "pair_id": "dev-evidence",
+      "questions": [
+        {
+          "expected": "unknown",
+          "id": "status",
+          "tolerance": 0,
+          "type": "string",
+          "unit": null,
+          "weight": 1.0
+        },
+        {
+          "expected": null,
+          "id": "value",
+          "tolerance": 0,
+          "type": "null",
+          "unit": null,
+          "weight": 1.0
+        }
+      ],
+      "required_citations": [
+        "S-DEV"
+      ],
+      "scope_phrase": "synthetic-only",
+      "variant": 1
+    }
+  ],
+  "corpus_sha256": "ef8d9989e1fb75ba52e250f7f1ba17db5fd54c6cb34f455395ae9e760bcfa3a9",
+  "corpus_version": "parallel_selftest_v1",
+  "created_at": "2026-10-06T03:27:52.211831+00:00",
+  "dependency_audit_approved": false,
+  "fixed_batches": [
+    [
+      {
+        "case_id": "dev-evidence",
+        "repetition": 1
+      },
+      {
+        "case_id": "dev-conflict",
+        "repetition": 1
+      },
+      {
+        "case_id": "dev-units",
+        "repetition": 1
+      },
+      {
+        "case_id": "dev-quantity",
+        "repetition": 1
+      }
+    ]
+  ],
+  "frozen_manifest_sha256": "d5b6bbab2eeb123b8fe9b59cd8339dc681cc48ba226b21696f0e6b956a53da2f",
+  "full_delivery_utility_delta": null,
+  "full_semantic_quality": null,
+  "groups": [
+    {
+      "arms": {
+        "parallel_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 9.367340375087224,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 9.367340375087224,
+          "raw_response": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only; S-DEV reports status=unknown, and no value is provided.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 9.365196750033647,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 9.366542917094193,
+          "turns": [
+            {
+              "duration_seconds": 4.143151500029489,
+              "ended_at": "2026-10-06T03:27:56.722715+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently analyze the original packet and propose an answer. Do not assume another reviewer has worked on it.",
+              "input_sha256": "9cb7b737aadc1cf860ab85c6549252a6aa9aad6137942422cd209df51f5eeec3",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only; S-DEV reports status=unknown, and no value is provided.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "planner",
+              "sdk_started_at": "2026-10-06T03:27:52.579578+00:00",
+              "session_id": "planner-4b0dac23138cee5436bafb1d",
+              "started_at": "2026-10-06T03:27:52.579426+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f40-e22e-79c0-bed1-862b9f069d53",
+              "usage": null
+            },
+            {
+              "duration_seconds": 4.87503250001464,
+              "ended_at": "2026-10-06T03:27:57.452431+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently scrutinize the original packet. Find unsupported assumptions, counterevidence, and failure modes; do not rely on any planner draft.",
+              "input_sha256": "baa89589e22568baaf33748f9c4fe9c18fdb7ea2cba6c508565df9015d4608cd",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\n  \"answers\": {\n    \"status\": \"unknown\",\n    \"value\": null\n  },\n  \"citations\": [\"S-DEV\"],\n  \"explanation\": \"synthetic-only: S-DEV states status=unknown; no value is provided, so it remains null.\"\n}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "skeptic",
+              "sdk_started_at": "2026-10-06T03:27:52.577414+00:00",
+              "session_id": "skeptic-a701f92cc1a743d36c771246",
+              "started_at": "2026-10-06T03:27:52.577307+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f40-e22e-71f2-8849-967bcd9fefb8",
+              "usage": null
+            },
+            {
+              "duration_seconds": 3.660088915959932,
+              "ended_at": "2026-10-06T03:28:01.449021+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nSynthesize the original packet and both independent outputs below into a careful final answer. Distinguish evidence from uncertainty.\n\nPlanner output:\n{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only; S-DEV reports status=unknown, and no value is provided.\"}\n\nSkeptic output:\n{\n  \"answers\": {\n    \"status\": \"unknown\",\n    \"value\": null\n  },\n  \"citations\": [\"S-DEV\"],\n  \"explanation\": \"synthetic-only: S-DEV states status=unknown; no value is provided, so it remains null.\"\n}",
+              "input_sha256": "6a224989b35d74520d8381c9b28b5e770e81e9a8cd4c774070a7d0121305e541",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only; S-DEV reports status=unknown, and no value is provided.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "pi",
+              "sdk_started_at": "2026-10-06T03:27:57.788936+00:00",
+              "session_id": "pi-f9fbc480762955e46f0d2d35",
+              "started_at": "2026-10-06T03:27:57.788833+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f40-f5a9-7fe1-843a-99cfe0a11238",
+              "usage": null
+            }
+          ],
+          "usage": null
+        },
+        "single_self_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 9.27313745894935,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 9.27313745894935,
+          "raw_response": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only: S-DEV reports status=unknown; value remains null.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 9.271727666957304,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 9.272393208928406,
+          "turns": [
+            {
+              "duration_seconds": 4.256598333013244,
+              "ended_at": "2026-10-06T03:28:06.058755+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nDraft an answer to the packet. State key reasoning and uncertainties.",
+              "input_sha256": "23205aef86af50733c5f7a0ab1e3322685892e0f93dabb3e8103c71af61194bd",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only: S-DEV reports status=unknown, so value remains null; no false or zero value is inferred. No additional source information is available.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "draft",
+              "sdk_started_at": "2026-10-06T03:28:01.802134+00:00",
+              "session_id": "single-6581f34b12474d09826c131db82e6919",
+              "started_at": "2026-10-06T03:28:01.802043+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-054f-7bd2-967b-168bf4ff5d92",
+              "usage": null
+            },
+            {
+              "duration_seconds": 2.9520180829567835,
+              "ended_at": "2026-10-06T03:28:09.041845+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nCritique your preceding draft against the original packet. Identify concrete errors, omissions, and warranted corrections.",
+              "input_sha256": "22830045a08e482a0ab61ee9f144bb2e543189b0a26320d34eaf5ded9fb4a5f6",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "The draft’s `answers` object is correct: it has exactly the required keys, with `status` as the string `\"unknown\"` and `value` as `null`. It also cites the required source and includes the literal `synthetic-only` in an explanation under 500 characters.\n\nOne unnecessary claim is “No additional source information is available”; the packet only specifies S-DEV, so this wording could imply a broader source check. A tighter explanation would be: `\"synthetic-only: S-DEV reports status=unknown; value remains null.\"`",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "critique",
+              "sdk_started_at": "2026-10-06T03:28:06.089803+00:00",
+              "session_id": "single-6581f34b12474d09826c131db82e6919",
+              "started_at": "2026-10-06T03:28:06.089635+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-054f-7bd2-967b-168bf4ff5d92",
+              "usage": null
+            },
+            {
+              "duration_seconds": 1.661898082937114,
+              "ended_at": "2026-10-06T03:28:10.734824+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic source S-DEV says status=unknown. Do not infer false or zero. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"status\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}, \"value\": {\"tolerance\": 0, \"type\": \"null\", \"unit\": null}}. Required source IDs: ['S-DEV']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nUsing the original packet, your prior draft, and your critique, provide the best final answer.",
+              "input_sha256": "ec164fea157b4edf5437081f8c74923d849b1641f8a650a9301dc2e3f17afb36",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"status\":\"unknown\",\"value\":null},\"citations\":[\"S-DEV\"],\"explanation\":\"synthetic-only: S-DEV reports status=unknown; value remains null.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "final",
+              "sdk_started_at": "2026-10-06T03:28:09.072925+00:00",
+              "session_id": "single-6581f34b12474d09826c131db82e6919",
+              "started_at": "2026-10-06T03:28:09.072777+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-054f-7bd2-967b-168bf4ff5d92",
+              "usage": null
+            }
+          ],
+          "usage": null
+        }
+      },
+      "case_id": "dev-evidence",
+      "repetition": 1,
+      "scheduled_arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "status": "completed"
+    },
+    {
+      "arms": {
+        "parallel_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 9.49755383306183,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 9.49755383306183,
+          "raw_response": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"Action A costs 4, within the budget of 5, and has capacity 3, meeting the minimum. This is synthetic-only.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 9.495918917004019,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 9.496815041988157,
+          "turns": [
+            {
+              "duration_seconds": 4.542668875074014,
+              "ended_at": "2026-10-06T03:28:15.635156+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently analyze the original packet and propose an answer. Do not assume another reviewer has worked on it.",
+              "input_sha256": "60c0e3128aaca9671c2325e66894d2d8ab02a790e6906771b75e6affe6604e52",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"Action A costs 4 (within the budget of 5) and has capacity 3, meeting the minimum. This is synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "planner",
+              "sdk_started_at": "2026-10-06T03:28:11.092496+00:00",
+              "session_id": "planner-9a516a766ca705fa651fe051",
+              "started_at": "2026-10-06T03:28:11.092351+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-29ab-7fe1-8eae-fd8712dd2d63",
+              "usage": null
+            },
+            {
+              "duration_seconds": 5.192757125012577,
+              "ended_at": "2026-10-06T03:28:16.283114+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently scrutinize the original packet. Find unsupported assumptions, counterevidence, and failure modes; do not rely on any planner draft.",
+              "input_sha256": "d2a19e8df03c602459b2769bcd057dde06b07beeabd0d9d4f2d8f687e1b3b73e",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "The packet supports action A: its cost (4) is within the budget (5), and its capacity (3) meets the minimum (3). Action B exceeds the budget. No unsupported assumption is needed to select A.\n\nPotential failure modes: interpreting “at most” or “minimum” as strict inequalities would change feasibility, but the ordinary inclusive meanings are clear. The required response contract is internally consistent: `action` is a string with no unit, D4 is the required citation, and the explanation must include the literal `synthetic-only`.",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "skeptic",
+              "sdk_started_at": "2026-10-06T03:28:11.090325+00:00",
+              "session_id": "skeptic-cf0679fff51f68bca943dedb",
+              "started_at": "2026-10-06T03:28:11.090208+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-29aa-7ed1-a8fa-eba9324a49fb",
+              "usage": null
+            },
+            {
+              "duration_seconds": 3.599274249980226,
+              "ended_at": "2026-10-06T03:28:20.229013+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nSynthesize the original packet and both independent outputs below into a careful final answer. Distinguish evidence from uncertainty.\n\nPlanner output:\n{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"Action A costs 4 (within the budget of 5) and has capacity 3, meeting the minimum. This is synthetic-only.\"}\n\nSkeptic output:\nThe packet supports action A: its cost (4) is within the budget (5), and its capacity (3) meets the minimum (3). Action B exceeds the budget. No unsupported assumption is needed to select A.\n\nPotential failure modes: interpreting “at most” or “minimum” as strict inequalities would change feasibility, but the ordinary inclusive meanings are clear. The required response contract is internally consistent: `action` is a string with no unit, D4 is the required citation, and the explanation must include the literal `synthetic-only`.",
+              "input_sha256": "431c0d071264be14d5ebee5e9a9a739693a445fb78abde93d8e5f4c20b8b38a2",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"Action A costs 4, within the budget of 5, and has capacity 3, meeting the minimum. This is synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "pi",
+              "sdk_started_at": "2026-10-06T03:28:16.629720+00:00",
+              "session_id": "pi-e8d39e224d0fb43ac94bbb9c",
+              "started_at": "2026-10-06T03:28:16.629625+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-3f39-7d63-957f-20a7466244f3",
+              "usage": null
+            }
+          ],
+          "usage": null
+        },
+        "single_self_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 8.728324541007169,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 8.728324541007169,
+          "raw_response": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"A costs 4, within the budget of 5, and meets the minimum capacity of 3. synthetic-only\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 8.726789458072744,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 8.727561958017759,
+          "turns": [
+            {
+              "duration_seconds": 4.128884625039063,
+              "ended_at": "2026-10-06T03:28:24.704388+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nDraft an answer to the packet. State key reasoning and uncertainties.",
+              "input_sha256": "932931f1ff38b38634293aed49f6286b87c75259e2abbd3fd813bb7606a84ae4",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"Action A costs 4, within the budget of 5, and provides capacity 3, meeting the minimum. Action B exceeds the budget. No material uncertainty; synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "draft",
+              "sdk_started_at": "2026-10-06T03:28:20.575493+00:00",
+              "session_id": "single-bc913bb5854b4bdab85d3c50e365c6ad",
+              "started_at": "2026-10-06T03:28:20.575402+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-4eaa-7692-a24b-34f370bed40f",
+              "usage": null
+            },
+            {
+              "duration_seconds": 2.29306599998381,
+              "ended_at": "2026-10-06T03:28:27.028219+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nCritique your preceding draft against the original packet. Identify concrete errors, omissions, and warranted corrections.",
+              "input_sha256": "d4317f17f233c63d3a00f4ed25f6296a22bb62ccc5fc7a00e687b3b785cd61a1",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "No concrete errors or omissions. The draft uses the required JSON keys and types, selects A, which costs 4 (within the budget of 5) and meets the minimum capacity of 3, cites D4, and includes “synthetic-only” in an explanation under 500 characters. No correction is needed.",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "critique",
+              "sdk_started_at": "2026-10-06T03:28:24.735149+00:00",
+              "session_id": "single-bc913bb5854b4bdab85d3c50e365c6ad",
+              "started_at": "2026-10-06T03:28:24.734948+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-4eaa-7692-a24b-34f370bed40f",
+              "usage": null
+            },
+            {
+              "duration_seconds": 1.8882954589789733,
+              "ended_at": "2026-10-06T03:28:28.937855+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic card D4: budget at most 5; action A costs 4 and has capacity 3; action B costs 6 and has capacity 9; minimum capacity 3. Choose a feasible action; if multiple, either is acceptable. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"action\": {\"tolerance\": 0, \"type\": \"string\", \"unit\": null}}. Required source IDs: ['D4']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nUsing the original packet, your prior draft, and your critique, provide the best final answer.",
+              "input_sha256": "9d9cf708acc899168cead56fc32607a5a2714bac26f16a10bd0e184c3fc98c9c",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"action\":\"A\"},\"citations\":[\"D4\"],\"explanation\":\"A costs 4, within the budget of 5, and meets the minimum capacity of 3. synthetic-only\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "final",
+              "sdk_started_at": "2026-10-06T03:28:27.049556+00:00",
+              "session_id": "single-bc913bb5854b4bdab85d3c50e365c6ad",
+              "started_at": "2026-10-06T03:28:27.049410+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-4eaa-7692-a24b-34f370bed40f",
+              "usage": null
+            }
+          ],
+          "usage": null
+        }
+      },
+      "case_id": "dev-conflict",
+      "repetition": 1,
+      "scheduled_arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "status": "completed"
+    },
+    {
+      "arms": {
+        "parallel_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 11.53492220910266,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 11.53492220910266,
+          "raw_response": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"D3 reports 120 cm, which converts to 1.2 m using the supplied conversion rule. The packet provides no independent confirmation; synthetic-only.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 11.533032875042409,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 11.534044000087306,
+          "turns": [
+            {
+              "duration_seconds": 3.9391794169787318,
+              "ended_at": "2026-10-06T03:28:33.281122+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently analyze the original packet and propose an answer. Do not assume another reviewer has worked on it.",
+              "input_sha256": "35c414acfee900eff07c41b5a94c9586b37bfcebc7458d4da857b242b5bb945d",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"120 cm equals 1.2 m. synthetic-only\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "planner",
+              "sdk_started_at": "2026-10-06T03:28:29.341953+00:00",
+              "session_id": "planner-987af47df87123f0f592d07f",
+              "started_at": "2026-10-06T03:28:29.341768+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-70fc-7c23-b6e6-c2a16f805fa0",
+              "usage": null
+            },
+            {
+              "duration_seconds": 5.885170458001085,
+              "ended_at": "2026-10-06T03:28:35.224533+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently scrutinize the original packet. Find unsupported assumptions, counterevidence, and failure modes; do not rely on any planner draft.",
+              "input_sha256": "097422ce898e932e13e41c8aed9cb82291239859deb9898085b566159650adfa",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "Unsupported assumptions and failure modes:\n\n- “Synthetic sensor card D3 reports 120 cm” is the only evidence. It supports the conversion \\(120 \\times 0.01 = 1.2\\) m, but provides no independent confirmation of the measurement.\n- Assumes “cm” means centimetres and the stated conversion rule applies; the packet explicitly supplies that rule, so this is supported by the packet rather than independently verified.\n- No apparent counterevidence is included. The result should not be treated as a real-world sensor reading because the source is synthetic-only.\n- For the requested schema, `metres` must be a JSON number in metres. A string such as `\"1.2 m\"`, a boolean, or `null` would violate the contract; `null` is only for unknown values.",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "skeptic",
+              "sdk_started_at": "2026-10-06T03:28:29.339354+00:00",
+              "session_id": "skeptic-5607fd96c807f9af33c1971e",
+              "started_at": "2026-10-06T03:28:29.339246+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-70fc-7ec2-a0fd-21470e3b44c1",
+              "usage": null
+            },
+            {
+              "duration_seconds": 4.937004958977923,
+              "ended_at": "2026-10-06T03:28:40.499633+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nSynthesize the original packet and both independent outputs below into a careful final answer. Distinguish evidence from uncertainty.\n\nPlanner output:\n{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"120 cm equals 1.2 m. synthetic-only\"}\n\nSkeptic output:\nUnsupported assumptions and failure modes:\n\n- “Synthetic sensor card D3 reports 120 cm” is the only evidence. It supports the conversion \\(120 \\times 0.01 = 1.2\\) m, but provides no independent confirmation of the measurement.\n- Assumes “cm” means centimetres and the stated conversion rule applies; the packet explicitly supplies that rule, so this is supported by the packet rather than independently verified.\n- No apparent counterevidence is included. The result should not be treated as a real-world sensor reading because the source is synthetic-only.\n- For the requested schema, `metres` must be a JSON number in metres. A string such as `\"1.2 m\"`, a boolean, or `null` would violate the contract; `null` is only for unknown values.",
+              "input_sha256": "e4a46e0ddc6547df204d61e1f87789421b6a3ab7611888f891a0d4641305b7f4",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"D3 reports 120 cm, which converts to 1.2 m using the supplied conversion rule. The packet provides no independent confirmation; synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "pi",
+              "sdk_started_at": "2026-10-06T03:28:35.562633+00:00",
+              "session_id": "pi-2df7eb98d6bddb0dba9a4880",
+              "started_at": "2026-10-06T03:28:35.562543+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-8938-7a62-9e31-f8e9265285e8",
+              "usage": null
+            }
+          ],
+          "usage": null
+        },
+        "single_self_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 13.059672166942619,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 13.059672166942619,
+          "raw_response": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"120 cm = 1.2 m; synthetic-only.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 13.05787883407902,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 13.058772582910024,
+          "turns": [
+            {
+              "duration_seconds": 6.606162249925546,
+              "ended_at": "2026-10-06T03:28:47.455983+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nDraft an answer to the packet. State key reasoning and uncertainties.",
+              "input_sha256": "4cede8c77b560328a5d51ab6d517c489e03eba6ad3a42a8cab00d7a5a873ba49",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"120 cm × 0.01 m/cm = 1.2 m. The packet is synthetic-only; no uncertainty is stated.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "draft",
+              "sdk_started_at": "2026-10-06T03:28:40.849835+00:00",
+              "session_id": "single-ec75238478d34720b5c8e6c22e441808",
+              "started_at": "2026-10-06T03:28:40.849745+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-9ddd-7c80-9b66-e2abdf84508d",
+              "usage": null
+            },
+            {
+              "duration_seconds": 2.4253619170049205,
+              "ended_at": "2026-10-06T03:28:49.906115+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nCritique your preceding draft against the original packet. Identify concrete errors, omissions, and warranted corrections.",
+              "input_sha256": "dd000562dd723f8c13b30837c3a44e469e5d761c0bbac242b21eb9f701eee6a9",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "The draft’s numeric value and unit are correct: 120 cm = 1.2 m. It includes the required citation ID, `D3`, and the literal `synthetic-only`; the explanation is under 500 characters. No correction is needed.",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "critique",
+              "sdk_started_at": "2026-10-06T03:28:47.480748+00:00",
+              "session_id": "single-ec75238478d34720b5c8e6c22e441808",
+              "started_at": "2026-10-06T03:28:47.480560+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-9ddd-7c80-9b66-e2abdf84508d",
+              "usage": null
+            },
+            {
+              "duration_seconds": 3.6169543330324814,
+              "ended_at": "2026-10-06T03:28:53.550320+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic sensor card D3 reports 120 cm; convert to metres. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"metres\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"m\"}}. Required source IDs: ['D3']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nUsing the original packet, your prior draft, and your critique, provide the best final answer.",
+              "input_sha256": "bfbfb7fc5233f9dca0b92612d859afccb706e7ae8aad02b57bfb0846186535da",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"metres\":1.2},\"citations\":[\"D3\"],\"explanation\":\"120 cm = 1.2 m; synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "final",
+              "sdk_started_at": "2026-10-06T03:28:49.933382+00:00",
+              "session_id": "single-ec75238478d34720b5c8e6c22e441808",
+              "started_at": "2026-10-06T03:28:49.933275+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-9ddd-7c80-9b66-e2abdf84508d",
+              "usage": null
+            }
+          ],
+          "usage": null
+        }
+      },
+      "case_id": "dev-units",
+      "repetition": 1,
+      "scheduled_arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "status": "completed"
+    },
+    {
+      "arms": {
+        "parallel_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 11.925409707939252,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 11.925409707939252,
+          "raw_response": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"The supplied synthetic cards report 6 passes among 12 widgets, giving a combined fraction of 0.5. synthetic-only.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 11.9232152919285,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 11.924400583026,
+          "turns": [
+            {
+              "duration_seconds": 3.9480242079589516,
+              "ended_at": "2026-10-06T03:29:06.935249+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently analyze the original packet and propose an answer. Do not assume another reviewer has worked on it.",
+              "input_sha256": "69c218fc296d15d93f502dd74986f7de36335901ee6fff1fda4d099fbeab342e",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined pass fraction: (3 + 3) / (8 + 4) = 0.5. synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "planner",
+              "sdk_started_at": "2026-10-06T03:29:02.987231+00:00",
+              "session_id": "planner-bd8d78354279e8b1fa084248",
+              "started_at": "2026-10-06T03:29:02.987141+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-f475-7c10-8698-0732ec09f127",
+              "usage": null
+            },
+            {
+              "duration_seconds": 5.196518999990076,
+              "ended_at": "2026-10-06T03:29:08.187520+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nIndependently scrutinize the original packet. Find unsupported assumptions, counterevidence, and failure modes; do not rely on any planner draft.",
+              "input_sha256": "c45a2c923e71de913e340ecee08b936eaf4fd5585e8a8e9856290d78ec925466",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined passes are 3 + 3 = 6 out of 8 + 4 = 12 widgets, so the fraction is 0.5. This is synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "skeptic",
+              "sdk_started_at": "2026-10-06T03:29:02.991002+00:00",
+              "session_id": "skeptic-bbef052f231c3d5da8ee6dd2",
+              "started_at": "2026-10-06T03:29:02.990876+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-f475-76c2-a2e3-588b875011a1",
+              "usage": null
+            },
+            {
+              "duration_seconds": 5.915415124967694,
+              "ended_at": "2026-10-06T03:29:14.450123+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nSynthesize the original packet and both independent outputs below into a careful final answer. Distinguish evidence from uncertainty.\n\nPlanner output:\n{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined pass fraction: (3 + 3) / (8 + 4) = 0.5. synthetic-only.\"}\n\nSkeptic output:\n{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined passes are 3 + 3 = 6 out of 8 + 4 = 12 widgets, so the fraction is 0.5. This is synthetic-only.\"}",
+              "input_sha256": "71764f7bb2580d4f1d76d808eaa45686589212512b722b0f1f58638f04ad70d6",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"The supplied synthetic cards report 6 passes among 12 widgets, giving a combined fraction of 0.5. synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "pi",
+              "sdk_started_at": "2026-10-06T03:29:08.534709+00:00",
+              "session_id": "pi-2eba4eb48f70f3ed99712995",
+              "started_at": "2026-10-06T03:29:08.534616+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f42-09fc-7720-a0e9-9d50f3eca735",
+              "usage": null
+            }
+          ],
+          "usage": null
+        },
+        "single_self_review": {
+          "cleanup_ok": true,
+          "deadline_penalty_seconds": 8.968169499887154,
+          "delivery_valid": true,
+          "error": "None",
+          "fatal_audit": false,
+          "grade": {
+            "citation_pass": true,
+            "errors": [],
+            "scope_pass": true,
+            "semantic_score": 1.0,
+            "strict_schema_pass": true
+          },
+          "observed_delivery_seconds": 8.968169499887154,
+          "raw_response": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined pass fraction: (3 + 3) / (8 + 4) = 0.5. synthetic-only.\"}",
+          "runtime_status": "success",
+          "runtime_wall_seconds": 8.96624820807483,
+          "status": "completed",
+          "structured_delivery_utility": 1.0,
+          "structured_semantic_score": 1.0,
+          "terminal_seconds": 8.967076082946733,
+          "turns": [
+            {
+              "duration_seconds": 3.678950082976371,
+              "ended_at": "2026-10-06T03:28:57.663322+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nDraft an answer to the packet. State key reasoning and uncertainties.",
+              "input_sha256": "f5f86a94032b75f2b26aac5848256749ac5128d5cc9b934f5e3a78a448b42bcb",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"fraction\":0.6},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined passes: (3 + 3) / (8 + 4) = 6/12 = 0.5. The provided counts determine the result; synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "draft",
+              "sdk_started_at": "2026-10-06T03:28:53.984351+00:00",
+              "session_id": "single-e1c707be3ad041b48df3fbb285f54bfc",
+              "started_at": "2026-10-06T03:28:53.984264+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-d12c-7003-a9dc-513f373fc9bc",
+              "usage": null
+            },
+            {
+              "duration_seconds": 2.54992395802401,
+              "ended_at": "2026-10-06T03:29:00.235446+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nCritique your preceding draft against the original packet. Identify concrete errors, omissions, and warranted corrections.",
+              "input_sha256": "efd48c0fecbbb9356961085dfa851f2975c84e4d42affea5d5add36215175b3c",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "The fraction is incorrect: the combined pass fraction is \\((3+3)/(8+4)=6/12=0.5\\), not 0.6. The draft’s explanation calculates 0.5, so it contradicts its answer value. Keep the required citations `D1` and `D2`, the `synthetic-only` literal, and the fraction unit; change `answers.fraction` to `0.5`.",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "critique",
+              "sdk_started_at": "2026-10-06T03:28:57.685516+00:00",
+              "session_id": "single-e1c707be3ad041b48df3fbb285f54bfc",
+              "started_at": "2026-10-06T03:28:57.685377+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-d12c-7003-a9dc-513f373fc9bc",
+              "usage": null
+            },
+            {
+              "duration_seconds": 2.27594491711352,
+              "ended_at": "2026-10-06T03:29:02.534178+00:00",
+              "error": null,
+              "input": "Original packet:\nSynthetic cards D1 and D2: batch 1 has 8 widgets; 3 pass. Batch 2 has 4 widgets; 3 pass. Report combined pass fraction. Answer contract: JSON {\"answers\":<object>, \"citations\":<array of source IDs>, \"explanation\":<string>}; exact answer keys and primitive types are required. Schema: {\"fraction\": {\"tolerance\": 1e-12, \"type\": \"number\", \"unit\": \"fraction\"}}. Required source IDs: ['D1', 'D2']. Include the literal ‘synthetic-only’ in an explanation of at most 500 characters. Rubric: each answer has equal weight; numeric values must use the stated unit (length units: m=1, cm=0.01, mm=0.001, km=1000 relative to metres), tolerance is in that unit; unknown remains null, never false or zero. Only answer values are scored; prose accuracy is not scored.\n\nUsing the original packet, your prior draft, and your critique, provide the best final answer.",
+              "input_sha256": "fad4f12735f3354c697e9f455a63ea76446721e2bbeac9e845ef533e6793d47d",
+              "model": "gpt-6-luna",
+              "model_identity_attestation": null,
+              "provider_request_count": null,
+              "raw": "{\"answers\":{\"fraction\":0.5},\"citations\":[\"D1\",\"D2\"],\"explanation\":\"Combined pass fraction: (3 + 3) / (8 + 4) = 0.5. synthetic-only.\"}",
+              "reasoning_effort": "medium",
+              "requested_max_tokens": 1200,
+              "role": "final",
+              "sdk_started_at": "2026-10-06T03:29:00.258240+00:00",
+              "session_id": "single-e1c707be3ad041b48df3fbb285f54bfc",
+              "started_at": "2026-10-06T03:29:00.258126+00:00",
+              "status": "success",
+              "system_prompt_sha256": "f2206b1d1b4048ccb7e3cb456e91777c5c0455101114d1f41805058f48ee0163",
+              "thread_id": "01a10f41-d12c-7003-a9dc-513f373fc9bc",
+              "usage": {
+                "cache_read_input_tokens": 15872,
+                "context_tokens": 13747,
+                "input_tokens": 9192,
+                "model": "gpt-6-luna",
+                "output_tokens": 159,
+                "total_tokens": 25223
+              }
+            }
+          ],
+          "usage": null
+        }
+      },
+      "case_id": "dev-quantity",
+      "repetition": 1,
+      "scheduled_arm_order": [
+        "single_self_review",
+        "parallel_review"
+      ],
+      "status": "completed"
+    }
+  ],
+  "host_helper_sha256": "b824f594cbdc081fe432fe3c84b803a68ec8fdcc36a75951e5f4b42310275147",
+  "limits": {
+    "arm_deadline_seconds": 150,
+    "exploratory_batch_seconds": 1800.0,
+    "exploratory_total_seconds": 10800.0,
+    "pair_persistence_margin_seconds": 10.0,
+    "pair_reservation_seconds": 300.0,
+    "per_evaluation_turns": 3,
+    "retries": 0,
+    "sdk_turns": 24,
+    "turn_timeout_seconds": 45
+  },
+  "model_calls_enabled": true,
+  "model_identity_attested": null,
+  "model_requested": "gpt-6-luna",
+  "offline_gold_fixture": false,
+  "offline_gold_is_model_evidence": false,
+  "omnigent_version": "0.16.0",
+  "platform": "darwin",
+  "provider_hard_token_limit_verified": false,
+  "provider_request_count": null,
+  "provider_usage_attested": null,
+  "python_version": "3.12.13",
+  "reasoning_effort_requested": "medium",
+  "repetitions": 1,
+  "report_module_sha256": "4df51ede732a9240f4d62145372eb9c2bb3f9d0f88f892fc18e20ecd4bd1c386",
+  "requested_max_tokens_per_turn": 1200,
+  "runner_status": "completed",
+  "runtime_module_sha256": "6347ecb0d1c4291b47a4d439c33506c375836385e5a29b5eb9b4f5a3a4037871",
+  "schedule_seed": 1729,
+  "scheduled_group_order": [
+    {
+      "arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "case_id": "dev-evidence",
+      "repetition": 1
+    },
+    {
+      "arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "case_id": "dev-conflict",
+      "repetition": 1
+    },
+    {
+      "arm_order": [
+        "parallel_review",
+        "single_self_review"
+      ],
+      "case_id": "dev-units",
+      "repetition": 1
+    },
+    {
+      "arm_order": [
+        "single_self_review",
+        "parallel_review"
+      ],
+      "case_id": "dev-quantity",
+      "repetition": 1
+    }
+  ],
+  "scheduled_group_order_sha256": "75371e0e07f4fe8d66e1fdc5ac0f0435a11686306eb033a28d04c92a062985f0",
+  "schema_version": 1,
+  "scope": "synthetic_offline_engineering_self_test_only",
+  "scope_complete": true,
+  "script_sha256": "7ea66884d5eea1ce1ecc71774de747c8a732a397e7c5d051a67c1b1d4d440876",
+  "sdk_turns_reserved": 24,
+  "stage": "development",
+  "structured_grader_scope": "objective_schema_and_numeric_answer_proxy_only; prose_unreviewed",
+  "summary": {
+    "all_planned_rows_complete": true,
+    "blind_prose_review_status": "pending",
+    "cases_planned": 4,
+    "dependency_audit_approved": false,
+    "descriptive_interval": null,
+    "full_delivery_utility_delta": null,
+    "full_semantic_quality": null,
+    "groups_attempted": 4,
+    "paired_cases_complete": 4,
+    "primary_effect": null,
+    "safety_claim": "pending_independent_content_review",
+    "screening_status": "development_pipeline_only",
+    "structured_proxy_only": true,
+    "structured_time_gain_median": null,
+    "structured_utility_delta_mean": null
+  },
+  "worker_module_sha256": "f956d34d3132aad88ab99aa004038d706ee00262e84be2593dbf39f169965ef9"
+}
